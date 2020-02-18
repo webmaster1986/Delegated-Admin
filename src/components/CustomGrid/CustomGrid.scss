@@ -1,0 +1,102 @@
+.grid-main {
+  position: relative;
+
+  .dx-card {
+    box-shadow: none;
+  }
+  .grid-title {
+    position: absolute;
+    top: 15px;
+    z-index: 1;
+    font-weight: bold;
+  }
+  .custom-data-grid {
+    &.scrollable {
+      max-height: 600px;
+    }
+    .dx-datagrid-rowsview .dx-row > .dx-master-detail-cell {
+      padding: 10px;
+    }
+    &.common-height {
+      max-height: calc(100vh - 230px);
+    }
+    &.common-height-180-px {
+      max-height: calc(100vh - 180px);
+    }
+    &.view-contact {
+      max-height: calc(100vh - 130px);
+    }
+    &.view-bid {
+      max-height: calc(100vh - 166px);
+    }
+    &.view-supplier-contact {
+      max-height: calc(100vh - 190px);
+    }
+    &.supplier-item-link {
+      max-height: calc(100vh - 280px);
+    }
+    &.order-guid-detail {
+      max-height: calc(100vh - 310px);
+    }
+    &.order-guid-lookup {
+      max-height: calc(100vh - 320px);
+    }
+    &.order-guid {
+      max-height: calc(100vh - 200px);
+    }
+    &.import-pricing {
+      max-height: calc(100vh - 328px);
+    }
+
+  }
+  .dx-datagrid-rowsview > .dx-datagrid-content > .dx-datagrid-table {
+    .dx-row.dx-data-row.dx-row-lines:hover {
+      background-color: #FAFAFA;
+      //td {
+      //  color: #fff;
+      //}
+      //.text-primary {
+      //  color: #fff !important;
+      //}
+    }
+  }
+  //.dx-row.dx-data-row.dx-row-focused {
+  //  .text-primary {
+  //    color: #ffffff !important;
+  //  }
+  //}
+
+  tr.dx-row.dx-data-row.dx-row-lines:hover{
+    background-color: #FAFAFA;
+  }
+
+  .dx-datagrid-rowsview .dx-row-focused.dx-data-row > td:not(.dx-focused) {
+    background-color: #F5F5F5;
+    color: black;
+
+    .dx-datagrid-group-opened {
+      color: rgba(98, 98, 98, 0.54);
+    }
+    .dx-datagrid-group-closed {
+      color: rgba(98, 98, 98, 0.54);
+    }
+  }
+
+  .dx-datagrid-content .dx-datagrid-table .dx-row > td {
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .dx-toolbar .dx-toolbar-items-container {
+    height: 40px !important;
+  }
+
+  .dropdown-grid{
+    width: 300px !important;
+  }
+
+  .dx-toolbar .dx-toolbar-before {
+    padding-left: 40px !important;
+    padding-top: 5px !important;
+  }
+
+}
