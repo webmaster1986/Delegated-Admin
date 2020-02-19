@@ -67,6 +67,27 @@ class RoleManagement extends React.Component {
         }
     }
 
+    onChangeStatus = async (record) => {
+        const {appObject} = this.state
+        const {roleName, status} = record
+        const type = status === "Active" ? "disable" : "activate"
+        const data = await this._apiService.rolesStatusActiveDisable({appCode: appObject.appCode, roleName}, type)
+        if (data === "SUCCESS") {
+            const roles =  await this._apiService.getRolesForApp(appObject.appCode)
+            if (!roles || roles.error) {
+                this.setState({
+                    isLoading: false
+                })
+                return message.error('something is wrong! please try again');
+            } else {
+                this.setState({
+                    isLoading: false,
+                    rolesList: (roles || []).map((role, index) => ({...role, id: index})) || []
+                })
+            }
+        }
+    }
+
 
     render() {
         const { rolesObject, appObject, rolesList } = this.state
@@ -134,7 +155,7 @@ class RoleManagement extends React.Component {
                                 const buttonName = record.data.status === 'Active' ? 'Disable' : record.data.status === 'Disabled' ? 'Active' : 'Active'
                                 return (
                                     <div className="text-center">
-                                        <Button variant={'primary'} size={'sm'}>{buttonName}</Button>
+                                        <Button variant={'primary'} size={'sm'} onClick={() => this.onChangeStatus(record.data)}>{buttonName}</Button>
                                     </div>
                                 )
                             }}

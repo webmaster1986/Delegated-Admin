@@ -69,10 +69,11 @@ class EditApp extends React.Component {
         })
     }
 
-    onAddRole = () => {
-        let { rolesList, rolesObject } = this.state
+    onAddRole = async () => {
+        let { rolesList, rolesObject, appObject } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
             rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: rolesList.length})
+            const data =  await this._apiService.addRole({ ...rolesObject }, appObject.appCode)
             this.setState({
                 rolesList,
                 rolesObject: {}

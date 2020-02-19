@@ -85,17 +85,28 @@ export class ApiService {
     }
 
     async applicationOnBoarding(body) {
-        return await ApiService.postMethod(`${apiEndPoint}/applications`, body);
+        return await ApiService.postMethod(`v1/applications`, body);
     }
 
     async getAppDetailByAppCode(appCode) {
-        // return await ApiService.getData(`${apiEndPoint}/applications/${appCode}`);
-        return appDetails
+        return await ApiService.getData(`v1/applications/${appCode}`);
+        // return appDetails
     }
 
     async getRolesForApp(appCode) {
-        // return await ApiService.getData(`${apiEndPoint}/applications/${appCode}/roles`);
-        return appRoles
+        return await ApiService.getData(`v1/applications/${appCode}/roles`);
+        // return appRoles
     }
 
+    async addRole(body, appCode) {
+        return await ApiService.postMethod(`v1/applications/${appCode}/roles`, body);
+    }
+
+    async rolesStatusActiveDisable(body, status) {
+        return await ApiService.postMethod(`v1/applications/${body.appCode}/roles/${body.roleName}/${status}`, body);
+    }
+
+    async getRolesForUser(id) {
+        return await ApiService.getData(`v1/users/${id}/roles`);
+    }
 }

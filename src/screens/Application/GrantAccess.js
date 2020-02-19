@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
 import { Table, Transfer } from 'antd/lib'
+import {ApiService} from "../../services/ApiService";
 import difference from 'lodash/difference'
+import message from "antd/lib/message";
 
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
@@ -90,11 +92,32 @@ const rightTableColumns = [
 
 
 class GrantAccess extends Component {
+    _apiService = new ApiService();
     constructor(props){
         super(props)
         this.state = {
             targetKeys: [],
             showSearch: false,
+        }
+    }
+
+    componentDidMount() {
+        this.getRoles("1234501")
+    }
+
+
+    getRoles = async (id) => {
+        const roles =  await this._apiService.getRolesForUser(id)
+        if (!roles || roles.error) {
+            this.setState({
+                isLoading: false
+            })
+            return message.error('something is wrong! please try again');
+        } else {
+            const data = (roles || []).map((f, i) => ({
+                id: i, key: i, roleName: f.roleName, roleDescription: f.roleDescription, oimTarget: f.oimTarget, status: f.status
+            }))
+            this.setState({ roles: data })
         }
     }
 
@@ -107,7 +130,7 @@ class GrantAccess extends Component {
     };
 
     render() {
-        const { targetKeys, showSearch } = this.state;
+        const { targetKeys, showSearch, roles } = this.state;
         return(
             <Container className={'container-design'}>
                 <h4 className="text-right">
@@ -153,7 +176,7 @@ class GrantAccess extends Component {
 
                 <div>
                     <TableTransfer
-                        dataSource={mockData}
+                        dataSource={roles}
                         targetKeys={targetKeys}
                         showSearch={showSearch}
                         onChange={this.onChange}

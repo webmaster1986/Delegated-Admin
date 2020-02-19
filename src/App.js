@@ -9,6 +9,7 @@ import CreateApp from "./screens/Application/CreateApp";
 import ReviewApps from "./screens/Application/ReviewApps";
 import GrantAccess from "./screens/Application/GrantAccess";
 import RoleManagement from "./screens/Application/RoleManagement";
+import LogIn from "./screens/LogIn";
 import './App.css';
 
 class App extends Component {
@@ -20,6 +21,7 @@ class App extends Component {
             <Row>
               <Col lg="12">
                   <Switch>
+                    <Route path={'/login'} component={LogIn}/>
                     <Route path={'/edit-app/:id'} component={EditApp}/>
                     <Route path={'/create-apps'} component={CreateApp}/>
                     <Route path={'/review-apps'} component={ReviewApps}/>
