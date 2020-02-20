@@ -1,10 +1,10 @@
 import React from "react";
 import {Row, Col, Form, Button, Container} from "react-bootstrap";
 import message from "antd/lib/message";
+import Spin from "antd/lib/spin";
 import {Column} from "devextreme-react/data-grid";
 import CustomGrid from "../../components/CustomGrid";
 import {ApiService} from "../../services/ApiService";
-import {Link} from "react-router-dom";
 
 
 class RoleManagement extends React.Component {
@@ -12,6 +12,7 @@ class RoleManagement extends React.Component {
     constructor(props){
         super(props)
         this.state= {
+            isLoading: false,
             rolesList: [],
             rolesObject: {},
             appObject: {}
@@ -20,9 +21,9 @@ class RoleManagement extends React.Component {
 
     componentDidMount() {
         const { match } = this.props
-        // if(match && match.params && match.params.id){
-            this.getAppDetailsAndRoles(match.params.id || "App1")
-        // }
+        if(match && match.params && match.params.id){
+            this.getAppDetailsAndRoles(match.params.id)
+        }
     }
 
     getAppDetailsAndRoles = async (appCode) => {
@@ -39,7 +40,7 @@ class RoleManagement extends React.Component {
             return message.error('something is wrong! please try again');
         } else {
             this.setState({
-                isLoading: false,
+                // isLoading: false,
                 appObject: appDetails || {},
                 rolesList: (roles || []).map((role, index) => ({...role, id: index})) || []
             })
@@ -90,7 +91,7 @@ class RoleManagement extends React.Component {
 
 
     render() {
-        const { rolesObject, appObject, rolesList } = this.state
+        const { rolesObject, appObject, rolesList, isLoading } = this.state
         const { appName, appCode, appDescription, ownerGroup } = appObject || {}
         const { roleName, roleDescription, oimTarget } = rolesObject || {}
         return (
@@ -188,7 +189,7 @@ class RoleManagement extends React.Component {
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Col>
-                            <Button type="submit" variant={'success'}>Submit</Button>
+                            <Button type="submit" variant={'success'}>{ isLoading ? <Spin className='mt-50 custom-loading'/> : "Submit" }</Button>
                         </Col>
                     </Form.Group>
                 </div>

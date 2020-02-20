@@ -26,7 +26,7 @@ class App extends Component {
                     <Route path={'/create-apps'} component={CreateApp}/>
                     <Route path={'/review-apps'} component={ReviewApps}/>
                     <Route path={'/grant-access'} component={GrantAccess}/>
-                    <Route path={'/role-manage'} component={RoleManagement}/>
+                    <Route path={'/role-manage/:id'} component={RoleManagement}/>
                     <Route path={'/'} component={AppsList}/>
                   </Switch>
               </Col>

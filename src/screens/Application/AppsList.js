@@ -7,33 +7,6 @@ import { ApiService } from '../../services/ApiService'
 import {Column} from "devextreme-react/data-grid";
 import CustomGrid from "../../components/CustomGrid";
 
-const columns = [
-    {
-        title: 'Application Code',
-        dataIndex: 'appCode',
-        sorter: (a, b) => a.appCode - b.appCode
-    },
-    {
-        title: 'Application Name',
-        dataIndex: 'appName',
-        sorter: (a, b) => a.appName - b.appName
-    },
-    {
-        title: 'Description',
-        dataIndex: 'appDescription',
-        sorter: (a, b) => a.appDescription - b.appDescription
-    },
-    {
-        title: 'Owner Group',
-        dataIndex: 'ownerGroup',
-        sorter: (a, b) => a.ownerGroup - b.ownerGroup
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: () => <div className="text-center"><Link to={'/create-apps'}> <Button variant={'primary'}>Edit</Button> </Link></div>,
-    },
-];
 
 class AppsList extends Component {
     _apiService = new ApiService();
@@ -93,8 +66,6 @@ class AppsList extends Component {
                     </Col>
                 </Row>
 
-                {/*<Table size={'small'} rowKey={'appCode'} bordered columns={columns} dataSource={applicationsList || []}/>*/}
-
                 {
                     isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
                         <CustomGrid
@@ -113,7 +84,7 @@ class AppsList extends Component {
                                 cellRender={(record) => {
                                     return (
                                         <div className="text-center">
-                                            <Link to={`/edit-app/${record.data.appCode}`}>
+                                            <Link to={`/role-manage/${record.data.appCode}`}>
                                                 <Button variant={'primary'} size={'sm'}>Edit</Button>
                                             </Link>
                                         </div>

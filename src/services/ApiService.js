@@ -79,8 +79,8 @@ export class ApiService {
         return resData || response.data;
     }
 
-    async getAllApplications() {
-        return await ApiService.getData(`v1/applications`);
+    async getAllApplications(appId) {
+        return await ApiService.getData(`v1/applications/${appId || ""}`);
         //return await ApiService.getData(`applications.json`);
     }
 
@@ -108,5 +108,9 @@ export class ApiService {
 
     async getRolesForUser(id) {
         return await ApiService.getData(`v1/users/${id}/roles`);
+    }
+
+    async getAppOwnerGroups(id) {
+        return await ApiService.getData(`v1/owner-groups`);
     }
 }

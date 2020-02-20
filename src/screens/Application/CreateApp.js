@@ -3,20 +3,47 @@ import {Row, Col, Form, Button, Container} from "react-bootstrap";
 import Select from "antd/lib/select";
 import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
+import notification from "antd/lib/notification";
 import {Column} from "devextreme-react/data-grid";
 import CustomGrid from "../../components/CustomGrid";
 
 const { Option } = Select
 
+const openNotificationWithIcon = (type, message) => {
+    notification[type]({
+        message,
+    });
+};
 
 class CreateApp extends React.Component {
     _apiService = new ApiService();
     constructor(props){
         super(props)
         this.state= {
+            isLoading: false,
             rolesList: [],
+            ownerGroupList: [],
             rolesObject: {},
-            appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: ''}
+            appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: '', selectedOwnerGroup: ''}
+        }
+    }
+
+    async componentDidMount() {
+        this.setState({
+            isLoading: true
+        })
+
+        const data = await this._apiService.getAppOwnerGroups()
+        if (!data || data.error) {
+            this.setState({
+                isLoading: false
+            })
+            return message.error('something is wrong! please try again');
+        } else {
+            this.setState({
+                isLoading: false,
+                ownerGroupList: data || []
+            })
         }
     }
 
@@ -59,25 +86,39 @@ class CreateApp extends React.Component {
 
     onOnBoardApplication = async () => {
         const { rolesList, appObject } = this.state
-        const payload = {...appObject, roles: rolesList}
-        const data =  await this._apiService.applicationOnBoarding(payload)
-        if (!data || data.error) {
-            this.setState({
-                isLoading: false
-            })
-            return message.error('something is wrong! please try again');
-        } else {
-            this.setState({
-                isLoading: false,
-                applicationsList: data || []
-            })
+        const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {}
+
+        if(!appCode){
+           return openNotificationWithIcon('warning', "Please Enter Application Code!")
         }
+
+        const appDetails =  await this._apiService.getAllApplications(appObject && appObject.appCode)
+        if (!appDetails || appDetails.error) {
+            const payload = {application: {appName, appCode, appDescription, ownerGroup: ownerGroup || selectedOwnerGroup}, roles: rolesList}
+            const data =  await this._apiService.applicationOnBoarding(payload)
+            if (!data || data.error) {
+                openNotificationWithIcon('error', "Something went Wrong!")
+            } else {
+                openNotificationWithIcon('success','Application Onboarding Successfully!');
+                this.props.history.push("/")
+            }
+        } else {
+            openNotificationWithIcon('error', "Please Enter Unique Application Code!")
+        }
+    }
+
+    onRemoveRole = (index) => {
+        let { rolesList } = this.state
+        rolesList.splice(index, 1)
+        this.setState({
+            rolesList
+        },() => this.refreshGrid())
     }
 
 
     render() {
-        const { rolesObject, appObject, rolesList } = this.state
-        const { appName, appCode, appDescription, ownerGroup } = appObject || {}
+        const { rolesObject, appObject, rolesList, ownerGroupList } = this.state
+        const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {}
         const { roleName, roleDescription, oimTarget } = rolesObject || {}
         return (
             <Container className={'container-design'}>
@@ -127,16 +168,20 @@ class CreateApp extends React.Component {
                                             style={{ width: '100%' }}
                                             placeholder="Select a person"
                                             optionFilterProp="children"
-                                            name={'ownerGroup'}
-                                            value={ownerGroup || ""}
-                                            onChange={(value) => this.onChange({target: {name: 'ownerGroup', value}})}
+                                            name={'selectedOwnerGroup'}
+                                            value={selectedOwnerGroup || ""}
+                                            onChange={(value) => this.onChange({target: {name: 'selectedOwnerGroup', value}})}
                                             filterOption={(input, option) =>
                                                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                             }
                                         >
-                                            <Option value="jack">Jack</Option>
-                                            <Option value="lucy">Lucy</Option>
-                                            <Option value="tom">Tom</Option>
+                                            {
+                                                (ownerGroupList || []).map((group, index) => {
+                                                    return(
+                                                        <Option key={index.toString()} value={group}>{group}</Option>
+                                                    )
+                                                })
+                                            }
                                         </Select>
 
                                     </Col>
@@ -159,11 +204,12 @@ class CreateApp extends React.Component {
                         <Column alignment={'left'} caption={'Role Description'} dataField={'roleDescription'}/>
                         <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
                         <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'}
-                                cellRender={(record) => {
-                                    return (
-                                        <h6 className="text-primary pointer-event"> <u> Remove </u></h6>
-                                    )
-                                }}/>
+                            cellRender={(record) => {
+                                return (
+                                    <h6 className="text-primary cursor-pointer" onClick={() => this.onRemoveRole(record.rowIndex)}> <u> Remove </u></h6>
+                                )
+                            }}
+                        />
                     </CustomGrid>
 
                     <Form.Group as={Row}>

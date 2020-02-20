@@ -103,3 +103,7 @@
 .color-white {
   color: #fff !important;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

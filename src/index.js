@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/lib/table/style/css';
 import 'antd/lib/transfer/style/css';
+import 'antd/lib/notification/style/css';
 import { BrowserRouter } from 'react-router-dom';
 //react table 2
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
