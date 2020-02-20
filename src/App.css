@@ -104,6 +104,10 @@
   color: #fff !important;
 }
 
+.color-red {
+  color: red !important;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }

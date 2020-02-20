@@ -113,4 +113,12 @@ export class ApiService {
     async getAppOwnerGroups(id) {
         return await ApiService.getData(`v1/owner-groups`);
     }
+
+    async getAppRoleTargets() {
+        return await ApiService.getData(`v1/role-targets`);
+    }
+
+    async getLoginUserRole(user_id) {
+        return await ApiService.getData(`v1/users/types/${user_id} `);
+    }
 }

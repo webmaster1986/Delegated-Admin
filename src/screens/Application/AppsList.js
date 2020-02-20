@@ -76,7 +76,7 @@ class AppsList extends Component {
                             showBorders={true}
                             isHideSearchPanel={true}
                         >
-                            <Column alignment={'left'} caption={'Application Code'} dataField={'appCode'}/>
+                            <Column alignment={'left'} sortOrder={'asc'} caption={'Application Code'} dataField={'appCode'}/>
                             <Column alignment={'left'} caption={'Application Name'} dataField={'appName'}/>
                             <Column alignment={'left'} caption={'Description'} dataField={'appDescription'}/>
                             <Column alignment={'left'} caption={'Owner Group'} dataField={'ownerGroup'}/>
