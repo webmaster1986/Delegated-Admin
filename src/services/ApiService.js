@@ -121,4 +121,8 @@ export class ApiService {
     async getLoginUserRole(user_id) {
         return await ApiService.getData(`v1/users/types/${user_id} `);
     }
+
+    async addRoleToApplication(appId, body) {
+        return await ApiService.postMethod(`v1/applications/${appId}/roles`, body);
+    }
 }

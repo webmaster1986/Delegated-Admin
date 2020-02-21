@@ -47,7 +47,7 @@ class App extends Component {
         const { isLoading } = this.state
     return (
        <div>
-           { isLoading ? <Spin className='mt-50 custom-loading'/> :
+           { isLoading ? <div className="text-center mt-5-p"> <Spin className='mt-50 custom-loading'/> </div> :
                <>
                  <Header />
                  <Container>

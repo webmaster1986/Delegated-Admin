@@ -6,7 +6,7 @@ import "./CustomGrid.scss";
 
 class CustomGrid extends React.Component {
   render() {
-    const {refCallback, isTableBordered, children, title, isNoScroll, id, isHideSearchPanel, isColumnChooser, gridClass, ...rest} = this.props;
+    const {refCallback, isTableBordered, children, title, isNoScroll, id, isHideSearchPanel, isScrollDisabled, isColumnChooser, gridClass, ...rest} = this.props;
     const elementAttr = {class: `custom-data-grid ${gridClass ? gridClass : ''} ${!isNoScroll ? 'scrollable' : ''}`};
     if (id) {
       elementAttr.id = id;
@@ -26,7 +26,7 @@ class CustomGrid extends React.Component {
         >
           <ColumnChooser enabled={!!isColumnChooser} />
           <SearchPanel visible={!isHideSearchPanel} width={240} placeholder={'Search...'} />
-          <Scrolling mode={'virtual'} />
+          <Scrolling mode={isScrollDisabled ? 'standard' : 'virtual'} />
           {children}
         </DataGrid>
       </div>

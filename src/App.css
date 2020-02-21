@@ -111,3 +111,43 @@
 .cursor-pointer {
   cursor: pointer;
 }
+
+.mt-5-p {
+  margin-top: 5% !important;
+}
+
+.input-group {
+  position: relative !important;
+  display: table !important;
+  border-collapse: separate !important;
+}
+
+.input-group-addon {
+  padding: 6px 12px !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  color: #555 !important;
+  text-align: center !important;
+  background-color: #eee !important;
+  border: 1px solid #ccc !important;
+  width: 1% !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+  display: table-cell !important;
+  border-right: none !important;
+  border-radius: 2px !important;
+}
+
+.prefix-input {
+  position: relative !important;
+  z-index: 2 !important;
+  float: left !important;
+  width: 100% !important;
+  margin-bottom: 0 !important;
+  display: table-cell !important;
+  padding: 6px 12px !important;
+  border: 1px solid #ccc !important;
+  margin: 0 !important;
+  border-left: none !important;
+}

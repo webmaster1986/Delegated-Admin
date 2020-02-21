@@ -2,7 +2,8 @@ import React from "react";
 import {Row, Col, Form, Button, Container} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
-import {Column} from "devextreme-react/data-grid";
+import moment from "moment"
+import {Column, Paging} from "devextreme-react/data-grid";
 import CustomGrid from "../../components/CustomGrid";
 import {ApiService} from "../../services/ApiService";
 
@@ -14,6 +15,7 @@ class RoleManagement extends React.Component {
         this.state= {
             isLoading: false,
             rolesList: [],
+            oimTargetList: [],
             rolesObject: {},
             appObject: {}
         }
@@ -32,17 +34,19 @@ class RoleManagement extends React.Component {
         })
         const appDetails =  await this._apiService.getAppDetailByAppCode(appCode)
         const roles =  await this._apiService.getRolesForApp(appCode)
+        const roleTarget = await this._apiService.getAppRoleTargets()
 
-        if (!appDetails || appDetails.error || !roles || roles.error) {
+        if (!appDetails || appDetails.error || !roles || roles.error || !roleTarget || roleTarget.error) {
             this.setState({
                 isLoading: false
             })
             return message.error('something is wrong! please try again');
         } else {
             this.setState({
-                // isLoading: false,
+                isLoading: false,
                 appObject: appDetails || {},
-                rolesList: (roles || []).map((role, index) => ({...role, id: index})) || []
+                rolesList: (roles || []).map((role, index) => ({...role, id: index})) || [],
+                oimTargetList: roleTarget || []
             })
         }
     }
@@ -57,10 +61,13 @@ class RoleManagement extends React.Component {
         })
     }
 
-    onAddRole = () => {
-        let { list, rolesObject } = this.state
+    onAddRole = async () => {
+        let { list, rolesObject, oimTargetList, appObject } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
-            list.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: list.length})
+            // list.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: list.length})
+            const body = [{roleName: `APP1_${appObject.appCode}${rolesObject.roleName}`, roleDescription: rolesObject.roleDescription, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
+            console.log({body})
+            const data = await this._apiService.addRoleToApplication(appObject.appCode, body)
             this.setState({
                 list,
                 rolesObject: {}
@@ -91,7 +98,7 @@ class RoleManagement extends React.Component {
 
 
     render() {
-        const { rolesObject, appObject, rolesList, isLoading } = this.state
+        const { rolesObject, appObject, rolesList, isLoading, oimTargetList } = this.state
         const { appName, appCode, appDescription, ownerGroup } = appObject || {}
         const { roleName, roleDescription, oimTarget } = rolesObject || {}
         return (
@@ -101,98 +108,133 @@ class RoleManagement extends React.Component {
                 </h4>
                 <hr/>
 
-                <div>
-                    <p className="text-warning mt-3">Selected Application Details</p>
+                { isLoading ?
+                    <div className="text-center mt-5-p">
+                        <Spin className='mt-50 custom-loading'/>
+                    </div> :
 
-                    <Form>
-                        <Form.Group as={Row}>
-                            <Form.Label column xs={6} sm={4} md={3}>
-                                Application Name:
-                            </Form.Label>
-                            <Col xs={6} sm={8} md={3}>
-                                <p>{appName}</p>
-                            </Col>
-                            <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                App Owner Group:
-                            </Form.Label>
-                            <Col xs={6} sm={8} md={3} className={'marginTop-sm-1'}>
-                                <p>{ownerGroup}</p>
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row}>
-                            <Form.Label column xs={6} sm={4} md={3}>
-                                Application Code:
-                            </Form.Label>
-                            <Col xs={6} sm={8} md={3}>
-                                <p>{appCode}</p>
-                            </Col>
-                            <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                Application Description:
-                            </Form.Label>
-                            <Col xs={6} sm={8} md={3} className={'marginTop-sm-1'}>
-                                <p>{appDescription}</p>
-                            </Col>
-                        </Form.Group>
-                    </Form>
+                    <div>
+                        <p className="text-warning mt-3">Selected Application Details</p>
 
-                    <p className="text-warning">Roles</p>
-
-                    {/*<Table size={'small'} rowKey={'id'} bordered columns={columns} dataSource={dataList} scroll={{x: 768}}/>*/}
-
-                    <CustomGrid
-                        refCallback={(dg) => this.dg = dg}
-                        dataSource={rolesList}
-                        keyExpr="id"
-                        columnHidingEnabled={false}
-                        showBorders={true}
-                        isHideSearchPanel={true}
-                    >
-                        <Column alignment={'left'} caption={'Role Name'} dataField={'roleName'}/>
-                        <Column alignment={'left'} caption={'Role Description'} dataField={'roleDescription'}/>
-                        <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
-                        <Column alignment={'left'} caption={'Status'} dataField={'status'}/>
-                        <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'}
-                            cellRender={(record) => {
-                                const buttonName = record.data.status === 'Active' ? 'Disable' : record.data.status === 'Disabled' ? 'Active' : 'Active'
-                                return (
-                                    <div className="text-center">
-                                        <Button variant={'primary'} size={'sm'} onClick={() => this.onChangeStatus(record.data)}>{buttonName}</Button>
-                                    </div>
-                                )
-                            }}
-                        />
-                    </CustomGrid>
-
-                    <Form.Group as={Row}>
-                        <Col sm={12} md={12}>
+                        <Form>
                             <Form.Group as={Row}>
-                                <Col className="pt-2" md={3}>
-                                    <Form.Control type="text" placeholder="Role Name" name={'roleName'} value={roleName || ""} onChange={this.onChange}/>
-                                </Col>
-                                <Col className="pt-2" md={3}>
-                                    <Form.Control type="text" placeholder="Role Description" name={'roleDescription'} value={roleDescription || ""} onChange={this.onChange}/>
-                                </Col>
-                                <Col className="pt-2" md={3}>
-                                    <Form.Group>
-                                        <Form.Control as="select" placeholder="Role Description" name={'oimTarget'}  value={oimTarget || ""} onChange={this.onChange}>
-                                            <option>IDCS</option>
-                                            <option>SN</option>
-                                            <option>AD</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Col>
-                                <Col md={3} className={'pt-2'}>
-                                    <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
-                                </Col>
+                                <Form.Label column xs={6} sm={4} md={3}>
+                                    Application Name:
+                                </Form.Label>
+                                <Form.Label column xs={6} sm={4} md={3}>
+                                    <p><b> {appName} </b></p>
+                                </Form.Label>
+                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                    App Owner Group:
+                                </Form.Label>
+                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                    <p><b> {ownerGroup} </b></p>
+                                </Form.Label>
                             </Form.Group>
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row}>
-                        <Col>
-                            <Button type="submit" variant={'success'}>{ isLoading ? <Spin className='mt-50 custom-loading'/> : "Submit" }</Button>
-                        </Col>
-                    </Form.Group>
-                </div>
+                            <Form.Group as={Row}>
+                                <Form.Label column xs={6} sm={4} md={3}>
+                                    Application Code:
+                                </Form.Label>
+                                <Form.Label column xs={6} sm={4} md={3}>
+                                    <p><b> {appCode} </b></p>
+                                </Form.Label>
+                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                    Application Description:
+                                </Form.Label>
+                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                    <p><b> {appDescription} </b></p>
+                                </Form.Label>
+                            </Form.Group>
+                        </Form>
+
+                        <p className="text-warning">Roles</p>
+
+                        <CustomGrid
+                            refCallback={(dg) => this.dg = dg}
+                            dataSource={rolesList}
+                            keyExpr="id"
+                            columnHidingEnabled={false}
+                            showBorders={true}
+                            isHideSearchPanel={true}
+                            isScrollDisabled={true}
+                        >
+                            <Paging defaultPageSize={5}/>
+                            <Column alignment={'left'} caption={'Role Name'} dataField={'roleName'}/>
+                            <Column alignment={'left'} caption={'Role Description'} dataField={'roleDescription'}/>
+                            <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
+                            <Column alignment={'left'} caption={'Created Date'} dataField={'creationDate'} cellRender={(record) => {
+                                return(
+                                    <div> { record && record.value && moment(record.value).format('MM/DD/YYYY HH:MM A') } </div>
+                                )
+                            }}/>
+                            <Column alignment={'left'} caption={'Status'} dataField={'status'}/>
+                            <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'}
+                                    cellRender={(record) => {
+                                        const buttonName = record.data.status === 'Active' ? 'Disable' : record.data.status === 'Disabled' ? 'Activate' : ''
+                                        return (
+                                            <div className="text-center">
+                                                {
+                                                    buttonName ?
+                                                    <Button
+                                                        variant={'primary'}
+                                                        size={'sm'}
+                                                        onClick={() => this.onChangeStatus(record.data)}
+                                                    >
+                                                        {buttonName}
+                                                    </Button> : null
+                                                }
+                                            </div>
+                                        )
+                                    }}
+                            />
+                        </CustomGrid>
+
+                        <Form.Group as={Row}>
+                            <Col sm={12} md={12}>
+                                <Form.Group as={Row}>
+                                    <Col className="pt-2 input-group" md={3}>
+                                        <span className="input-group-addon prefix">{`APP1_${appCode}`}</span>
+                                        <Form.Control
+                                            className="prefix-input"
+                                            type="text"
+                                            placeholder="Role Name"
+                                            name={'roleName'}
+                                            value={roleName || ""}
+                                            onChange={this.onChange}
+                                        />
+                                    </Col>
+                                    <Col className="pt-2" md={3}>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Role Description"
+                                            name={'roleDescription'}
+                                            value={roleDescription || ""}
+                                            onChange={this.onChange}
+                                        />
+                                    </Col>
+                                    <Col className="pt-2" md={3}>
+                                        <Form.Group>
+                                            <Form.Control as="select" placeholder="Role Description" name={'oimTarget'}
+                                                          value={oimTarget || ""} onChange={this.onChange}>
+                                                {
+                                                    (oimTargetList || []).map((oim, index) => {
+                                                        return (
+                                                            <option key={index.toString()}>{oim}</option>
+                                                        )
+                                                    })
+                                                }
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={3} className={'pt-2'}>
+                                        <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
+                                    </Col>
+                                </Form.Group>
+                            </Col>
+                        </Form.Group>
+                    </div>
+                }
+
             </Container>
         );
     }
