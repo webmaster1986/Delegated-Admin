@@ -14,6 +14,7 @@ import RoleManagement from "./screens/Application/RoleManagement";
 import LogIn from "./screens/LogIn";
 import {ApiService} from "./services/ApiService";
 import './App.css';
+import AppOwners from "./screens/Application/AppOwners";
 
 const cookies = new Cookies();
 
@@ -54,13 +55,14 @@ class App extends Component {
                     <Row>
                       <Col lg="12">
                           <Switch>
-                            <Route path={'/login'} component={LogIn}/>
-                            <Route path={'/edit-app/:id'} component={EditApp}/>
-                            <Route path={'/create-apps'} component={CreateApp}/>
-                            <Route path={'/review-apps'} component={ReviewApps}/>
-                            <Route path={'/grant-access'} component={GrantAccess}/>
-                            <Route path={'/role-manage/:id'} component={RoleManagement}/>
-                            <Route path={'/'} component={AppsList}/>
+                              <Route path={'/login'} component={LogIn}/>
+                              <Route path={'/app-owner'} component={AppOwners}/>
+                              <Route path={'/edit-app/:id'} component={EditApp}/>
+                              <Route path={'/create-apps'} component={CreateApp}/>
+                              <Route path={'/review-apps'} component={ReviewApps}/>
+                              <Route path={'/grant-access'} component={GrantAccess}/>
+                              <Route path={'/role-manage/:id'} component={RoleManagement}/>
+                              <Route path={'/'} component={AppsList}/>
                           </Switch>
                       </Col>
                     </Row>
