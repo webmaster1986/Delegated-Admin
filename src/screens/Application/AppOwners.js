@@ -88,7 +88,11 @@ class AppOwners extends Component {
                                                         Grant Access
                                                     </Link>
                                                 </Option>
-                                                <Option value="revoke access">Revoke Access</Option>
+                                                <Option value="revoke access">
+                                                    <Link to={`/revoke-access?app=${record.data.appCode}`}>
+                                                        Revoke Access
+                                                    </Link>
+                                                </Option>
                                             </Select>
                                         </div>
                                     )

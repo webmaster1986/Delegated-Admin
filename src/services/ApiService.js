@@ -38,6 +38,14 @@ const appRoles = [
     }
 ]
 
+export const getLoginUser = () => {
+    return {
+        "login": "User2 Name",
+        "name": null,
+        "email": "user2@fdny",
+        "bureau": "Bureau1"
+    }
+}
 export class ApiService {
 
     static async getData(url, headers, cancelToken, data) {
@@ -126,7 +134,11 @@ export class ApiService {
         return await ApiService.postMethod(`v1/applications/${appId}/roles`, body);
     }
 
-    async getAllUsers() {
-        return await ApiService.getData(`v1/users`);
+    async getOwnerApplications(userId) {
+        return await ApiService.getData(`v1//users/${userId}/owner-applications `);
+    }
+
+    async getOwnerRoles(userId) {
+        return await ApiService.getData(`v1/users/${userId}/owner-roles `);
     }
 }

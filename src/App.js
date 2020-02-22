@@ -10,12 +10,14 @@ import EditApp from "./screens/Application/EditApp";
 import CreateApp from "./screens/Application/CreateApp";
 import ReviewApps from "./screens/Application/ReviewApps";
 import GrantAccess from "./screens/Application/GrantAccess";
+import RevokeAccess from "./screens/Application/RevokeAccess";
 import RoleManagement from "./screens/Application/RoleManagement";
 import LogIn from "./screens/LogIn";
 import {ApiService} from "./services/ApiService";
 import './App.css';
-import AppOwners from "./screens/Application/AppOwners";
+import 'antd/dist/antd.css';
 
+import AppOwners from "./screens/Application/AppOwners";
 const cookies = new Cookies();
 
 class App extends Component {
@@ -61,6 +63,7 @@ class App extends Component {
                               <Route path={'/create-apps'} component={CreateApp}/>
                               <Route path={'/review-apps'} component={ReviewApps}/>
                               <Route path={'/grant-access'} component={GrantAccess}/>
+                              <Route path={'/revoke-access'} component={RevokeAccess}/>
                               <Route path={'/role-manage/:id'} component={RoleManagement}/>
                               <Route path={'/'} component={AppsList}/>
                           </Switch>
