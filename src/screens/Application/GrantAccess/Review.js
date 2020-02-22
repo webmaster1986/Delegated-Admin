@@ -10,7 +10,7 @@ const Review = (props) => {
             title: 'Action',
             dataIndex: '',
             key: 'x',
-            render: () => <Button variant={'outline-danger'} size={'sm'} onClick={() => props.onUserRemove()}>Remove</Button>,
+            render: (record) => <Button variant={'outline-danger'} size={'sm'} onClick={() => props.onUserRemove(record)}>Remove</Button>,
         },
     ];
     return (
@@ -42,7 +42,7 @@ const Review = (props) => {
                                     <p>{f.roleName}</p>
                                 </Col>
                                 <Col md={6}>
-                                    <Button variant={'outline-danger'} size={'sm'} onClick={() => this.props.onTagRemove(record.login, f.roleName)}>Remove</Button>
+                                    <Button variant={'outline-danger'} size={'sm'} onClick={() => props.onTagRemove(record.login, f.roleName)}>Remove</Button>
                                 </Col>
                             </Row>
                         )

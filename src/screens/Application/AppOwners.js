@@ -53,7 +53,7 @@ class AppOwners extends Component {
         this.setState({
             selectBy: data
         })
-        this.props.history.push(`/grant-access?app=${id}`)
+        this.props.history.push(`/grant-access?app=${id}&showBy=${data}`)
     }
 
     render() {

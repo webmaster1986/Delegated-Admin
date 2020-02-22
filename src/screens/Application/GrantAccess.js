@@ -127,7 +127,7 @@ class GrantAccess extends Component {
             selectedApp: [],
             rolesData: [],
             searchedRoles: [],
-            step1: true,
+            step1: false,
             step2: false,
             user: getLoginUser()
         }
@@ -135,22 +135,17 @@ class GrantAccess extends Component {
 
     componentWillMount() {
         const {location} = this.props
-        const data = (location && location.search && location.search.split("=")) || []
-        if (data && data[1]) {
-            this.setState({
-                selectedApp: [data[1]]
-            })
-        }
-    }
-
-    componentDidMount() {
-        const {location} = this.props
         const {user} = this.state
         const data = (location && location.search && location.search.split("=")) || []
+        const filterSelectedApp = (data && data[1]) ? data[1].split("&") : ""
+
         this.setState({
+            selectedApp: (filterSelectedApp && filterSelectedApp[0]) ? [filterSelectedApp[0]] : [],
+            step1: data && data[2] === "byRole",
+            step2: data && data[2] === "byUser",
             isLoading: true
-        },async () => {
-            let applicationsList =  await this._apiService.getOwnerApplications(user.login)
+        }, async () => {
+            let applicationsList = await this._apiService.getOwnerApplications(user.login)
             let roles =  await this._apiService.getOwnerRoles(user.login)
             if (!applicationsList || applicationsList.error) {
                 applicationsList = []
@@ -166,7 +161,6 @@ class GrantAccess extends Component {
                 isLoading: false,
                 applicationsList,
                 allRoles: roles,
-                selectedApp: data && data[1] ? [data[1]] : []
             }, () => this.getRoles())
         })
     }

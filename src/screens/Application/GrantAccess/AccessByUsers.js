@@ -176,14 +176,16 @@ class AccessByUsers extends React.Component {
         })
 
         this.setState({ usersData })
+        message.success('role successfully removed')
     }
 
-    onUserRemove = (userId) => {
+    onUserRemove = (data) => {
         const {usersData} = this.state
-        const index = usersData.findIndex(f => f.login === userId)
+        const index = usersData.findIndex(f => f.login === (data && data.login))
         usersData.splice(index, 1)
 
         this.setState({ usersData })
+        message.success('user successfully removed')
     }
 
     render() {
