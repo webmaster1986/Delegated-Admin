@@ -6,58 +6,9 @@ import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import CustomGrid from "../../../components/CustomGrid";
 import {Column} from "devextreme-react/data-grid";
-import difference from "lodash/difference";
+import RevokeUsersTransfer from "./RevokeUsersTransfer";
 
 const { Option } = Select;
-
-const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
-  <Transfer {...restProps} showSelectAll={false}>
-    {({
-        direction,
-        filteredItems,
-        onItemSelectAll,
-        onItemSelect,
-        selectedKeys: listSelectedKeys,
-        disabled: listDisabled,
-      }) => {
-      const columns = direction === 'left' ? leftColumns : rightColumns;
-
-      const rowSelection = {
-        getCheckboxProps: item => ({ disabled: listDisabled || item.disabled }),
-        onSelectAll(selected, selectedRows) {
-          const treeSelectedKeys = selectedRows
-            .filter(item => !item.disabled)
-            .map(({ key }) => key);
-          const diffKeys = selected
-            ? difference(treeSelectedKeys, listSelectedKeys)
-            : difference(listSelectedKeys, treeSelectedKeys);
-          onItemSelectAll(diffKeys, selected);
-        },
-        onSelect({ key }, selected) {
-          onItemSelect(key, selected);
-        },
-        selectedRowKeys: listSelectedKeys,
-      };
-
-      return (
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={filteredItems}
-          size="small"
-          rowKey={'id'}
-          style={{ pointerEvents: listDisabled ? 'none' : null }}
-          onRow={({ key }) => ({
-            onClick: () => {
-              if (listDisabled) return;
-              onItemSelect(key, !listSelectedKeys.includes(key));
-            },
-          })}
-        />
-      );
-    }}
-  </Transfer>
-);
 
 class RevokeAccess extends Component {
   _apiService = new ApiService();
@@ -69,9 +20,10 @@ class RevokeAccess extends Component {
       allRoles: [],
       searchedRoles: [],
       searchRoleList: [],
-      step: 0,
+      step: 2,
       isLoading: false,
-      revokeBy: '',
+      revokeBy: 'role',
+      revokeRole: {},
       user: getLoginUser()
     }
   }
@@ -138,21 +90,29 @@ class RevokeAccess extends Component {
     })
   }
 
-  onRevoke = () => {
+  onRevoke = (revokeRole) => {
     this.setState(prevState=> ({
-      step: prevState.step + 1
+      step: prevState.step + 1,
+      revokeRole
     }))
   }
 
   renderStep = (step) => {
-    const {revokeBy} = this.state
+    const {revokeBy, revokeRole} = this.state
     switch (parseInt(step)) {
       case 0:
         return <div>{this.step1()}</div>
       case 1:
         return <div>{this.step2(revokeBy)}</div>
       case 2:
-        return <div>a</div>
+        return <RevokeUsersTransfer roles={[{
+          "roleName": "Role6",
+          "roleDescription": "Description",
+          "oimTarget": "IDCS",
+          "status": "Active",
+          "appCode": "APP2",
+          "creationDate": "2020-02-22T06:45:31.788"
+        }]}/>
       default:
         return (
           <div>{step}</div>
@@ -269,67 +229,6 @@ class RevokeAccess extends Component {
     )
   }
 
-  /*step3 = () => {
-    const { isLoading, targetKeys, showSearch, roles, size } = this.state;
-    const columns = [
-      {
-        dataIndex: 'roleName',
-        title: 'Login',
-      },
-      {
-        dataIndex: 'roleDescription',
-        title: 'Name',
-      },
-      {
-        dataIndex: 'oimTarget',
-        title: 'Bureou',
-      },
-      {
-        dataIndex: 'oimTarget',
-        title: 'email',
-      },
-    ]
-    return (
-      <>
-        <Row className={'mb-3'}>
-          <Col>
-            <Form.Label >
-              Users:
-            </Form.Label>
-            <InputGroup>
-              <Select
-                mode="multiple"
-                size={size}
-                placeholder="Please select"
-                defaultValue={searchedRoles}
-                onChange={(value) => this.handleChange('searchedRoles',value)}
-                style={{ width: '100%' }}
-              >
-                {roles && roles.map((g, i) => <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
-              </Select>
-            </InputGroup>
-          </Col>
-        </Row>
-        {
-          isLoading ?
-            <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
-            <TableTransfer
-              dataSource={data}
-              targetKeys={targetKeys}
-              showSearch={showSearch}
-              onChange={this.onChange}
-              filterOption={(inputValue, item) =>
-                item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-              }
-              leftColumns={columns}
-              rightColumns={columns}
-              operations={['Select', 'Remove']}
-            />
-        }
-      </>
-    )
-  }*/
-
   onStepChange = (action) => {
     this.setState(prevState => ({
       step: action === "back" ? prevState.step - 1 : prevState.step + 1
@@ -351,12 +250,12 @@ class RevokeAccess extends Component {
         <div className="text-right">
           {
             step > 0 ?
-              <Button className="btn btn-default btn-sm" onClick={() => this.onStepChange('back')}>Back</Button>
+              <Button className="btn-sm" onClick={() => this.onStepChange('back')}>Back</Button>
               : null
           }
           &nbsp;&nbsp;
           {
-            step !== 1 ?
+            step === 0 ?
               <Button className="btn btn-info btn-sm" onClick={this.onStepChange} disabled={!revokeBy}>Next</Button> : null
           }
         </div>

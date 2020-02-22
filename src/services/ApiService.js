@@ -145,4 +145,8 @@ export class ApiService {
     async getAllUsers() {
         return await ApiService.getData(`v1/users`);
     }
+
+    async getUsersByRoles(body) {
+        return await ApiService.getData(`v1/applications/${body.appCode}/roles/${body.roleName}/users  `);
+    }
 }
