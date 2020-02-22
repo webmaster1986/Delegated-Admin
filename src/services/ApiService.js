@@ -141,4 +141,8 @@ export class ApiService {
     async getOwnerRoles(userId) {
         return await ApiService.getData(`v1/users/${userId}/owner-roles `);
     }
+
+    async getAllUsers() {
+        return await ApiService.getData(`v1/users`);
+    }
 }

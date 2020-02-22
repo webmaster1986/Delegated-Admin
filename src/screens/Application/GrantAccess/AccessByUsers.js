@@ -3,8 +3,9 @@ import {Col, Form, InputGroup, Row} from "react-bootstrap";
 import {Table, Transfer} from "antd";
 import {Button} from "antd/es";
 import difference from "lodash/difference";
-import {ApiService} from "../../../services/ApiService";
+import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
+import Review from "./Review";
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
     <Transfer {...restProps} showSelectAll={false}>
@@ -81,7 +82,9 @@ class AccessByUsers extends React.Component {
         this.state = {
             targetKeys: [],
             showSearch: false,
+            preview: false,
             size: 'default',
+            user: getLoginUser()
         }
     }
 
@@ -90,14 +93,16 @@ class AccessByUsers extends React.Component {
     }
 
     getUsers = async () => {
-        const users =  await this._apiService.getAllUsers()
-        if (!users || users.error) {
+        const {user} = this.state
+        const res = await this._apiService.getAllUsers()
+
+        if (!res || res.error) {
             this.setState({
                 isLoading: false
             })
             return message.error('something is wrong! please try again');
         } else {
-            const data = (users || []).map((f, i) => ({
+            const data = (res || []).map((f, i) => ({
                 id: i, key: i, login: f.login, name: f.name, email: f.email, bureau: f.bureau
             }))
             this.setState({ users: data })
@@ -145,59 +150,96 @@ class AccessByUsers extends React.Component {
         const {usersData} = this.state
         const roles = this.props.getRoles()
         usersData.forEach(f => {
-            f.roles = roles
+            f.roles = Object.assign([], roles);
+        })
+        this.setState({
+            usersData,
+            preview: true
         })
         console.log("===========>", usersData)
     }
 
+    onTagRemove = (userId, tagId) => {
+        const {usersData} = this.state
+        usersData.forEach(item => {
+            if ((item.roles && item.roles.length > 1)) {
+                if (item.login === userId) {
+                    const index = item.roles.findIndex(f => f.roleName === tagId)
+                    // console.log(userId)
+                    if (index !== -1) {
+                        item.roles.splice(index, 1)
+                    }
+                }
+            } else {
+                message.warn('minimum one role is required')
+            }
+        })
+
+        this.setState({ usersData })
+    }
+
+    onUserRemove = (userId) => {
+        const {usersData} = this.state
+        const index = usersData.findIndex(f => f.login === userId)
+        usersData.splice(index, 1)
+
+        this.setState({ usersData })
+    }
+
     render() {
-        const {users, showSearch, targetKeys, searchString, searchList, usersData} = this.state
+        const {users, showSearch, targetKeys, searchString, searchList, usersData, preview} = this.state
         const data = searchString ? searchList : users
 
         return (
             <>
-                <Row className={'mb-3'}>
-                    <Col>
-                        <Form.Label >
-                            Users:
-                        </Form.Label>
-                        <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Form.Control
-                                type="text"
-                                placeholder="Search..."
-                                aria-describedby="inputGroupPrepend"
-                                // name="username"
-                                onChange={this.onSearch}
-                            />
-                        </InputGroup>
-                    </Col>
-                </Row>
+                {
+                    !preview ?
+                        <>
+                            <Row className={'mb-3'}>
+                                <Col>
+                                    <Form.Label >
+                                        Users:
+                                    </Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Search..."
+                                            aria-describedby="inputGroupPrepend"
+                                            // name="username"
+                                            onChange={this.onSearch}
+                                        />
+                                    </InputGroup>
+                                </Col>
+                            </Row>
 
-                <div>
-                    <TableTransfer
-                        dataSource={data}
-                        targetKeys={targetKeys}
-                        showSearch={showSearch}
-                        onChange={this.onChange}
-                        filterOption={(inputValue, item) =>
-                            item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-                        }
-                        leftColumns={TableColumns}
-                        rightColumns={TableColumns}
-                        operations={['Select', 'Remove']}
-                    />
-                </div>
-                <div>
-                    <Row>
-                        <Col md={10}/>
-                        <Col className="mt-3" md={2}>
-                            <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
-                        </Col>
-                    </Row>
-                </div>
+                            <div>
+                                <TableTransfer
+                                    dataSource={data}
+                                    targetKeys={targetKeys}
+                                    showSearch={showSearch}
+                                    onChange={this.onChange}
+                                    filterOption={(inputValue, item) =>
+                                        item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
+                                    }
+                                    leftColumns={TableColumns}
+                                    rightColumns={TableColumns}
+                                    operations={['Select', 'Remove']}
+                                />
+                            </div>
+                            <div>
+                                <Row>
+                                    <Col md={10}/>
+                                    <Col className="mt-3" md={2}>
+                                        <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
+                                    </Col>
+                                </Row>
+                            </div>
+                            </> : <Review usersData={usersData} onTagRemove={this.onTagRemove} onUserRemove={this.onUserRemove}/>
+                }
+
             </>
         );
     }

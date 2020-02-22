@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
 import { Table, Transfer, Select } from 'antd/lib'
-import {ApiService} from "../../services/ApiService";
+import {ApiService, getLoginUser} from "../../services/ApiService";
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {Button} from "antd/es";
@@ -64,20 +64,42 @@ const mockData = [
     { id: 2, key: 2, roleName: "Role 3", roleDescription: "Description 3", oimTarget: 'AD' }
 ];
 
-const leftTableColumns = [
+const TableColumns = [
     {
         dataIndex: 'roleName',
-        title: 'Role',
+        title: <div>Title</div>,
+        sorter: (a, b) => {
+            const t1 = a.roleName.toLowerCase() || ""
+            const t2 = b.roleName.toLowerCase() || ""
+            if (t1 < t2) { return -1 }
+            if (t1 > t2) { return 1 }
+            return 0
+        }
     },
     {
         dataIndex: 'roleDescription',
         title: 'Application',
+        sorter: (a, b) => {
+            const t1 = a.roleDescription.toLowerCase() || ""
+            const t2 = b.roleDescription.toLowerCase() || ""
+            if (t1 < t2) { return -1 }
+            if (t1 > t2) { return 1 }
+            return 0
+        }
     },
     {
         dataIndex: 'oimTarget',
         title: 'OIM Target',
+        sorter: (a, b) => {
+            const t1 = a.oimTarget.toLowerCase() || ""
+            const t2 = b.oimTarget.toLowerCase() || ""
+            if (t1 < t2) { return -1 }
+            if (t1 > t2) { return 1 }
+            return 0
+        }
     },
 ];
+
 const rightTableColumns = [
     {
         dataIndex: 'roleName',
@@ -104,8 +126,10 @@ class GrantAccess extends Component {
             size: 'default',
             selectedApp: [],
             rolesData: [],
+            searchedRoles: [],
             step1: true,
-            step2: false
+            step2: false,
+            user: getLoginUser()
         }
     }
 
@@ -119,45 +143,44 @@ class GrantAccess extends Component {
         }
     }
 
-    async componentDidMount() {
-        const {selectedApp} = this.state
+    componentDidMount() {
+        const {location} = this.props
+        const {user} = this.state
+        const data = (location && location.search && location.search.split("=")) || []
         this.setState({
             isLoading: true
-        })
-
-        const data =  await this._apiService.getAllApplications()
-        if (!data || data.error) {
-            this.setState({
-                isLoading: false
-            })
-            return message.error('something is wrong! please try again');
-        } else {
+        },async () => {
+            let applicationsList =  await this._apiService.getOwnerApplications(user.login)
+            let roles =  await this._apiService.getOwnerRoles(user.login)
+            if (!applicationsList || applicationsList.error) {
+                applicationsList = []
+                message.error('something is wrong! please try again');
+            }
+            if (!roles || roles.error) {
+                roles = []
+                message.error('something is wrong! please try again');
+            }
+            console.log("applicationsList:-", applicationsList)
+            console.log("roles:-", roles)
             this.setState({
                 isLoading: false,
-                applicationsList: data || []
-            })
-        }
-        this.getRoles(selectedApp)
+                applicationsList,
+                allRoles: roles,
+                selectedApp: data && data[1] ? [data[1]] : []
+            }, () => this.getRoles())
+        })
     }
 
+    getRoles = async () => {
+        const { selectedApp, allRoles, searchedRoles } = this.state
+        const apps = selectedApp.map(item => item.toLowerCase())
+        const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
+        const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
+        const data = (appRoles || []).map((f, i) => ({
+            id: i, key: i, ...f
+        }))
 
-    getRoles = async (id) => {
-        const totalRoles = []
-        for (const num of id) {
-            const roles =  await this._apiService.getRolesForApp(num)
-            if (!roles || roles.error) {
-                this.setState({
-                    isLoading: false
-                })
-                return message.error('something is wrong! please try again');
-            } else {
-                const data = (roles || []).map((f, i) => ({
-                    id: i, key: i, roleName: f.roleName, roleDescription: f.roleDescription, oimTarget: f.oimTarget, status: f.status
-                }))
-                totalRoles.push(...data)
-            }
-         }
-        this.setState({ roles: totalRoles })
+        this.setState({ roles: data, searchRoleList: searchedRoles.length ? filteredRoles : [] })
     }
 
     onChange = nextTargetKeys => {
@@ -181,10 +204,10 @@ class GrantAccess extends Component {
         this.setState({ showSearch });
     };
 
-    handleChange = (value) =>  {
+    handleChange = (name, value) =>  {
         this.setState({
-            selectedApp: value
-        }, () => this.getRoles(value))
+            [name]: value
+        }, () => this.getRoles())
     }
 
     onSelectedUserChange = () => {
@@ -218,8 +241,8 @@ class GrantAccess extends Component {
     }
 
     render() {
-        const { targetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, searchString, searchList, rolesData } = this.state;
-        const data = searchString ? searchList : roles
+        const { targetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, searchRoleList, searchString, searchList, rolesData, searchedRoles } = this.state;
+        const data = searchedRoles.length ? searchRoleList : roles
         return(
             <Container className={'container-design'}>
                 <h4 className="text-right">
@@ -238,18 +261,12 @@ class GrantAccess extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        {/*<Form.Control
-                                            type="text"
-                                            placeholder="Search..."
-                                            aria-describedby="inputGroupPrepend"
-                                            name="username"
-                                        />*/}
                                         <Select
                                             mode="multiple"
                                             size={size}
                                             placeholder="Please select"
                                             defaultValue={selectedApp}
-                                            onChange={this.handleChange}
+                                            onChange={(value) => this.handleChange('selectedApp', value)}
                                             style={{ width: '100%' }}
                                         >
                                             {
@@ -267,16 +284,16 @@ class GrantAccess extends Component {
                                         ROLES:
                                     </Form.Label>
                                     <InputGroup>
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Search..."
-                                            aria-describedby="inputGroupPrepend"
-                                            // name="username"
-                                            onChange={this.onSearch}
-                                        />
+                                        <Select
+                                            mode="multiple"
+                                            size={size}
+                                            placeholder="Please select"
+                                            defaultValue={searchedRoles}
+                                            onChange={(value) => this.handleChange('searchedRoles',value)}
+                                            style={{ width: '100%' }}
+                                        >
+                                            {roles && roles.map((g, i) =>  <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
+                                        </Select>
                                     </InputGroup>
                                 </Col>
                             </Row>
@@ -290,8 +307,8 @@ class GrantAccess extends Component {
                                     filterOption={(inputValue, item) =>
                                         item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
                                     }
-                                    leftColumns={leftTableColumns}
-                                    rightColumns={rightTableColumns}
+                                    leftColumns={TableColumns}
+                                    rightColumns={TableColumns}
                                     operations={['Select', 'Remove']}
                                 />
                             </div>
