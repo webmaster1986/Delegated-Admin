@@ -20,7 +20,7 @@ class RevokeAccess extends Component {
       allRoles: [],
       searchedRoles: [],
       searchRoleList: [],
-      step: 2,
+      step: 0,
       isLoading: false,
       revokeBy: 'role',
       revokeRole: {},
@@ -105,14 +105,7 @@ class RevokeAccess extends Component {
       case 1:
         return <div>{this.step2(revokeBy)}</div>
       case 2:
-        return <RevokeUsersTransfer roles={[{
-          "roleName": "Role6",
-          "roleDescription": "Description",
-          "oimTarget": "IDCS",
-          "status": "Active",
-          "appCode": "APP2",
-          "creationDate": "2020-02-22T06:45:31.788"
-        }]}/>
+        return <RevokeUsersTransfer roles={[revokeRole]}/>
       default:
         return (
           <div>{step}</div>
