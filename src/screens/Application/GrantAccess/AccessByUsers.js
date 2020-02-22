@@ -194,7 +194,7 @@ class AccessByUsers extends React.Component {
                     <Row>
                         <Col md={10}/>
                         <Col className="mt-3" md={2}>
-                            <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Preview</Button>
+                            <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
                         </Col>
                     </Row>
                 </div>

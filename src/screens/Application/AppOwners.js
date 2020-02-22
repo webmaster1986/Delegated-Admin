@@ -6,7 +6,9 @@ import message from 'antd/lib/message'
 import { ApiService } from '../../services/ApiService'
 import {Column} from "devextreme-react/data-grid";
 import CustomGrid from "../../components/CustomGrid";
+import { Select } from 'antd';
 
+const { Option } = Select;
 
 class AppOwners extends Component {
     _apiService = new ApiService();
@@ -78,17 +80,16 @@ class AppOwners extends Component {
                             <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'}
                                 cellRender={(record) => {
                                     return (
-                                        <div className="text-center" style={{overflowY: "auto"}}>
-                                            <Dropdown>
-                                                <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                                    Manage Access
-                                                </Dropdown.Toggle>
-
-                                                <Dropdown.Menu>
-                                                    <Dropdown.Item><Link to={`/grant-access?app=${record.data.appCode}`}>Grant Access</Link></Dropdown.Item>
-                                                    <Dropdown.Item href="#/action-2">Revoke Access</Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
+                                        <div className="text-center">
+                                            <Select defaultValue="manage access">
+                                                <Option value="manage access" disabled>Manage Access</Option>
+                                                <Option value="grant access">
+                                                    <Link to={`/grant-access?app=${record.data.appCode}`}>
+                                                        Grant Access
+                                                    </Link>
+                                                </Option>
+                                                <Option value="revoke access">Revoke Access</Option>
+                                            </Select>
                                         </div>
                                     )
                                 }}
