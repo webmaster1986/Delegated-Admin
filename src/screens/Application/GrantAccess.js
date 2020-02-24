@@ -79,11 +79,14 @@ class GrantAccess extends Component {
             selectedApp: [],
             rolesData: [],
             searchedRoles: [],
+            step: false,
             step1: false,
             step2: false,
             preview: false,
             visible: false,
             isLoading: true,
+            selectBy: "",
+            category: "",
             user: getLoginUser()
         }
     }
@@ -96,8 +99,7 @@ class GrantAccess extends Component {
 
         this.setState({
             selectedApp: (filterSelectedApp && filterSelectedApp[0]) ? [filterSelectedApp[0]] : [],
-            step1: data && data[2] === "byRole",
-            step2: data && data[2] === "byUser",
+            step: true,
             isLoading: true
         }, async () => {
             let applicationsList = await this._apiService.getOwnerApplications(user.login)
@@ -124,7 +126,6 @@ class GrantAccess extends Component {
             console.log("roles:-", roles)
             this.setState({
                 isLoading: false,
-                category: (data && data[2]) ? data[2] : "",
                 users: usersData,
                 applicationsList,
                 allRoles: roles,
@@ -374,9 +375,54 @@ class GrantAccess extends Component {
         }
     }
 
+    onChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        })
+    }
+
+    onNext = () => {
+        const {selectBy} = this.state
+        this.setState({
+            step: false,
+            category: selectBy,
+            step1: selectBy === "byRole",
+            step2: selectBy === "byUser"
+        })
+    }
+
+    step = () => {
+        const {selectBy} = this.state
+        return (
+            <div key={`custom-inline-radio`} className="mb-3">
+                <Form.Check
+                    custom
+                    name="selectBy"
+                    type='radio'
+                    id={'custom-1'}
+                    value='byUser'
+                    checked={selectBy === 'byUser'}
+                    onChange={this.onChange}
+                    label='Grant Access By User'
+                />
+                <Form.Check
+                    custom
+                    name="selectBy"
+                    type='radio'
+                    id={'custom-2'}
+                    value='byRole'
+                    checked={selectBy === 'byRole'}
+                    onChange={this.onChange}
+                    label={'Grant Access By Roles'}
+                />
+                <Button className="float-right" variant={'outline-primary'} size={'sm'} onClick={this.onNext}>Next</Button>
+            </div>
+        )
+    }
+
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
-            searchString, searchList, rolesData, searchedRoles, usersData, category, preview, visible, modalData } = this.state;
+            searchString, searchList, rolesData, searchedRoles, usersData, category, preview, visible, modalData, step } = this.state;
         const roleData = searchedRoles.length ? searchRoleList : roles
         const data = searchString ? searchList : users
 
@@ -479,6 +525,9 @@ class GrantAccess extends Component {
                 {
                     isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
                         <>
+                            {
+                                step ? <div>{this.step()}</div> : null
+                            }
                             {
                                 step1 ?
                                     <>
