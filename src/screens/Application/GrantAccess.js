@@ -64,7 +64,7 @@ const mockData = [
     { id: 2, key: 2, roleName: "Role 3", roleDescription: "Description 3", oimTarget: 'AD' }
 ];
 
-const TableColumns = [
+const roleTableColumns = [
     {
         dataIndex: 'roleName',
         title: <div>Title</div>,
@@ -100,19 +100,51 @@ const TableColumns = [
     },
 ];
 
-const rightTableColumns = [
+const TableColumns = [
     {
-        dataIndex: 'roleName',
-        title: 'Role',
+        dataIndex: 'login',
+        title: 'Login',
+        sorter: (a, b) => {
+            const t1 = a.login.toLowerCase() || ""
+            const t2 = b.login.toLowerCase() || ""
+            if (t1 < t2) { return -1 }
+            if (t1 > t2) { return 1 }
+            return 0
+        }
     },
     {
-        dataIndex: 'roleDescription',
-        title: 'Application',
+        dataIndex: 'name',
+        title: 'Name',
+        sorter: (a, b) => {
+            const t1 = a.name.toLowerCase() || ""
+            const t2 = b.name.toLowerCase() || ""
+            if (t1 < t2) { return -1 }
+            if (t1 > t2) { return 1 }
+            return 0
+        }
     },
     {
-        dataIndex: 'oimTarget',
-        title: 'OIM Target',
+        dataIndex: 'bureau',
+        title: 'Bureau',
+        sorter: (a, b) => {
+            const t1 = a.bureau.toLowerCase() || ""
+            const t2 = b.bureau.toLowerCase() || ""
+            if (t1 < t2) { return -1 }
+            if (t1 > t2) { return 1 }
+            return 0
+        }
     },
+    {
+        dataIndex: 'email',
+        title: 'Email',
+        sorter: (a, b) => {
+            const t1 = a.email.toLowerCase() || ""
+            const t2 = b.email.toLowerCase() || ""
+            if (t1 < t2) { return -1 }
+            if (t1 > t2) { return 1 }
+            return 0
+        }
+    }
 ];
 
 
@@ -121,7 +153,8 @@ class GrantAccess extends Component {
     constructor(props){
         super(props)
         this.state = {
-            targetKeys: [],
+            roleTargetKeys: [],
+            userTargetKeys: [],
             showSearch: false,
             size: 'default',
             selectedApp: [],
@@ -147,6 +180,8 @@ class GrantAccess extends Component {
         }, async () => {
             let applicationsList = await this._apiService.getOwnerApplications(user.login)
             let roles =  await this._apiService.getOwnerRoles(user.login)
+            const users = await this._apiService.getAllUsers()
+
             if (!applicationsList || applicationsList.error) {
                 applicationsList = []
                 message.error('something is wrong! please try again');
@@ -155,10 +190,22 @@ class GrantAccess extends Component {
                 roles = []
                 message.error('something is wrong! please try again');
             }
+            if (!users || users.error) {
+                this.setState({
+                    isLoading: false
+                })
+                return message.error('something is wrong! please try again');
+            }
+
+            const usersData = (users || []).map((f, i) => ({
+                id: i, key: i, ...f
+            }))
             console.log("applicationsList:-", applicationsList)
             console.log("roles:-", roles)
             this.setState({
                 isLoading: false,
+                category: (data && data[2]) ? data[2] : "",
+                users: usersData,
                 applicationsList,
                 allRoles: roles,
             }, () => this.getRoles())
@@ -177,7 +224,7 @@ class GrantAccess extends Component {
         this.setState({ roles: data, searchRoleList: searchedRoles.length ? filteredRoles : [] })
     }
 
-    onChange = nextTargetKeys => {
+    onRoleTableChange = nextTargetKeys => {
         const {roles} = this.state
         if (nextTargetKeys && nextTargetKeys.length) {
             const data = []
@@ -185,12 +232,26 @@ class GrantAccess extends Component {
                 data.push(roles[f])
             })
             console.log("========Selected Roles=======>", data)
-            this.setState({ targetKeys: nextTargetKeys, rolesData: data });
+            this.setState({ roleTargetKeys: nextTargetKeys, rolesData: data });
         } else {
             this.setState({
-                targetKeys: [],
+                roleTargetKeys: [],
                 rolesData: []
             });
+        }
+    };
+
+    onUserTableChange = nextTargetKeys => {
+        const {users} = this.state
+        if (nextTargetKeys && nextTargetKeys.length) {
+            const data = []
+            nextTargetKeys.forEach(f => {
+                data.push(users[f])
+            })
+            console.log("========Selected Users=======>", data)
+            this.setState({ userTargetKeys: nextTargetKeys, usersData: data });
+        } else {
+            this.setState({ userTargetKeys: [] });
         }
     };
 
@@ -211,13 +272,24 @@ class GrantAccess extends Component {
         })
     }
 
+    onSelectedRoleChange = () => {
+        this.setState({
+            step1: true,
+            step2: false
+        })
+    }
+
+    getRolesData = () => {
+        return this.state.rolesData
+    }
+
     onSearch = (event) => {
-        const {roles} = this.state
-        const searchString = event.target.value || ""
+        const {users} = this.state
+        const searchString = (event && event.target.value) || ""
         let searchList = []
         if (searchString) {
-            searchList = roles && roles.filter(obj =>
-                ["roleName", "roleDescription", "oimTarget"].some(key => {
+            searchList = users && users.filter(obj =>
+                ["login", "name", "bureau", "email"].some(key => {
                     return (
                         obj && obj[key].toLowerCase().includes(searchString.toLowerCase())
                     )
@@ -230,13 +302,61 @@ class GrantAccess extends Component {
         })
     }
 
-    getRolesData = () => {
-        return this.state.rolesData
+    preview = () => {
+        const {usersData, category, roles} = this.state
+        // const roles = this.props.getRoles()
+        {
+            (category === "byUser") ?
+                usersData.forEach(f => {
+                    f.roles = Object.assign([], roles);
+                }) :
+                roles.forEach(f => {
+                    f.users = Object.assign([], usersData);
+                })
+        }
+
+        this.setState({
+            usersData,
+            roles,
+            preview: true
+        })
+        console.log("===========>", usersData, roles)
+    }
+
+    onTagRemove = (userId, tagId) => {
+        const {usersData} = this.state
+        usersData.forEach(item => {
+            if ((item.roles && item.roles.length > 1)) {
+                if (item.login === userId) {
+                    const index = item.roles.findIndex(f => f.roleName === tagId)
+                    // console.log(userId)
+                    if (index !== -1) {
+                        item.roles.splice(index, 1)
+                    }
+                }
+            } else {
+                message.warn('minimum one role is required')
+            }
+        })
+
+        this.setState({ usersData })
+        message.success('role successfully removed')
+    }
+
+    onUserRemove = (data) => {
+        const {usersData} = this.state
+        const index = usersData.findIndex(f => f.login === (data && data.login))
+        usersData.splice(index, 1)
+
+        this.setState({ usersData })
+        message.success('user successfully removed')
     }
 
     render() {
-        const { targetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, searchRoleList, searchString, searchList, rolesData, searchedRoles } = this.state;
-        const data = searchedRoles.length ? searchRoleList : roles
+        const { roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList, searchString, searchList, rolesData, searchedRoles, usersData, category } = this.state;
+        const roleData = searchedRoles.length ? searchRoleList : roles
+        const data = searchString ? searchList : users
+
         return(
             <Container className={'container-design'}>
                 <h4 className="text-right">
@@ -294,10 +414,62 @@ class GrantAccess extends Component {
 
                             <div>
                                 <TableTransfer
-                                    dataSource={data}
-                                    targetKeys={targetKeys}
+                                    dataSource={roleData}
+                                    targetKeys={roleTargetKeys}
                                     showSearch={showSearch}
-                                    onChange={this.onChange}
+                                    onChange={this.onRoleTableChange}
+                                    filterOption={(inputValue, item) =>
+                                        item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
+                                    }
+                                    leftColumns={roleTableColumns}
+                                    rightColumns={roleTableColumns}
+                                    operations={['Select', 'Remove']}
+                                />
+                            </div>
+                            <div>
+                                <Row>
+                                    <Col md={10} sm={8}/>
+                                    <Col className="mt-3" md={2} sm={4}>
+                                        {
+                                            category === "byUser" ?
+                                                <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button> :
+                                                <Button onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</Button>
+                                        }
+                                    </Col>
+                                </Row>
+                            </div>
+                        </>
+                        : null
+                }
+                {
+                    step2 ?
+                        <>
+                            <Row className={'mb-3'}>
+                                <Col>
+                                    <Form.Label >
+                                        Users:
+                                    </Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Search..."
+                                            aria-describedby="inputGroupPrepend"
+                                            // name="username"
+                                            onChange={this.onSearch}
+                                        />
+                                    </InputGroup>
+                                </Col>
+                            </Row>
+
+                            <div>
+                                <TableTransfer
+                                    dataSource={data}
+                                    targetKeys={userTargetKeys}
+                                    showSearch={showSearch}
+                                    onChange={this.onUserTableChange}
                                     filterOption={(inputValue, item) =>
                                         item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
                                     }
@@ -308,17 +480,18 @@ class GrantAccess extends Component {
                             </div>
                             <div>
                                 <Row>
-                                    <Col md={10} sm={8}/>
-                                    <Col className="mt-3" md={2} sm={4}>
-                                        <Button onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</Button>
+                                    <Col md={10}/>
+                                    <Col className="mt-3" md={2}>
+                                        {
+                                            category === "byUser" ?
+                                                <Button onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</Button> :
+                                                <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
+                                        }
                                     </Col>
                                 </Row>
                             </div>
                         </>
                         : null
-                }
-                {
-                    step2 ? <AccessByUsers getRoles={() => this.getRolesData()}/> : null
                 }
 
             </Container>
