@@ -162,6 +162,10 @@ export class ApiService {
         return await ApiService.getData(`v1/users/${userId}/owner-roles `);
     }
 
+    async getUserDetails(userId) {
+        return await ApiService.getData(`v1/users/${userId}`);
+    }
+
     async getAllUsers() {
         return await ApiService.getData(`v1/users`);
     }
@@ -172,5 +176,9 @@ export class ApiService {
 
     async putUsersRoles(userId, body) {
         return await ApiService.putMethod(`v1/users/${userId}/roles `, body);
+    }
+
+    async getRoleByRoleName(body) {
+        return await ApiService.getData(`v1/applications/${body.appCode}/roles/${body.roleName}`);
     }
 }

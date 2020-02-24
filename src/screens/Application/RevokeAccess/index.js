@@ -7,7 +7,8 @@ import Spin from "antd/lib/spin";
 import CustomGrid from "../../../components/CustomGrid";
 import {Column} from "devextreme-react/data-grid";
 import RevokeUsersTransfer from "./RevokeUsersTransfer";
-import InfoModal from "../Modal";
+import UserModal from "../UserModal";
+import RoleModal from "../RoleModal";
 
 const { Option } = Select;
 
@@ -30,7 +31,6 @@ class RevokeAccess extends Component {
       revokeRole: {},
       isInfoModal: false,
       info: {},
-      infoTitle: 'Information',
       user: getLoginUser()
     }
   }
@@ -120,7 +120,16 @@ class RevokeAccess extends Component {
       case 1:
         return <div>{this.step2(revokeBy)}</div>
       case 2:
-        return <RevokeUsersTransfer {...this.props} user={user} revokeBy={revokeBy} revokeList={[revokeRole]}/>
+        return (
+          <RevokeUsersTransfer
+            {...this.props}
+            toggleUserModal={this.toggleUserModal}
+            toggleModal={this.toggleModal}
+            user={user}
+            revokeBy={revokeBy}
+            revokeList={[revokeRole]}
+          />
+        )
       default:
         return (
           <div>{step}</div>
@@ -248,7 +257,13 @@ class RevokeAccess extends Component {
                     showBorders={true}
                     isHideSearchPanel={true}
                   >
-                    <Column alignment={'left'} sortOrder={'asc'} caption={'Login'} dataField={'login'}/>
+                    <Column alignment={'left'} sortOrder={'asc'} caption={'Login'} dataField={'login'}
+                            cellRender={(record) => {
+                              return (
+                                <a className="text-info" onClick={(e) => this.toggleUserModal(e, record.data)}>{record.data.login}</a>
+                              )
+                            }}
+                    />
                     <Column alignment={'left'} caption={'Name'} dataField={'name'}/>
                     <Column alignment={'left'} caption={'Bureau'} dataField={'bureau'}/>
                     <Column alignment={'left'} allowSorting={false} caption={'Email'} dataField={'email'}
@@ -271,7 +286,7 @@ class RevokeAccess extends Component {
                     <Column alignment={'left'} sortOrder={'asc'} caption={'Role'} dataField={'roleName'}
                             cellRender={(record) => {
                               return (
-                                <a className="text-info" onClick={(e) => this.toggleModal(e, record.data, "Role Info")}>{record.data.roleName}</a>
+                                <a className="text-info" onClick={(e) => this.toggleModal(e, record.data)}>{record.data.roleName}</a>
                               )
                             }}
                     />
@@ -300,39 +315,50 @@ class RevokeAccess extends Component {
     }))
   }
 
-  toggleModal = (event, info, infoTitle) => {
+  toggleModal = (event, info) => {
     event.preventDefault();
-    if(!this.state.isInfoModal){
-      const { applicationsList, } = this.state
-      if(info.appCode){
-        const app = applicationsList.length ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
-        info = {
-          ...info,
-          ...app,
-        }
-      }else {
-        info = {
-          ...info
-        }
+    if(!this.state.isInfoModal && info.appCode){
+      const { applicationsList} = this.state
+      const app = applicationsList.length ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
+      info = {
+        ...info,
+        ...app,
       }
     }
     this.setState(prevState => ({
       isInfoModal: !prevState.isInfoModal,
-      infoTitle,
       info
     }))
   }
 
+  toggleUserModal = (event, info) => {
+    event.preventDefault();
+    this.setState(prevState => ({
+      info: info || {},
+      isUserModal: !prevState.isUserModal,
+    }))
+  }
+
   render() {
-    const { step, revokeBy, isInfoModal, info, infoTitle } = this.state;
+    const { step, revokeBy, isInfoModal, info, isUserModal } = this.state;
     return(
       <Container className={'container-design'}>
-        <InfoModal
-          visible={isInfoModal}
-          data={info}
-          handelModal={(e) => this.toggleModal(e)}
-          title={infoTitle}
-        />
+        {
+          isInfoModal ?
+            <RoleModal
+              role={info}
+              toggleModal={this.toggleModal}
+            />
+            : null
+        }
+        {
+          isUserModal ?
+            <UserModal
+              user={info}
+              toggleModal={this.toggleUserModal}
+            />
+            : null
+        }
         <h4 className="text-right">
           Revoke Access
         </h4>

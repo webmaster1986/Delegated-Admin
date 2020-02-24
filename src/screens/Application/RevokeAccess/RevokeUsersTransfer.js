@@ -1,5 +1,5 @@
 import React from "react"
-import {Col, Form, InputGroup, Row} from "react-bootstrap";
+import {Col, Container, Form, InputGroup, Row} from "react-bootstrap";
 import {Table, Transfer} from "antd";
 import {Button} from "antd/es";
 import difference from "lodash/difference";
@@ -228,8 +228,8 @@ class RevokeUsersTransfer extends React.Component {
       {
         dataIndex: 'login',
         title: 'Login',
-        render: (record) => (
-          <a className="text-info" onClick={() => {}}>{record}</a>
+        render: (record, data) => (
+          <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, data)}>{record}</a>
         )
       },
       {
@@ -256,8 +256,8 @@ class RevokeUsersTransfer extends React.Component {
       {
         dataIndex: 'roleName',
         title: 'Role',
-        render: (record) => (
-          <a className="text-info" onClick={() => {}}>{record}</a>
+        render: (record, data) => (
+          <a className="text-info" onClick={(e) => this.props.toggleModal(e, data)} >{record}</a>
         )
       },
       {
@@ -381,8 +381,8 @@ class RevokeUsersTransfer extends React.Component {
       {
         dataIndex: 'login',
         title: 'Login',
-        render: (record) => (
-          <a className="text-info" onClick={() => {}}>{record}</a>
+        render: (record, data) => (
+          <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, data)}>{record}</a>
         )
       },
       {
@@ -403,8 +403,8 @@ class RevokeUsersTransfer extends React.Component {
       {
         dataIndex: 'roleName',
         title: 'Role',
-        render: (record) => (
-          <a className="text-info" onClick={() => {}}>{record}</a>
+        render: (record, data) => (
+          <a className="text-info" onClick={(e) => this.props.toggleModal(e, data)}>{record}</a>
         )
       },
       {
