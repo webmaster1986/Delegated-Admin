@@ -1,36 +1,22 @@
-import React, {useState} from "react";
-import { Modal, Button } from 'antd';
+import React from "react";
+import { Modal } from 'antd';
 
-const Modal = () => {
-    const [visible, setVisible] = useState(false);
-
-    const showModal = () => {
-        setVisible(true)
-    };
-
-    const handleOk = e => {
-        setVisible(false)
-    };
-
-    const handleCancel = e => {
-        setVisible(false)
-    };
+const ViewModal = (props) => {
 
     return (
         <div>
-            <Button type="primary" onClick={this.showModal}>
-                Open Modal
-            </Button>
             <Modal
-                title="Basic Modal"
-                visible={visible}
-                onOk={handleOk}
-                onCancel={handleCancel}
+                title={props && props.title}
+                visible={props.visible}
+                onOk={props.handelModal}
+                onCancel={props.handelModal}
             >
                 <>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
+                    {
+                        props.data && Object.keys(props.data).map((f, i) =>
+                            <p key={i.toString() + i} >{`${f} = ${props.data[f]}`}</p>
+                        )
+                    }
                 </>
             </Modal>
         </div>
@@ -38,4 +24,4 @@ const Modal = () => {
 
 }
 
-export default Modal;
+export default ViewModal;

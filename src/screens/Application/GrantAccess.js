@@ -5,7 +5,8 @@ import {ApiService, getLoginUser} from "../../services/ApiService";
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {Button} from "antd/es";
-import AccessByUsers from "./GrantAccess/AccessByUsers";
+import Review from "./GrantAccess/Review";
+import Modal from "./Modal";
 
 const { Option } = Select;
 
@@ -64,89 +65,6 @@ const mockData = [
     { id: 2, key: 2, roleName: "Role 3", roleDescription: "Description 3", oimTarget: 'AD' }
 ];
 
-const roleTableColumns = [
-    {
-        dataIndex: 'roleName',
-        title: <div>Title</div>,
-        sorter: (a, b) => {
-            const t1 = a.roleName.toLowerCase() || ""
-            const t2 = b.roleName.toLowerCase() || ""
-            if (t1 < t2) { return -1 }
-            if (t1 > t2) { return 1 }
-            return 0
-        }
-    },
-    {
-        dataIndex: 'roleDescription',
-        title: 'Application',
-        sorter: (a, b) => {
-            const t1 = a.roleDescription.toLowerCase() || ""
-            const t2 = b.roleDescription.toLowerCase() || ""
-            if (t1 < t2) { return -1 }
-            if (t1 > t2) { return 1 }
-            return 0
-        }
-    },
-    {
-        dataIndex: 'oimTarget',
-        title: 'OIM Target',
-        sorter: (a, b) => {
-            const t1 = a.oimTarget.toLowerCase() || ""
-            const t2 = b.oimTarget.toLowerCase() || ""
-            if (t1 < t2) { return -1 }
-            if (t1 > t2) { return 1 }
-            return 0
-        }
-    },
-];
-
-const TableColumns = [
-    {
-        dataIndex: 'login',
-        title: 'Login',
-        sorter: (a, b) => {
-            const t1 = a.login.toLowerCase() || ""
-            const t2 = b.login.toLowerCase() || ""
-            if (t1 < t2) { return -1 }
-            if (t1 > t2) { return 1 }
-            return 0
-        }
-    },
-    {
-        dataIndex: 'name',
-        title: 'Name',
-        sorter: (a, b) => {
-            const t1 = a.name.toLowerCase() || ""
-            const t2 = b.name.toLowerCase() || ""
-            if (t1 < t2) { return -1 }
-            if (t1 > t2) { return 1 }
-            return 0
-        }
-    },
-    {
-        dataIndex: 'bureau',
-        title: 'Bureau',
-        sorter: (a, b) => {
-            const t1 = a.bureau.toLowerCase() || ""
-            const t2 = b.bureau.toLowerCase() || ""
-            if (t1 < t2) { return -1 }
-            if (t1 > t2) { return 1 }
-            return 0
-        }
-    },
-    {
-        dataIndex: 'email',
-        title: 'Email',
-        sorter: (a, b) => {
-            const t1 = a.email.toLowerCase() || ""
-            const t2 = b.email.toLowerCase() || ""
-            if (t1 < t2) { return -1 }
-            if (t1 > t2) { return 1 }
-            return 0
-        }
-    }
-];
-
 
 class GrantAccess extends Component {
     _apiService = new ApiService();
@@ -162,6 +80,8 @@ class GrantAccess extends Component {
             searchedRoles: [],
             step1: false,
             step2: false,
+            preview: false,
+            visible: false,
             user: getLoginUser()
         }
     }
@@ -279,10 +199,6 @@ class GrantAccess extends Component {
         })
     }
 
-    getRolesData = () => {
-        return this.state.rolesData
-    }
-
     onSearch = (event) => {
         const {users} = this.state
         const searchString = (event && event.target.value) || ""
@@ -304,7 +220,6 @@ class GrantAccess extends Component {
 
     preview = () => {
         const {usersData, category, roles} = this.state
-        // const roles = this.props.getRoles()
         {
             (category === "byUser") ?
                 usersData.forEach(f => {
@@ -318,50 +233,178 @@ class GrantAccess extends Component {
         this.setState({
             usersData,
             roles,
-            preview: true
+            preview: true,
+            step1: false,
+            step2: false
         })
         console.log("===========>", usersData, roles)
     }
 
     onTagRemove = (userId, tagId) => {
-        const {usersData} = this.state
-        usersData.forEach(item => {
-            if ((item.roles && item.roles.length > 1)) {
-                if (item.login === userId) {
-                    const index = item.roles.findIndex(f => f.roleName === tagId)
-                    // console.log(userId)
-                    if (index !== -1) {
-                        item.roles.splice(index, 1)
+        const {usersData, roles, category} = this.state
+        {
+            (category === "byUser") ?
+                usersData.forEach(item => {
+                    if ((item.roles && item.roles.length > 1)) {
+                        if (item.login === userId) {
+                            const index = item.roles.findIndex(f => f.roleName === tagId)
+                            // console.log(userId)
+                            if (index !== -1) {
+                                item.roles.splice(index, 1)
+                                message.success('role successfully removed')
+                            }
+                        }
+                    } else {
+                        message.warn('minimum one role is required')
                     }
-                }
-            } else {
-                message.warn('minimum one role is required')
-            }
-        })
-
-        this.setState({ usersData })
-        message.success('role successfully removed')
+                }) :
+                roles.forEach(item => {
+                    if ((item.users && item.users.length > 1)) {
+                        if (item.roleName === userId) {
+                            const index = item.users.findIndex(f => f.login === tagId)
+                            // console.log(userId)
+                            if (index !== -1) {
+                                item.users.splice(index, 1)
+                                message.success('user successfully removed')
+                            }
+                        }
+                    } else {
+                        message.warn('minimum one user is required')
+                    }
+                })
+        }
+        this.setState({ usersData, roles })
     }
 
     onUserRemove = (data) => {
-        const {usersData} = this.state
-        const index = usersData.findIndex(f => f.login === (data && data.login))
-        usersData.splice(index, 1)
+        const {usersData, roles, category} = this.state
+        if (category === "byUser") {
+            const index = usersData.findIndex(f => f.login === (data && data.login))
+            usersData.splice(index, 1)
+            message.success('User successfully removed')
+        } else {
+            const index = roles.findIndex(f => f.roleName === (data && data.roleName))
+            roles.splice(index, 1)
+            message.success('Role successfully removed')
+        }
+        this.setState({ usersData, roles })
+    }
 
-        this.setState({ usersData })
-        message.success('user successfully removed')
+    handelModal = (e, record) => {
+        const {users, roles, category} = this.state
+        let data = {}
+        if (category === "byUser") {
+            data = users.find(g => g.login === record)
+        } else {
+            data = roles.find(g => g.roleName === record)
+        }
+        e.preventDefault()
+        this.setState({
+            visible: !this.state.visible,
+            modalData: data
+        })
     }
 
     render() {
-        const { roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList, searchString, searchList, rolesData, searchedRoles, usersData, category } = this.state;
+        const { roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, visible, modalData } = this.state;
         const roleData = searchedRoles.length ? searchRoleList : roles
         const data = searchString ? searchList : users
+
+        const roleTableColumns = [
+            {
+                dataIndex: 'roleName',
+                title: <div>Title</div>,
+                sorter: (a, b) => {
+                    const t1 = a.roleName.toLowerCase() || ""
+                    const t2 = b.roleName.toLowerCase() || ""
+                    if (t1 < t2) { return -1 }
+                    if (t1 > t2) { return 1 }
+                    return 0
+                },
+                render: (record) => <div className="link-text" onClick={(e) => this.handelModal(e, record)}><u>{record}</u></div>
+            },
+            {
+                dataIndex: 'roleDescription',
+                title: 'Application',
+                sorter: (a, b) => {
+                    const t1 = a.roleDescription.toLowerCase() || ""
+                    const t2 = b.roleDescription.toLowerCase() || ""
+                    if (t1 < t2) { return -1 }
+                    if (t1 > t2) { return 1 }
+                    return 0
+                }
+            },
+            {
+                dataIndex: 'oimTarget',
+                title: 'OIM Target',
+                sorter: (a, b) => {
+                    const t1 = a.oimTarget.toLowerCase() || ""
+                    const t2 = b.oimTarget.toLowerCase() || ""
+                    if (t1 < t2) { return -1 }
+                    if (t1 > t2) { return 1 }
+                    return 0
+                }
+            },
+        ];
+
+        const TableColumns = [
+            {
+                dataIndex: 'login',
+                title: 'Login',
+                sorter: (a, b) => {
+                    const t1 = a.login.toLowerCase() || ""
+                    const t2 = b.login.toLowerCase() || ""
+                    if (t1 < t2) { return -1 }
+                    if (t1 > t2) { return 1 }
+                    return 0
+                },
+                render: (record) => <div className="link-text" onClick={(e) => this.handelModal(e, record)}><u>{record}</u></div>
+            },
+            {
+                dataIndex: 'name',
+                title: 'Name',
+                sorter: (a, b) => {
+                    const t1 = a.name.toLowerCase() || ""
+                    const t2 = b.name.toLowerCase() || ""
+                    if (t1 < t2) { return -1 }
+                    if (t1 > t2) { return 1 }
+                    return 0
+                }
+            },
+            {
+                dataIndex: 'bureau',
+                title: 'Bureau',
+                sorter: (a, b) => {
+                    const t1 = a.bureau.toLowerCase() || ""
+                    const t2 = b.bureau.toLowerCase() || ""
+                    if (t1 < t2) { return -1 }
+                    if (t1 > t2) { return 1 }
+                    return 0
+                }
+            },
+            {
+                dataIndex: 'email',
+                title: 'Email',
+                sorter: (a, b) => {
+                    const t1 = a.email.toLowerCase() || ""
+                    const t2 = b.email.toLowerCase() || ""
+                    if (t1 < t2) { return -1 }
+                    if (t1 > t2) { return 1 }
+                    return 0
+                }
+            }
+        ];
 
         return(
             <Container className={'container-design'}>
                 <h4 className="text-right">
                     Grant Access
                 </h4>
+                {
+                    visible &&
+                    <Modal visible={visible} data={modalData} handelModal={this.handelModal}
+                        title={category === "byUser" ? "User Data" : "Role Data"}/>
+                }
                 <hr/>
                 {
                     step1 ?
@@ -372,9 +415,6 @@ class GrantAccess extends Component {
                                         APPLICATIONS:
                                     </Form.Label>
                                     <InputGroup>
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                                        </InputGroup.Prepend>
                                         <Select
                                             mode="multiple"
                                             size={size}
@@ -450,9 +490,6 @@ class GrantAccess extends Component {
                                         Users:
                                     </Form.Label>
                                     <InputGroup>
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                                        </InputGroup.Prepend>
                                         <Form.Control
                                             type="text"
                                             placeholder="Search..."
@@ -492,6 +529,16 @@ class GrantAccess extends Component {
                             </div>
                         </>
                         : null
+                }
+
+                {
+                    preview ?
+                        <Review
+                            category={category}
+                            data={category === "byUser" ? usersData : roles}
+                            onTagRemove={this.onTagRemove}
+                            onUserRemove={this.onUserRemove}
+                        /> : null
                 }
 
             </Container>

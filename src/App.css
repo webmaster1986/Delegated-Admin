@@ -151,3 +151,7 @@
   margin: 0 !important;
   border-left: none !important;
 }
+
+.link-text {
+  color: deepskyblue;
+}
