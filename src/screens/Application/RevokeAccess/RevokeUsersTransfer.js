@@ -320,35 +320,55 @@ class RevokeUsersTransfer extends React.Component {
     })
   }
 
-  onReviewSubmit = () => {
+  onReviewSubmit = async () => {
     const {reviewList} = this.state
     const {revokeBy} = this.props
-    // if(revokeBy === 'user'){
-    //   for (const revoke of revokeList) {
-    //     const users =  await this._apiService.getUsersByRoles(role)
-    //     if (!users || users.error) {
-    //       return message.error('something is wrong! please try again');
-    //     } else {
-    //       const data = (users || []).map((user, i) => ({
-    //         id: i, key: i, ...user
-    //       }))
-    //       allUsers.push(...data)
-    //     }
-    //   }
-    // }else {
-    //   for (const revoke of revokeList) {
-    //     const users =  await this._apiService.getUsersByRoles(role)
-    //     if (!users || users.error) {
-    //       return message.error('something is wrong! please try again');
-    //     } else {
-    //       const data = (users || []).map((user, i) => ({
-    //         id: i, key: i, ...user
-    //       }))
-    //       allUsers.push(...data)
-    //     }
-    //   }
-    // }
-    console.log(reviewList)
+    let userRoles = [...reviewList]
+
+    if(revokeBy === "roles"){
+      const totalUsers = []
+      reviewList.forEach((role) => {
+        role.users.forEach(u => {
+          const isExists = totalUsers.find(user => user.login === u.login)
+          if(!isExists){
+            totalUsers.push(u)
+          }
+        })
+      })
+      reviewList.forEach((role) => {
+        role.users.forEach(u => {
+          const findIndex = totalUsers.findIndex(user => user.login === u.login)
+          if(findIndex !== -1){
+            const newRole = {
+              roleName: role.roleName,
+              roleDescription: role.roleDescription,
+              oimTarget: role.oimTarget
+            }
+            const roles = totalUsers[findIndex] && totalUsers[findIndex].roles ? totalUsers[findIndex].roles.push(newRole) : [newRole]
+            totalUsers[findIndex] = {
+              ...totalUsers[findIndex],
+              roles
+            }
+          }
+        })
+      })
+      userRoles = totalUsers
+    }
+    const successResult = []
+    for (const revoke of userRoles) {
+      const result =  await this._apiService.putUsersRoles(revoke.login, revoke.roles || [])
+      if (!result || result.error) {
+        return message.error('something is wrong! please try again');
+      }else {
+        successResult.push(revoke)
+      }
+      if(successResult.length === userRoles.length){
+        message.success('Revoke access submitted successfully.');
+        setTimeout(() => {
+          this.props.history.push('/app-owner')
+        },500)
+      }
+    }
   }
 
   render() {

@@ -87,6 +87,26 @@ export class ApiService {
         return resData || response.data;
     }
 
+    static async putMethod(url, data, headers, cancelToken) {
+        const config = {
+            headers: {
+                ...(headers || {})
+            }
+        };
+        if (cancelToken && cancelToken.token) {
+            config.cancelToken = cancelToken.token;
+        }
+        let resData = '';
+        const response = await axiosInstance.put(url, data, config).catch(thrown => {
+            if (thrown.toString() === 'Cancel') {
+                resData = 'cancel';
+            } else {
+                resData = {error: 'something went wrong'};;
+            }
+        });
+        return resData || response.data;
+    }
+
     async getAllApplications(appId) {
         return await ApiService.getData(`v1/applications/${appId || ""}`);
         //return await ApiService.getData(`applications.json`);
@@ -148,5 +168,9 @@ export class ApiService {
 
     async getUsersByRoles(body) {
         return await ApiService.getData(`v1/applications/${body.appCode}/roles/${body.roleName}/users  `);
+    }
+
+    async putUsersRoles(userId, body) {
+        return await ApiService.putMethod(`v1/users/${userId}/roles `, body);
     }
 }

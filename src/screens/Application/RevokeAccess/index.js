@@ -34,7 +34,7 @@ class RevokeAccess extends Component {
   componentDidMount() {
     const {location} = this.props
     const {user} = this.state
-    const data = (location && location.search && location.search.split("=")) || []
+    const data = (location && location.pathname && location.pathname.split("/")) || []
     this.setState({
       isLoading: true
     },async () => {
@@ -62,15 +62,15 @@ class RevokeAccess extends Component {
         allRoles: roles,
         users,
         allUsers: [...users],
-        selectedApp: data && data[1] ? [data[1]] : []
+        selectedApp: data && data[2] ? [data[2]] : []
       }, () => this.getRoles())
     })
   }
 
 
   getRoles = async () => {
-    const { selectedApp, allRoles, searchedRoles } = this.state
-    const apps = selectedApp.map(item => item.toLowerCase())
+    const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
+    const apps = selectedApp.length ? selectedApp.map(item => item.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
     const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
     const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
     this.setState({ roles: appRoles, searchRoleList: searchedRoles.length ? filteredRoles : [] })
@@ -177,6 +177,7 @@ class RevokeAccess extends Component {
                       size={size}
                       placeholder="Please select"
                       defaultValue={selectedApp}
+                      value={selectedApp}
                       onChange={(value) => this.handleChange('selectedApp', value)}
                       style={{ width: '100%' }}
                     >
@@ -294,7 +295,7 @@ class RevokeAccess extends Component {
     return(
       <Container className={'container-design'}>
         <h4 className="text-right">
-          Revoke   Access
+          Revoke Access
         </h4>
         <hr/>
         <div>

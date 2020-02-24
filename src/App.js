@@ -64,6 +64,7 @@ class App extends Component {
                               <Route path={'/review-apps'} component={ReviewApps}/>
                               <Route path={'/grant-access'} component={GrantAccess}/>
                               <Route path={'/revoke-access'} component={RevokeAccess}/>
+                              <Route path={'/revoke-access/:app'} component={RevokeAccess}/>
                               <Route path={'/role-manage/:id'} component={RoleManagement}/>
                               <Route path={'/'} component={AppsList}/>
                           </Switch>
