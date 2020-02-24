@@ -52,7 +52,7 @@ class App extends Component {
             <Route path={'/edit-app/:id'} component={EditApp}/>
             <Route path={'/create-apps'} component={CreateApp}/>
             <Route path={'/review-apps'} component={ReviewApps}/>
-            <Route path={'/grant-access:app?'} component={GrantAccess}/>
+            <Route path={'/grant-access/:app?'} component={GrantAccess}/>
             <Route path={'/revoke-access/:app?'} component={RevokeAccess}/>
             <Route path={'/role-manage/:id'} component={RoleManagement}/>
             <Route path={'/'} component={AppsList}/>
