@@ -2,7 +2,6 @@ import React from "react";
 import { Modal } from 'antd';
 
 const ViewModal = (props) => {
-
     return (
         <div>
             <Modal
@@ -13,8 +12,11 @@ const ViewModal = (props) => {
             >
                 <>
                     {
-                        props.data && Object.keys(props.data).map((f, i) =>
-                            <p key={i.toString() + i} >{`${f} = ${props.data[f]}`}</p>
+                        props.data && Object.keys(props.data).map((key, i) =>
+                          <div key={i.toString() + i} >
+                            <b>{key.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase()}:&nbsp;&nbsp;</b>
+                            <span>{props.data[key]}</span>
+                          </div>
                         )
                     }
                 </>

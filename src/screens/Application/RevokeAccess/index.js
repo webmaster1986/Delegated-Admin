@@ -7,6 +7,7 @@ import Spin from "antd/lib/spin";
 import CustomGrid from "../../../components/CustomGrid";
 import {Column} from "devextreme-react/data-grid";
 import RevokeUsersTransfer from "./RevokeUsersTransfer";
+import InfoModal from "../Modal";
 
 const { Option } = Select;
 
@@ -27,6 +28,9 @@ class RevokeAccess extends Component {
       revokeBy: 'role',
       users: [],
       revokeRole: {},
+      isInfoModal: false,
+      info: {},
+      infoTitle: 'Information',
       user: getLoginUser()
     }
   }
@@ -264,7 +268,13 @@ class RevokeAccess extends Component {
                     showBorders={true}
                     isHideSearchPanel={true}
                   >
-                    <Column alignment={'left'} sortOrder={'asc'} caption={'Role'} dataField={'roleName'}/>
+                    <Column alignment={'left'} sortOrder={'asc'} caption={'Role'} dataField={'roleName'}
+                            cellRender={(record) => {
+                              return (
+                                <a className="text-info" onClick={(e) => this.toggleModal(e, record.data, "Role Info")}>{record.data.roleName}</a>
+                              )
+                            }}
+                    />
                     <Column alignment={'left'} caption={'Application'} dataField={'roleDescription'}/>
                     <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
                     <Column alignment={'left'} allowSorting={false} caption={'status'} dataField={'appCode'}
@@ -290,10 +300,39 @@ class RevokeAccess extends Component {
     }))
   }
 
+  toggleModal = (event, info, infoTitle) => {
+    event.preventDefault();
+    if(!this.state.isInfoModal){
+      const { applicationsList, } = this.state
+      if(info.appCode){
+        const app = applicationsList.length ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
+        info = {
+          ...info,
+          ...app,
+        }
+      }else {
+        info = {
+          ...info
+        }
+      }
+    }
+    this.setState(prevState => ({
+      isInfoModal: !prevState.isInfoModal,
+      infoTitle,
+      info
+    }))
+  }
+
   render() {
-    const { step, revokeBy } = this.state;
+    const { step, revokeBy, isInfoModal, info, infoTitle } = this.state;
     return(
       <Container className={'container-design'}>
+        <InfoModal
+          visible={isInfoModal}
+          data={info}
+          handelModal={(e) => this.toggleModal(e)}
+          title={infoTitle}
+        />
         <h4 className="text-right">
           Revoke Access
         </h4>
