@@ -55,25 +55,6 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   </Transfer>
 );
 
-const TableColumns = [
-  {
-    dataIndex: 'login',
-    title: 'Login',
-  },
-  {
-    dataIndex: 'name',
-    title: 'Name',
-  },
-  {
-    dataIndex: 'bureau',
-    title: 'Bureau',
-  },
-  {
-    dataIndex: 'email',
-    title: 'Email',
-  }
-];
-
 class RevokeUsersTransfer extends React.Component {
   _apiService = new ApiService();
   constructor(props){
@@ -84,6 +65,9 @@ class RevokeUsersTransfer extends React.Component {
       isReview: false,
       isLoading: true,
       size: 'default',
+      searchRoleText: '',
+      reviewList: [],
+      rolesData: []
     }
   }
 
@@ -92,41 +76,56 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   getUsers = async () => {
-    const { roles } = this.props
+    const { revokeList, revokeBy } = this.props
     const allUsers = []
-    for (const role of roles) {
-      const users =  await this._apiService.getUsersByRoles(role)
-      if (!users || users.error) {
-        return message.error('something is wrong! please try again');
-      } else {
-        const data = (users || []).map((user, i) => ({
-          id: i, key: i, ...user
-        }))
-        allUsers.push(...data)
+    const allRoles = []
+    if(revokeBy === 'user'){
+      for (const user of revokeList) {
+        const roles =  await this._apiService.getRolesForUser(user.login)
+        if (!roles || roles.error) {
+          return message.error('something is wrong! please try again');
+        } else {
+          const data = (roles || []).map((role, i) => ({
+            id: i, key: i, ...role
+          }))
+          allRoles.push(...data)
+        }
+      }
+    }else {
+      for (const role of revokeList) {
+        const users =  await this._apiService.getUsersByRoles(role)
+        if (!users || users.error) {
+          return message.error('something is wrong! please try again');
+        } else {
+          const data = (users || []).map((user, i) => ({
+            id: i, key: i, ...user
+          }))
+          allUsers.push(...data)
+        }
       }
     }
+
     this.setState({
       isLoading: false,
       allUsers,
-      users: allUsers
+      users: allUsers,
+      allRoles,
+      roles: [...allRoles]
     })
   }
 
   onChange = nextTargetKeys => {
-    const {users} = this.state
+    const {users,roles} = this.state
+    const {revokeBy} = this.props
     if (nextTargetKeys && nextTargetKeys.length) {
       const data = []
       nextTargetKeys.forEach(f => {
-        data.push(users[f])
+        data.push(revokeBy === 'user' ? roles[f] : users[f])
       })
-      this.setState({ targetKeys: nextTargetKeys, usersData: data });
+      this.setState({ targetKeys: nextTargetKeys, selectedData: data });
     } else {
       this.setState({ targetKeys: [] });
     }
-  };
-
-  triggerShowSearch = showSearch => {
-    this.setState({ showSearch });
   };
 
   onSearch = (event) => {
@@ -149,78 +148,254 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   review = () => {
-    const {usersData} = this.state
-    const {roles} = this.props
-    if(this.state.isReview){
-
+    const {selectedData} = this.state
+    const {revokeBy} = this.props
+    let reviewList = []
+    if(!this.state.isReview){
+      const {revokeList} = this.props
+      reviewList = revokeList
+      if(revokeBy === "user"){
+        reviewList.forEach((user, uIndex) => {
+          user.id = uIndex;
+          user.roles = selectedData.map((role, i) => ({
+            id: i, ...role
+          }))
+        })
+      }else {
+        reviewList.forEach((role,rIndex) => {
+          role.id = rIndex;
+          role.users = selectedData.map((user, i) => ({
+            id: i, ...user
+          }))
+        })
+      }
     }
     this.setState({
-      isReview: !this.state.isReview
+      isReview: !this.state.isReview,
+      reviewList
     })
   }
 
+  onRoleRemove = (rootRecord, recordId) => {
+    const {reviewList} = this.state
+    if(!rootRecord){
+      const findIndex = reviewList.findIndex(review => review.id === recordId)
+      if(findIndex === -1) return
+      reviewList.splice(findIndex, 1)
+    }else {
+      const findIndex = reviewList.findIndex(review => review.id === rootRecord.id)
+      const findSubIndex = reviewList[findIndex].roles.findIndex(role => role.id === recordId)
+      if(findIndex === -1 || findSubIndex === -1) return
+      reviewList[findIndex].roles.splice(findSubIndex, 1)
+    }
+    this.setState({
+      reviewList
+    })
+  }
+
+  onUserRemove = (rootRecord, recordId) => {
+    const {reviewList} = this.state
+    if(!rootRecord){
+      const findIndex = reviewList.findIndex(review => review.id === recordId)
+      if(findIndex === -1) return
+      reviewList.splice(findIndex, 1)
+    }else {
+      const findIndex = reviewList.findIndex(review => review.id === rootRecord.id)
+      const findSubIndex = reviewList[findIndex].users.findIndex(role => role.id === recordId)
+      if(findIndex === -1 || findSubIndex === -1) return
+      reviewList[findIndex].users.splice(findSubIndex, 1)
+    }
+    this.setState({
+      reviewList
+    })
+  }
+
+  renderExpandedRow = (rootRecord) => {
+    const {revokeBy} = this.props
+    return (
+      <Table
+        rowKey={'id'}
+        columns={this.renderCols(rootRecord, revokeBy === 'user' ? 'role' : 'user')}
+        size="small"
+        dataSource={revokeBy === "user" ? rootRecord.roles : rootRecord.users}
+        pagination={false}
+      />
+    )
+  }
+
+  renderCols = (rootRecord, type) => {
+    const usersCol = [
+      {
+        dataIndex: 'login',
+        title: 'Login',
+        render: (record) => (
+          <a className="text-info" onClick={() => {}}>{record}</a>
+        )
+      },
+      {
+        dataIndex: 'name',
+        title: 'Name',
+      },
+      {
+        dataIndex: 'bureau',
+        title: 'Bureau',
+      },
+      {
+        dataIndex: 'email',
+        title: 'Email',
+      },
+      {
+        dataIndex: 'id',
+        title: 'Action',
+        render: (record, data) => (
+          <button className="btn btn-outline-danger btn-sm" onClick={() => this.onUserRemove(rootRecord, data.id)}>Remove</button>
+        )
+      }
+    ]
+    const rolesCol = [
+      {
+        dataIndex: 'roleName',
+        title: 'Role',
+        render: (record) => (
+          <a className="text-info" onClick={() => {}}>{record}</a>
+        )
+      },
+      {
+        dataIndex: 'roleDescription',
+        title: 'Application',
+      },
+      {
+        dataIndex: 'oimTarget',
+        title: 'OIM Target',
+      },
+      {
+        dataIndex: 'appCode',
+        title: 'Action',
+        render: (record, data) => (
+          <button className="btn btn-outline-danger btn-sm" onClick={() => this.onRoleRemove(rootRecord, data.id)}>Remove</button>
+        )
+      }
+    ]
+    return type === 'user' ? usersCol : rolesCol
+  }
+
   renderReview = () => {
+    const {reviewList} = this.state
+    const {revokeBy} = this.props
     return (
       <div>
         <Table
+          rowKey={'id'}
           className="components-table-demo-nested"
-          columns={[
-            {
-              dataIndex: 'login',
-              title: 'Login',
-            },
-            {
-              dataIndex: 'name',
-              title: 'Name',
-            },
-            {
-              dataIndex: 'bureau',
-              title: 'Bureau',
-            },
-            {
-              dataIndex: 'email',
-              title: 'Email',
-            }
-          ]}
-          expandedRowRender={(record) => (
-            <Table
-              columns={[
-                {
-                  dataIndex: 'login',
-                  title: 'Login',
-                },
-                {
-                  dataIndex: 'name',
-                  title: 'Name',
-                },
-                {
-                  dataIndex: 'bureau',
-                  title: 'Bureau',
-                },
-                {
-                  dataIndex: 'email',
-                  title: 'Email',
-                }
-              ]}
-              size="small"
-              dataSource={record || []}
-              pagination={false}
-            />
-          )}
-          dataSource={[]}
+          columns={this.renderCols(null, revokeBy)}
+          defaultExpandAllRows={true}
+          expandedRowRender={this.renderExpandedRow}
+          dataSource={reviewList}
         />
         <div className="text-right">
-          <Button onClick={this.review}>Cancel</Button>
+          <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
+          <button className="btn btn-outline-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length}>Submit</button>
         </div>
         <br/>
       </div>
     )
   }
 
+  onRoleSearch = (event) => {
+    const {allRoles} = this.state
+    const searchRoleText = event.target.value || ""
+    let roles = []
+    if (searchRoleText) {
+      roles = allRoles.filter(obj =>
+        ["roleName"].some(key => {
+          return (
+            obj && obj[key].toLowerCase().includes(searchRoleText.toLowerCase())
+          )
+        })
+      )
+    }
+    this.setState({
+      searchRoleText,
+      roles: !searchRoleText ? allRoles : roles
+    })
+  }
+
+  onReviewSubmit = () => {
+    const {reviewList} = this.state
+    const {revokeBy} = this.props
+    // if(revokeBy === 'user'){
+    //   for (const revoke of revokeList) {
+    //     const users =  await this._apiService.getUsersByRoles(role)
+    //     if (!users || users.error) {
+    //       return message.error('something is wrong! please try again');
+    //     } else {
+    //       const data = (users || []).map((user, i) => ({
+    //         id: i, key: i, ...user
+    //       }))
+    //       allUsers.push(...data)
+    //     }
+    //   }
+    // }else {
+    //   for (const revoke of revokeList) {
+    //     const users =  await this._apiService.getUsersByRoles(role)
+    //     if (!users || users.error) {
+    //       return message.error('something is wrong! please try again');
+    //     } else {
+    //       const data = (users || []).map((user, i) => ({
+    //         id: i, key: i, ...user
+    //       }))
+    //       allUsers.push(...data)
+    //     }
+    //   }
+    // }
+    console.log(reviewList)
+  }
+
   render() {
-    const {users, isReview, showSearch, targetKeys, searchString, searchList, usersData} = this.state
-    const {roles} = this.props
-    const data = searchString ? searchList : users
+    const {users, isReview, showSearch, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
+    const {revokeList, revokeBy} = this.props
+    const data = revokeBy === 'user' ? roles : searchString ? searchList : users
+    const selectedRevoke = revokeList && revokeList.length && revokeList.map(role => role.roleName || role.login)
+
+    const userColumns = [
+      {
+        dataIndex: 'login',
+        title: 'Login',
+        render: (record) => (
+          <a className="text-info" onClick={() => {}}>{record}</a>
+        )
+      },
+      {
+        dataIndex: 'name',
+        title: 'Name',
+      },
+      {
+        dataIndex: 'bureau',
+        title: 'Bureau',
+      },
+      {
+        dataIndex: 'email',
+        title: 'Email',
+      }
+    ];
+
+    const roleColumns = [
+      {
+        dataIndex: 'roleName',
+        title: 'Role',
+        render: (record) => (
+          <a className="text-info" onClick={() => {}}>{record}</a>
+        )
+      },
+      {
+        dataIndex: 'roleDescription',
+        title: 'Application',
+      },
+      {
+        dataIndex: 'oimTarget',
+        title: 'OIM Target',
+      },
+    ];
 
     return (
       <div>
@@ -229,25 +404,45 @@ class RevokeUsersTransfer extends React.Component {
             <>{this.renderReview()} </> :
             <div>
               <h6>
-                <b>Roles:&nbsp;</b> {roles && roles.length && roles.map(role => role.roleName)}
+                <b>{revokeBy === 'user' ? "User:" : "Role:" }&nbsp;</b> {selectedRevoke}
               </h6>
               <br/>
-              <Row className={'mb-3'}>
-                <Col>
-                  <Form.Label >
-                    Users:
-                  </Form.Label>
-                  <InputGroup>
-                    <Form.Control
-                      type="text"
-                      placeholder="Search..."
-                      aria-describedby="inputGroupPrepend"
-                      // name="username"
-                      onChange={this.onSearch}
-                    />
-                  </InputGroup>
-                </Col>
-              </Row>
+              {
+                revokeBy === 'user' ?
+                  <Row className={'mb-3'}>
+                    <Col>
+                      <Form.Label >
+                        Roles:
+                      </Form.Label>
+                      <InputGroup>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search..."
+                          aria-describedby="inputGroupPrepend"
+                          value={searchRoleText || ""}
+                          onChange={this.onRoleSearch}
+                        />
+                      </InputGroup>
+                    </Col>
+                  </Row>
+                  :
+                  <Row className={'mb-3'}>
+                    <Col>
+                      <Form.Label >
+                        Users:
+                      </Form.Label>
+                      <InputGroup>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search..."
+                          aria-describedby="inputGroupPrepend"
+                          // name="username"
+                          onChange={this.onSearch}
+                        />
+                      </InputGroup>
+                    </Col>
+                  </Row>
+              }
 
               <div>
                 <TableTransfer
@@ -258,14 +453,14 @@ class RevokeUsersTransfer extends React.Component {
                   filterOption={(inputValue, item) =>
                     item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
                   }
-                  leftColumns={TableColumns}
-                  rightColumns={TableColumns}
+                  leftColumns={revokeBy === 'user' ? roleColumns : userColumns}
+                  rightColumns={revokeBy === 'user' ? roleColumns : userColumns}
                   operations={['Select', 'Remove']}
                 />
               </div>
               <br/>
               <div className="text-right">
-                <Button onClick={this.review} disabled={!(usersData && usersData.length)}>Review</Button>
+                <Button onClick={this.review} disabled={!(selectedData && selectedData.length)}>Review</Button>
               </div>
             </div>
         }

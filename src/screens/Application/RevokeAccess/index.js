@@ -20,9 +20,12 @@ class RevokeAccess extends Component {
       allRoles: [],
       searchedRoles: [],
       searchRoleList: [],
+      searchedUsers: "",
+      searchedUserList: [],
       step: 0,
       isLoading: false,
       revokeBy: 'role',
+      users: [],
       revokeRole: {},
       user: getLoginUser()
     }
@@ -37,6 +40,7 @@ class RevokeAccess extends Component {
     },async () => {
       let applicationsList =  await this._apiService.getOwnerApplications(user.login)
       let roles =  await this._apiService.getOwnerRoles(user.login)
+      let users =  await this._apiService.getAllUsers()
       if (!applicationsList || applicationsList.error) {
          applicationsList = []
          message.error('something is wrong! please try again');
@@ -45,12 +49,19 @@ class RevokeAccess extends Component {
         roles = []
         message.error('something is wrong! please try again');
       }
+      if (!users || users.error) {
+        users = []
+        message.error('something is wrong! please try again');
+      }
       console.log("applicationsList:-", applicationsList)
       console.log("roles:-", roles)
+      console.log("users:-", users)
       this.setState({
         isLoading: false,
         applicationsList,
         allRoles: roles,
+        users,
+        allUsers: [...users],
         selectedApp: data && data[1] ? [data[1]] : []
       }, () => this.getRoles())
     })
@@ -72,21 +83,21 @@ class RevokeAccess extends Component {
   }
 
   onSearch = (event) => {
-    const {roles} = this.state
-    const searchString = event.target.value || ""
-    let searchList = []
-    if (searchString) {
-      searchList = roles && roles.filter(obj =>
-        ["roleName", "roleDescription", "oimTarget"].some(key => {
+    const {allUsers} = this.state
+    const searchedText = event.target.value || ""
+    let users = []
+    if (searchedText) {
+      users = allUsers.filter(obj =>
+        ["login", "name", "bureau", 'email'].some(key => {
           return (
-            obj && obj[key].toLowerCase().includes(searchString.toLowerCase())
+            obj && obj[key].toLowerCase().includes(searchedText.toLowerCase())
           )
         })
       )
     }
     this.setState({
-      searchString,
-      searchList
+      searchedText,
+      users: !searchedText ? allUsers : users
     })
   }
 
@@ -98,14 +109,14 @@ class RevokeAccess extends Component {
   }
 
   renderStep = (step) => {
-    const {revokeBy, revokeRole} = this.state
+    const {revokeBy, revokeRole, user} = this.state
     switch (parseInt(step)) {
       case 0:
         return <div>{this.step1()}</div>
       case 1:
         return <div>{this.step2(revokeBy)}</div>
       case 2:
-        return <RevokeUsersTransfer roles={[revokeRole]}/>
+        return <RevokeUsersTransfer {...this.props} user={user} revokeBy={revokeBy} revokeList={[revokeRole]}/>
       default:
         return (
           <div>{step}</div>
@@ -148,75 +159,125 @@ class RevokeAccess extends Component {
   }
 
   step2 = () => {
-    const { isLoading, roles, size, selectedApp, searchedRoles, applicationsList, searchRoleList } = this.state;
+    const { isLoading, roles, size, selectedApp, searchedRoles, searchedText, applicationsList, searchRoleList, revokeBy, users } = this.state;
     const data = searchedRoles.length ? searchRoleList : roles
     return (
       <>
-        <Row className={'mb-3'}>
-          <Col>
-            <Form.Label>
-              APPLICATIONS:
-            </Form.Label>
-            <InputGroup>
-              <Select
-                mode="multiple"
-                size={size}
-                placeholder="Please select"
-                defaultValue={selectedApp}
-                onChange={(value) => this.handleChange('selectedApp', value)}
-                style={{ width: '100%' }}
-              >
-                {
-                  applicationsList && applicationsList.map((g, i) => (
-                    <Option key={i.toString() + i} value={g.appCode}>{g.appCode}</Option>
-                  ))
-                }
-              </Select>
-            </InputGroup>
-          </Col>
-        </Row>
-        <Row className={'mb-3'}>
-          <Col>
-            <Form.Label >
-              ROLES:
-            </Form.Label>
-            <InputGroup>
-              <Select
-                mode="multiple"
-                size={size}
-                placeholder="Please select"
-                defaultValue={searchedRoles}
-                onChange={(value) => this.handleChange('searchedRoles',value)}
-                style={{ width: '100%' }}
-              >
-                {roles && roles.map((g, i) =>  <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
-              </Select>
-            </InputGroup>
-          </Col>
-        </Row>
+        {
+          revokeBy === 'roles' ?
+            <>
+              <Row className={'mb-3'}>
+                <Col>
+                  <Form.Label>
+                    APPLICATIONS:
+                  </Form.Label>
+                  <InputGroup>
+                    <Select
+                      mode="multiple"
+                      size={size}
+                      placeholder="Please select"
+                      defaultValue={selectedApp}
+                      onChange={(value) => this.handleChange('selectedApp', value)}
+                      style={{ width: '100%' }}
+                    >
+                      {
+                        applicationsList && applicationsList.map((g, i) => (
+                          <Option key={i.toString() + i} value={g.appCode}>{g.appCode}</Option>
+                        ))
+                      }
+                    </Select>
+                  </InputGroup>
+                </Col>
+              </Row>
+              <Row className={'mb-3'}>
+                <Col>
+                  <Form.Label >
+                    ROLES:
+                  </Form.Label>
+                  <InputGroup>
+                    <Select
+                      mode="multiple"
+                      size={size}
+                      placeholder="Please select"
+                      defaultValue={searchedRoles}
+                      onChange={(value) => this.handleChange('searchedRoles',value)}
+                      style={{ width: '100%' }}
+                    >
+                      {roles && roles.map((g, i) =>  <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
+                    </Select>
+                  </InputGroup>
+                </Col>
+              </Row>
+            </>
+            :
+            <Row className={'mb-3'}>
+              <Col>
+                <Form.Label >
+                  Users:
+                </Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search..."
+                    aria-describedby="inputGroupPrepend"
+                    // name="username"
+                    value={searchedText || ""}
+                    onChange={this.onSearch}
+                  />
+                </InputGroup>
+              </Col>
+            </Row>
+        }
+
         {
           isLoading ?
             <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
-            <CustomGrid
-              refCallback={(dg) => this.dg = dg}
-              dataSource={data}
-              keyExpr="roleName"
-              columnHidingEnabled={false}
-              showBorders={true}
-              isHideSearchPanel={true}
-            >
-              <Column alignment={'left'} sortOrder={'asc'} caption={'Role'} dataField={'roleName'}/>
-              <Column alignment={'left'} caption={'Application'} dataField={'roleDescription'}/>
-              <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
-              <Column alignment={'left'} allowSorting={false} caption={'status'} dataField={'appCode'}
-                cellRender={(record) => {
-                  if(record.data.status !== "Active") return
-                  return (
-                    <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(record.data)}>Revoke Role</button>
-                  )
-                }}
-              />
-            </CustomGrid>
+            <>
+              {
+                revokeBy === "user" ?
+                  <CustomGrid
+                    refCallback={(dg) => this.dg = dg}
+                    dataSource={users}
+                    keyExpr="login"
+                    columnHidingEnabled={false}
+                    showBorders={true}
+                    isHideSearchPanel={true}
+                  >
+                    <Column alignment={'left'} sortOrder={'asc'} caption={'Login'} dataField={'login'}/>
+                    <Column alignment={'left'} caption={'Name'} dataField={'name'}/>
+                    <Column alignment={'left'} caption={'Bureau'} dataField={'bureau'}/>
+                    <Column alignment={'left'} allowSorting={false} caption={'Email'} dataField={'email'}
+                      cellRender={(record) => {
+                        return (
+                          <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(record.data)}>Revoke Access</button>
+                        )
+                      }}
+                    />
+                  </CustomGrid>
+                  :
+                  <CustomGrid
+                    refCallback={(dg) => this.dg = dg}
+                    dataSource={data}
+                    keyExpr="roleName"
+                    columnHidingEnabled={false}
+                    showBorders={true}
+                    isHideSearchPanel={true}
+                  >
+                    <Column alignment={'left'} sortOrder={'asc'} caption={'Role'} dataField={'roleName'}/>
+                    <Column alignment={'left'} caption={'Application'} dataField={'roleDescription'}/>
+                    <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
+                    <Column alignment={'left'} allowSorting={false} caption={'status'} dataField={'appCode'}
+                            cellRender={(record) => {
+                              if(record.data.status !== "Active") return
+                              return (
+                                <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(record.data)}>Revoke Role</button>
+                              )
+                            }}
+                    />
+                  </CustomGrid>
+              }
+
+            </>
         }
       </>
     )
@@ -242,7 +303,7 @@ class RevokeAccess extends Component {
         <br/>
         <div className="text-right">
           {
-            step > 0 ?
+            step > 0 && step !== 2 ?
               <Button className="btn-sm" onClick={() => this.onStepChange('back')}>Back</Button>
               : null
           }

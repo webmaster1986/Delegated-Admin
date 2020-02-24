@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Button, Row, Col, Form, InputGroup } from 'react-bootstrap'
 import { Column } from 'devextreme-react/data-grid'
-import Table from 'antd/lib/table'
 import CustomGrid from "../../components/CustomGrid"
 
 const products = [
