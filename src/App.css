@@ -50,12 +50,12 @@
 
 .nav-item:hover {
   background-color: #B70F0A;
-  height: 5em;
+  /*height: 5em;*/
 }
 
 .nav-link {
   font-weight: 500;
-  font-size: 1.5em;
+ /* font-size: 1.5em;*/
 }
 
 .nav-item {

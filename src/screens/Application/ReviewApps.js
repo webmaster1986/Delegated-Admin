@@ -73,24 +73,6 @@ class ReviewApps extends Component {
                     Applications
                 </h4>
                 <hr/>
-                <Row className={'mb-3'}>
-                    <Col>
-                        <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Form.Control
-                                type="text"
-                                placeholder="Search..."
-                                aria-describedby="inputGroupPrepend"
-                                name="username"
-                            />
-                        </InputGroup>
-                    </Col>
-                </Row>
-
-                {/*<Table size={'small'} rowKey={'appCode'} bordered columns={columns} dataSource={products} scroll={{x: 768}}/>*/}
-
                 <CustomGrid
                     refCallback={(dg) => this.dg = dg}
                     dataSource={products}

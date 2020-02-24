@@ -85,7 +85,7 @@ class AppOwners extends Component {
                                                     <Select defaultValue="manage access">
                                                         <Option value="manage access" disabled>Manage Access</Option>
                                                         <Option value="grant access">
-                                                            <Link to={`/grant-access?app=${record.data.appCode}`}>
+                                                            <Link to={`/grant-access/${record.data.appCode}`}>
                                                                 Grant Access
                                                             </Link>
                                                         </Option>

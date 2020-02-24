@@ -69,12 +69,12 @@ class App extends Component {
   }
 
     render() {
-        const { isLoading } = this.state
+        const { isLoading, userRole } = this.state
     return (
        <div>
            { isLoading ? <div className="text-center mt-5-p"> <Spin className='mt-50 custom-loading'/> </div> :
                <>
-                 <Header />
+                 <Header userRole={userRole}/>
                  <Container>
                     <Row>
                       <Col lg="12">

@@ -84,6 +84,7 @@ const Review = (props) => {
             <Table
                 columns={props.category === "byRole" ? columnsByRole : columnsByUser}
                 dataSource={props && props.data}
+                defaultExpandAllRows={true}
                 expandedRowRender={record => {
                      if (props.category === "byRole") {
                          return ( <Table dataSource={record && record.users} columns={userColumn(record)} /> )
@@ -93,13 +94,10 @@ const Review = (props) => {
                 }}
             />
 
-            <Row>
-                <Col md={9} />
-                <Col md={3} sm={12} xs={12}>
-                    <Button className="mt-1" variant={'outline-danger'} onClick={() => props.history.push('/app-owner')}>Cancel</Button>&nbsp;&nbsp;
-                    <Button className="mt-1" variant={'outline-success'} onClick={() => props.onSubmit()}>Submit</Button>
-                </Col>
-            </Row>
+            <div className="text-right">
+                <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
+                <button className="btn btn-outline-success btn-sm" onClick={() => props.onSubmit()}>Submit</button>
+            </div>
         </>
     );
 }

@@ -81,7 +81,7 @@ class GrantAccess extends Component {
             rolesData: [],
             searchedRoles: [],
             info: {},
-            step: false,
+            step: true,
             step1: false,
             step2: false,
             preview: false,
@@ -96,22 +96,25 @@ class GrantAccess extends Component {
     }
 
     componentWillMount() {
+        this.getData()
+    }
+
+    getData = () => {
         const {location} = this.props
         const {user} = this.state
-        const data = (location && location.search && location.search.split("=")) || []
-        const filterSelectedApp = (data && data[1]) ? data[1].split("&") : ""
-
-        this.setState({
-            selectedApp: (filterSelectedApp && filterSelectedApp[0]) ? [filterSelectedApp[0]] : [],
-            step: true,
-            isLoading: true
-        }, async () => {
-            let applicationsList = await this._apiService.getOwnerApplications(user.login)
-            let roles =  await this._apiService.getOwnerRoles(user.login)
-            let users = await this._apiService.getAllUsers()
-
+        const data = (location && location.pathname && location.pathname.split("/")) || []
+        const that = this
+        Promise.all([
+            this._apiService.getOwnerApplications(user.login),
+            this._apiService.getOwnerRoles(user.login),
+            this._apiService.getAllUsers()
+        ]).then((results) => {
+            console.log(results);
+            let applicationsList = results[0]
+            let roles = results[1]
+            let users = results[2]
             if (!applicationsList || applicationsList.error) {
-                applicationsList = []
+                applicationsList = {}
                 message.error('something is wrong! please try again');
             }
             if (!roles || roles.error) {
@@ -120,26 +123,25 @@ class GrantAccess extends Component {
             }
             if (!users || users.error) {
                 users = []
-                return message.error('something is wrong! please try again');
+                message.error('something is wrong! please try again');
             }
-
             const usersData = (users || []).map((f, i) => ({
                 id: i, key: i, ...f
             }))
-            console.log("applicationsList:-", applicationsList)
-            console.log("roles:-", roles)
-            this.setState({
+            that.setState({
                 isLoading: false,
-                users: usersData,
                 applicationsList,
                 allRoles: roles,
-            }, () => this.getRoles())
-        })
+                users: usersData,
+                allUsers: [...users],
+                selectedApp: data && data[2] ? [data[2]] : []
+            }, () => that.getRoles())
+        });
     }
 
     getRoles = async () => {
-        const { selectedApp, allRoles, searchedRoles } = this.state
-        const apps = selectedApp.map(item => item.toLowerCase())
+        const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
+        const apps = selectedApp.length ? selectedApp.map(item => item.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
         const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
         const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
         const data = (appRoles || []).map((f, i) => ({
@@ -318,7 +320,11 @@ class GrantAccess extends Component {
                 step2: true
             })
         } else {
-            this.props.history.push("/app-owner")
+            this.setState({
+                step: true,
+                step1: false,
+                step2: false
+            })
         }
     }
 
@@ -330,7 +336,11 @@ class GrantAccess extends Component {
                 step2: false
             })
         } else {
-            this.props.history.push("/app-owner")
+            this.setState({
+                step: true,
+                step1: false,
+                step2: false
+            })
         }
     }
 
@@ -421,7 +431,9 @@ class GrantAccess extends Component {
                             onChange={this.onChange}
                             label={'Grant Access By Roles'}
                         />
-                        <Button className="float-right" variant={'outline-primary'} size={'sm'} onClick={this.onNext}>Next</Button>
+                        <div className="text-right">
+                            <button className="btn btn-info btn-sm btn btn-primary" onClick={this.onNext}>Next</button>
+                        </div>
                     </div>
                 </Col>
             </Row>
@@ -641,17 +653,13 @@ class GrantAccess extends Component {
                                                 operations={['Select', 'Remove']}
                                             />
                                         </div>
-                                        <div>
-                                            <Row>
-                                                <Col md={10} sm={8}/>
-                                                <Col className="mt-3" md={2} sm={4}>
-                                                    {
-                                                        category === "byUser" ?
-                                                            <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button> :
-                                                            <Button onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</Button>
-                                                    }
-                                                </Col>
-                                            </Row>
+                                        <br/>
+                                        <div className="text-right">
+                                            {
+                                                category === "byUser" ?
+                                                    <Button onClick={() => this.preview()} disabled={!(rolesData && rolesData.length)}>Review</Button> :
+                                                    <Button onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</Button>
+                                            }
                                         </div>
                                     </>
                                     : null
@@ -700,17 +708,13 @@ class GrantAccess extends Component {
                                                 operations={['Select', 'Remove']}
                                             />
                                         </div>
-                                        <div>
-                                            <Row>
-                                                <Col md={10}/>
-                                                <Col className="mt-3" md={2}>
-                                                    {
-                                                        category === "byUser" ?
-                                                            <Button onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</Button> :
-                                                            <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
-                                                    }
-                                                </Col>
-                                            </Row>
+                                        <br/>
+                                        <div className="text-right">
+                                            {
+                                                category === "byUser" ?
+                                                    <Button onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</Button> :
+                                                    <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
+                                            }
                                         </div>
                                     </>
                                     : null
