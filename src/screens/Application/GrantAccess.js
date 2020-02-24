@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
-import { Table, Transfer, Select } from 'antd/lib'
+import { Table, Transfer, Select, Tag } from 'antd/lib'
 import {ApiService, getLoginUser} from "../../services/ApiService";
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {Button} from "antd/es";
 import Review from "./GrantAccess/Review";
 import Modal from "./Modal";
+import Spin from "antd/lib/spin";
 
 const { Option } = Select;
 
@@ -82,6 +83,7 @@ class GrantAccess extends Component {
             step2: false,
             preview: false,
             visible: false,
+            isLoading: true,
             user: getLoginUser()
         }
     }
@@ -100,7 +102,7 @@ class GrantAccess extends Component {
         }, async () => {
             let applicationsList = await this._apiService.getOwnerApplications(user.login)
             let roles =  await this._apiService.getOwnerRoles(user.login)
-            const users = await this._apiService.getAllUsers()
+            let users = await this._apiService.getAllUsers()
 
             if (!applicationsList || applicationsList.error) {
                 applicationsList = []
@@ -111,9 +113,7 @@ class GrantAccess extends Component {
                 message.error('something is wrong! please try again');
             }
             if (!users || users.error) {
-                this.setState({
-                    isLoading: false
-                })
+                users = []
                 return message.error('something is wrong! please try again');
             }
 
@@ -305,8 +305,78 @@ class GrantAccess extends Component {
         })
     }
 
+    onRoleBack = () => {
+        const {usersData} = this.state
+        if (usersData && usersData.length) {
+            this.setState({
+                step1: false,
+                step2: true
+            })
+        } else {
+            this.props.history.push("/app-owner")
+        }
+    }
+
+    onUserBack = () => {
+        const {rolesData} = this.state
+        if (rolesData && rolesData.length) {
+            this.setState({
+                step1: true,
+                step2: false
+            })
+        } else {
+            this.props.history.push("/app-owner")
+        }
+    }
+
+    onSubmit = async () => {
+        const {usersData, roles, category, user} = this.state
+
+        if (category === "byRole") {
+            const payload = roles && roles.map(g => ({
+                roleName: g.roleName,
+                roleDescription: g.roleDescription,
+                oimTarget: g.oimTarget
+            }))
+            const res = await this._apiService.putUsersRoles(user.login, payload)
+            if (!res || res.error) {
+                this.setState({
+                    isLoading: false
+                })
+                return message.error('something is wrong! please try again');
+            } else {
+                message.success('Grant Access Submitted Successfully');
+                setTimeout(() => {
+                    this.props.history.push('/app-owner')
+                },500)
+            }
+        } else {
+            const result = []
+            for (const num of usersData) {
+                const payload = num.roles && num.roles.map(g => ({
+                    roleName: g.roleName,
+                    roleDescription: g.roleDescription,
+                    oimTarget: g.oimTarget
+                }))
+                const res = await this._apiService.putUsersRoles(user.login, payload)
+                if (!res || res.error) {
+                    return message.error('something is wrong! please try again');
+                } else {
+                    result.push(res)
+                }
+            }
+            if (result && usersData && (result.length === usersData.length)) {
+                message.success('Grant Access Submitted Successfully');
+                setTimeout(() => {
+                    this.props.history.push('/app-owner')
+                },500)
+            }
+        }
+    }
+
     render() {
-        const { roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, visible, modalData } = this.state;
+        const { isLoading, roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
+            searchString, searchList, rolesData, searchedRoles, usersData, category, preview, visible, modalData } = this.state;
         const roleData = searchedRoles.length ? searchRoleList : roles
         const data = searchString ? searchList : users
 
@@ -407,140 +477,166 @@ class GrantAccess extends Component {
                 }
                 <hr/>
                 {
-                    step1 ?
+                    isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
                         <>
-                            <Row className={'mb-3'}>
-                                <Col>
-                                    <Form.Label >
-                                        APPLICATIONS:
-                                    </Form.Label>
-                                    <InputGroup>
-                                        <Select
-                                            mode="multiple"
-                                            size={size}
-                                            placeholder="Please select"
-                                            defaultValue={selectedApp}
-                                            onChange={(value) => this.handleChange('selectedApp', value)}
-                                            style={{ width: '100%' }}
-                                        >
-                                            {
-                                                applicationsList && applicationsList.map((g, i) => (
-                                                    <Option key={i.toString() + i} value={g.appCode}>{g.appCode}</Option>
-                                                ))
-                                            }
-                                        </Select>
-                                    </InputGroup>
-                                </Col>
-                            </Row>
-                            <Row className={'mb-3'}>
-                                <Col>
-                                    <Form.Label >
-                                        ROLES:
-                                    </Form.Label>
-                                    <InputGroup>
-                                        <Select
-                                            mode="multiple"
-                                            size={size}
-                                            placeholder="Please select"
-                                            defaultValue={searchedRoles}
-                                            onChange={(value) => this.handleChange('searchedRoles',value)}
-                                            style={{ width: '100%' }}
-                                        >
-                                            {roles && roles.map((g, i) =>  <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
-                                        </Select>
-                                    </InputGroup>
-                                </Col>
-                            </Row>
+                            {
+                                step1 ?
+                                    <>
+                                        <Row>
+                                            <Col md={8}>
+                                                {
+                                                    usersData && usersData.length ? usersData.map(a => <Tag>{a.name}</Tag>) : null
+                                                }
+                                            </Col>
+                                            <Col md={4}>
+                                                <Button className="float-right" variant={'outline-success'} size={'sm'} onClick={this.onRoleBack}>Back</Button>
+                                            </Col>
+                                        </Row>
+                                        <Row className={'mb-3'}>
+                                            <Col>
+                                                <Form.Label >
+                                                    APPLICATIONS:
+                                                </Form.Label>
+                                                <InputGroup>
+                                                    <Select
+                                                        mode="multiple"
+                                                        size={size}
+                                                        placeholder="Please select"
+                                                        defaultValue={selectedApp}
+                                                        onChange={(value) => this.handleChange('selectedApp', value)}
+                                                        style={{ width: '100%' }}
+                                                    >
+                                                        {
+                                                            applicationsList && applicationsList.map((g, i) => (
+                                                                <Option key={i.toString() + i} value={g.appCode}>{g.appCode}</Option>
+                                                            ))
+                                                        }
+                                                    </Select>
+                                                </InputGroup>
+                                            </Col>
+                                        </Row>
+                                        <Row className={'mb-3'}>
+                                            <Col>
+                                                <Form.Label >
+                                                    ROLES:
+                                                </Form.Label>
+                                                <InputGroup>
+                                                    <Select
+                                                        mode="multiple"
+                                                        size={size}
+                                                        placeholder="Please select"
+                                                        defaultValue={searchedRoles}
+                                                        onChange={(value) => this.handleChange('searchedRoles',value)}
+                                                        style={{ width: '100%' }}
+                                                    >
+                                                        {roles && roles.map((g, i) =>  <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
+                                                    </Select>
+                                                </InputGroup>
+                                            </Col>
+                                        </Row>
 
-                            <div>
-                                <TableTransfer
-                                    dataSource={roleData}
-                                    targetKeys={roleTargetKeys}
-                                    showSearch={showSearch}
-                                    onChange={this.onRoleTableChange}
-                                    filterOption={(inputValue, item) =>
-                                        item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-                                    }
-                                    leftColumns={roleTableColumns}
-                                    rightColumns={roleTableColumns}
-                                    operations={['Select', 'Remove']}
-                                />
-                            </div>
-                            <div>
-                                <Row>
-                                    <Col md={10} sm={8}/>
-                                    <Col className="mt-3" md={2} sm={4}>
-                                        {
-                                            category === "byUser" ?
-                                                <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button> :
-                                                <Button onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</Button>
-                                        }
-                                    </Col>
-                                </Row>
-                            </div>
+                                        <div>
+                                            <TableTransfer
+                                                dataSource={roleData}
+                                                targetKeys={roleTargetKeys}
+                                                showSearch={showSearch}
+                                                onChange={this.onRoleTableChange}
+                                                filterOption={(inputValue, item) =>
+                                                    item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
+                                                }
+                                                leftColumns={roleTableColumns}
+                                                rightColumns={roleTableColumns}
+                                                operations={['Select', 'Remove']}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Row>
+                                                <Col md={10} sm={8}/>
+                                                <Col className="mt-3" md={2} sm={4}>
+                                                    {
+                                                        category === "byUser" ?
+                                                            <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button> :
+                                                            <Button onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</Button>
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    </>
+                                    : null
+                            }
+                            {
+                                step2 ?
+                                    <>
+                                        <Row>
+                                            <Col md={8}>
+                                                {
+                                                    rolesData && rolesData.length ? rolesData.map(a => <Tag>{a.roleName}</Tag>) : null
+                                                }
+                                            </Col>
+                                            <Col md={4}>
+                                                <Button className="float-right" variant={'outline-success'} size={'sm'} onClick={this.onUserBack}>Back</Button>
+                                            </Col>
+                                        </Row>
+                                        <Row className={'mb-3'}>
+                                            <Col>
+                                                <Form.Label >
+                                                    Users:
+                                                </Form.Label>
+                                                <InputGroup>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Search..."
+                                                        aria-describedby="inputGroupPrepend"
+                                                        // name="username"
+                                                        onChange={this.onSearch}
+                                                    />
+                                                </InputGroup>
+                                            </Col>
+                                        </Row>
+
+                                        <div>
+                                            <TableTransfer
+                                                dataSource={data}
+                                                targetKeys={userTargetKeys}
+                                                showSearch={showSearch}
+                                                onChange={this.onUserTableChange}
+                                                filterOption={(inputValue, item) =>
+                                                    item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
+                                                }
+                                                leftColumns={TableColumns}
+                                                rightColumns={TableColumns}
+                                                operations={['Select', 'Remove']}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Row>
+                                                <Col md={10}/>
+                                                <Col className="mt-3" md={2}>
+                                                    {
+                                                        category === "byUser" ?
+                                                            <Button onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</Button> :
+                                                            <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    </>
+                                    : null
+                            }
+
+                            {
+                                preview ?
+                                    <Review
+                                        {...this.props}
+                                        category={category}
+                                        data={category === "byUser" ? usersData : roles}
+                                        onTagRemove={this.onTagRemove}
+                                        onUserRemove={this.onUserRemove}
+                                        onSubmit={this.onSubmit}
+                                    /> : null
+                            }
                         </>
-                        : null
                 }
-                {
-                    step2 ?
-                        <>
-                            <Row className={'mb-3'}>
-                                <Col>
-                                    <Form.Label >
-                                        Users:
-                                    </Form.Label>
-                                    <InputGroup>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Search..."
-                                            aria-describedby="inputGroupPrepend"
-                                            // name="username"
-                                            onChange={this.onSearch}
-                                        />
-                                    </InputGroup>
-                                </Col>
-                            </Row>
-
-                            <div>
-                                <TableTransfer
-                                    dataSource={data}
-                                    targetKeys={userTargetKeys}
-                                    showSearch={showSearch}
-                                    onChange={this.onUserTableChange}
-                                    filterOption={(inputValue, item) =>
-                                        item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-                                    }
-                                    leftColumns={TableColumns}
-                                    rightColumns={TableColumns}
-                                    operations={['Select', 'Remove']}
-                                />
-                            </div>
-                            <div>
-                                <Row>
-                                    <Col md={10}/>
-                                    <Col className="mt-3" md={2}>
-                                        {
-                                            category === "byUser" ?
-                                                <Button onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</Button> :
-                                                <Button onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</Button>
-                                        }
-                                    </Col>
-                                </Row>
-                            </div>
-                        </>
-                        : null
-                }
-
-                {
-                    preview ?
-                        <Review
-                            category={category}
-                            data={category === "byUser" ? usersData : roles}
-                            onTagRemove={this.onTagRemove}
-                            onUserRemove={this.onUserRemove}
-                        /> : null
-                }
-
             </Container>
         )
     }

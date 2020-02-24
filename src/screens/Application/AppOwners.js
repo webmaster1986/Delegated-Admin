@@ -48,12 +48,15 @@ class AppOwners extends Component {
         })
     }
 
-    onCheck = (data) => {
-        const {id} = this.state
+    onCheck = (event) => {
         this.setState({
-            selectBy: data
+            [event.target.name]: event.target.value
         })
-        this.props.history.push(`/grant-access?app=${id}&showBy=${data}`)
+    }
+
+    onNext = () => {
+        const {id, selectBy} = this.state
+        this.props.history.push(`/grant-access?app=${id}&showBy=${selectBy}`)
     }
 
     render() {
@@ -70,9 +73,6 @@ class AppOwners extends Component {
                             <Row>
                                 <Col md={12}>
                                     <InputGroup>
-                                        {/*<InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                            </InputGroup.Prepend>*/}
                                         <Form.Control
                                             type="text"
                                             placeholder="Search..."
@@ -122,25 +122,32 @@ class AppOwners extends Component {
                             <Row className="ml-5 mt-3">
                                 <Col md={6}>
                                     <Form.Check
-                                        type="radio"
-                                        id="default-radio"
-                                        label="Grant Access By Role"
+                                        custom
                                         name="selectBy"
-                                        value="byRole"
-                                        onChange={() => this.onCheck("byRole")}
-                                        checked={selectBy === "byRole"}
+                                        type='radio'
+                                        id={'custom-1'}
+                                        value='byRole'
+                                        checked={selectBy === 'byRole'}
+                                        onChange={(e) => this.onCheck(e)}
+                                        label="Grant Access By Role"
                                     />
                                 </Col>
                                 <Col md={6}>
                                     <Form.Check
-                                        type="radio"
-                                        id="default-radio"
-                                        label="Grant Access By User"
+                                        custom
                                         name="selectBy"
-                                        value="byUser"
-                                        onChange={() => this.onCheck("byUser")}
-                                        checked={selectBy === "byUser"}
+                                        type='radio'
+                                        id={'custom-2'}
+                                        value='byUser'
+                                        checked={selectBy === 'byUser'}
+                                        onChange={(e) => this.onCheck(e)}
+                                        label="Grant Access By User"
                                     />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Button className="float-right" variant={'outline-primary'} size={'sm'} onClick={this.onNext}>Next</Button>
                                 </Col>
                             </Row>
                         </>
