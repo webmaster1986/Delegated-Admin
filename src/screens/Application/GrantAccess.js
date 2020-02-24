@@ -6,8 +6,9 @@ import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {Button} from "antd/es";
 import Review from "./GrantAccess/Review";
-import Modal from "./Modal";
 import Spin from "antd/lib/spin";
+import RoleModal from "./RoleModal";
+import UserModal from "./UserModal";
 
 const { Option } = Select;
 
@@ -79,12 +80,15 @@ class GrantAccess extends Component {
             selectedApp: [],
             rolesData: [],
             searchedRoles: [],
+            info: {},
             step: false,
             step1: false,
             step2: false,
             preview: false,
             visible: false,
             isLoading: true,
+            isUserModal: false,
+            isInfoModal: false,
             selectBy: "",
             category: "",
             user: getLoginUser()
@@ -394,35 +398,63 @@ class GrantAccess extends Component {
     step = () => {
         const {selectBy} = this.state
         return (
-            <div key={`custom-inline-radio`} className="mb-3">
-                <Form.Check
-                    custom
-                    name="selectBy"
-                    type='radio'
-                    id={'custom-1'}
-                    value='byUser'
-                    checked={selectBy === 'byUser'}
-                    onChange={this.onChange}
-                    label='Grant Access By User'
-                />
-                <Form.Check
-                    custom
-                    name="selectBy"
-                    type='radio'
-                    id={'custom-2'}
-                    value='byRole'
-                    checked={selectBy === 'byRole'}
-                    onChange={this.onChange}
-                    label={'Grant Access By Roles'}
-                />
-                <Button className="float-right" variant={'outline-primary'} size={'sm'} onClick={this.onNext}>Next</Button>
-            </div>
+            <Row>
+                <Col>
+                    <div key={`custom-inline-radio`} className="mb-3">
+                        <Form.Check
+                            custom
+                            name="selectBy"
+                            type='radio'
+                            id={'custom-1'}
+                            value='byUser'
+                            checked={selectBy === 'byUser'}
+                            onChange={this.onChange}
+                            label='Grant Access By User'
+                        />
+                        <Form.Check
+                            custom
+                            name="selectBy"
+                            type='radio'
+                            id={'custom-2'}
+                            value='byRole'
+                            checked={selectBy === 'byRole'}
+                            onChange={this.onChange}
+                            label={'Grant Access By Roles'}
+                        />
+                        <Button className="float-right" variant={'outline-primary'} size={'sm'} onClick={this.onNext}>Next</Button>
+                    </div>
+                </Col>
+            </Row>
         )
+    }
+
+    toggleModal = (event, info) => {
+        event.preventDefault();
+        if(!this.state.isInfoModal && info.appCode){
+            const { applicationsList} = this.state
+            const app = applicationsList.length ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
+            info = {
+                ...info,
+                ...app,
+            }
+        }
+        this.setState(prevState => ({
+            isInfoModal: !prevState.isInfoModal,
+            info
+        }))
+    }
+
+    toggleUserModal = (event, info) => {
+        event.preventDefault();
+        this.setState(prevState => ({
+            info: info || {},
+            isUserModal: !prevState.isUserModal,
+        }))
     }
 
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
-            searchString, searchList, rolesData, searchedRoles, usersData, category, preview, visible, modalData, step } = this.state;
+            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step } = this.state;
         const roleData = searchedRoles.length ? searchRoleList : roles
         const data = searchString ? searchList : users
 
@@ -437,7 +469,7 @@ class GrantAccess extends Component {
                     if (t1 > t2) { return 1 }
                     return 0
                 },
-                render: (record) => <div className="link-text" onClick={(e) => this.handelModal(e, record)}><u>{record}</u></div>
+                render: (record, data) => <div className="link-text" onClick={(e) => this.toggleModal(e, data)}><u>{record}</u></div>
             },
             {
                 dataIndex: 'roleDescription',
@@ -474,7 +506,7 @@ class GrantAccess extends Component {
                     if (t1 > t2) { return 1 }
                     return 0
                 },
-                render: (record) => <div className="link-text" onClick={(e) => this.handelModal(e, record)}><u>{record}</u></div>
+                render: (record, data) => <div className="link-text" onClick={(e) => this.toggleUserModal(e, data)}><u>{record}</u></div>
             },
             {
                 dataIndex: 'name',
@@ -517,16 +549,27 @@ class GrantAccess extends Component {
                     Grant Access
                 </h4>
                 {
-                    visible &&
-                    <Modal visible={visible} data={modalData} handelModal={this.handelModal}
-                        title={category === "byUser" ? "User Data" : "Role Data"}/>
+                    isInfoModal ?
+                        <RoleModal
+                            role={info}
+                            toggleModal={this.toggleModal}
+                        />
+                        : null
+                }
+                {
+                    isUserModal ?
+                        <UserModal
+                            user={info}
+                            toggleModal={this.toggleUserModal}
+                        />
+                        : null
                 }
                 <hr/>
                 {
                     isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
                         <>
                             {
-                                step ? <div>{this.step()}</div> : null
+                                step ? <>{this.step()}</> : null
                             }
                             {
                                 step1 ?
@@ -682,6 +725,8 @@ class GrantAccess extends Component {
                                         onTagRemove={this.onTagRemove}
                                         onUserRemove={this.onUserRemove}
                                         onSubmit={this.onSubmit}
+                                        toggleModal={this.toggleModal}
+                                        toggleUserModal={this.toggleUserModal}
                                     /> : null
                             }
                         </>
