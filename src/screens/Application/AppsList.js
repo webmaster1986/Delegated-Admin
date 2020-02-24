@@ -48,9 +48,6 @@ class AppsList extends Component {
                 <Row>
                     <Col md={8}>
                         <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                            </InputGroup.Prepend>
                             <Form.Control
                                 type="text"
                                 placeholder="Search..."

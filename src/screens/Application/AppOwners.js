@@ -63,7 +63,7 @@ class AppOwners extends Component {
                                 </InputGroup>
                             </Col>
                         </Row>
-
+                        <br/>
                         {
                             isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
                                 <CustomGrid
@@ -90,7 +90,7 @@ class AppOwners extends Component {
                                                             </Link>
                                                         </Option>
                                                         <Option value="revoke access">
-                                                            <Link to={`/revoke-access?app=${record.data.appCode}`}>
+                                                            <Link to={`/revoke-access/${record.data.appCode}`}>
                                                                 Revoke Access
                                                             </Link>
                                                         </Option>

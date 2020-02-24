@@ -1,51 +1,17 @@
 import axios from "axios";
+import Cookies from "universal-cookie"
 const apiEndPoint = process.env.NODE_ENV === 'production' ? 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/' : '/';
 const axiosInstance = axios.create({
     baseURL: apiEndPoint,
 });
-
-const appDetails = {
-    "appCode":"App1",
-    "appName":"Application1",
-    "appDescription":"This is the description for App1",
-    "ownerGroup":"App123_Owner"
-}
-
-const appRoles = [
-    {
-        "roleName":"Role1",
-        "roleDescription":"Description",
-        "oimTarget":"OID",
-        "status":"Active"
-    },
-    {
-        "roleName":"Role3",
-        "roleDescription":"Description",
-        "oimTarget":"OID",
-        "status":"Disabled"
-    },
-    {
-        "roleName":"Role2",
-        "roleDescription":"Description",
-        "oimTarget":"IDCS",
-        "status":"Active"
-    },
-    {
-        "roleName":"Role4",
-        "roleDescription":"Description",
-        "oimTarget":"IDCS",
-        "status":"Pending"
-    }
-]
+const cookies = new Cookies();
 
 export const getLoginUser = () => {
     return {
-        "login": "User2 Name",
-        "name": null,
-        "email": "user2@fdny",
-        "bureau": "Bureau1"
+        "login": cookies.get('userLogin'),
     }
 }
+
 export class ApiService {
 
     static async getData(url, headers, cancelToken, data) {

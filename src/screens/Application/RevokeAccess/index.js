@@ -25,7 +25,7 @@ class RevokeAccess extends Component {
       searchedUsers: "",
       searchedUserList: [],
       step: 0,
-      isLoading: false,
+      isLoading: true,
       revokeBy: 'role',
       users: [],
       revokeRole: {},
@@ -36,18 +36,26 @@ class RevokeAccess extends Component {
   }
 
   componentDidMount() {
+    this.getData()
+  }
+
+  getData = () => {
     const {location} = this.props
     const {user} = this.state
     const data = (location && location.pathname && location.pathname.split("/")) || []
-    this.setState({
-      isLoading: true
-    },async () => {
-      let applicationsList =  await this._apiService.getOwnerApplications(user.login)
-      let roles =  await this._apiService.getOwnerRoles(user.login)
-      let users =  await this._apiService.getAllUsers()
+    const that = this
+    Promise.all([
+      this._apiService.getOwnerApplications(user.login),
+      this._apiService.getOwnerRoles(user.login),
+      this._apiService.getAllUsers()
+    ]).then((results) => {
+      console.log(results);
+      let applicationsList = results[0]
+      let roles = results[1]
+      let users = results[2]
       if (!applicationsList || applicationsList.error) {
-         applicationsList = []
-         message.error('something is wrong! please try again');
+        applicationsList = {}
+        message.error('something is wrong! please try again');
       }
       if (!roles || roles.error) {
         roles = []
@@ -57,20 +65,16 @@ class RevokeAccess extends Component {
         users = []
         message.error('something is wrong! please try again');
       }
-      console.log("applicationsList:-", applicationsList)
-      console.log("roles:-", roles)
-      console.log("users:-", users)
-      this.setState({
+      that.setState({
         isLoading: false,
         applicationsList,
         allRoles: roles,
         users,
         allUsers: [...users],
         selectedApp: data && data[2] ? [data[2]] : []
-      }, () => this.getRoles())
-    })
+      }, () => that.getRoles())
+    });
   }
-
 
   getRoles = async () => {
     const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state

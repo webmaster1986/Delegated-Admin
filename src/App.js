@@ -25,15 +25,13 @@ class App extends Component {
     constructor(props){
         super(props)
         this.state = {
-            isLoading: false
+            isLoading: true
         }
     }
 
   async componentDidMount() {
-      this.setState({
-          isLoading: true
-      })
-      const data =  await this._apiService.getLoginUserRole("1234501")
+      const userLogin = cookies.get('userLogin');
+      const data =  await this._apiService.getLoginUserRole(userLogin)
       if(!data || data.error){
           this.setState({
               isLoading: false
@@ -41,9 +39,33 @@ class App extends Component {
       } else {
           cookies.set('USER_ROLE', data, { path: '/' });
           this.setState({
-              isLoading: false
+              isLoading: false,
+              userRole: data,
           })
       }
+  }
+
+  getRoutes = () => {
+      if (this.state.userRole === 'super_admin') {
+        return (
+          <Switch>
+            <Route path={'/edit-app/:id'} component={EditApp}/>
+            <Route path={'/create-apps'} component={CreateApp}/>
+            <Route path={'/review-apps'} component={ReviewApps}/>
+            <Route path={'/grant-access:app?'} component={GrantAccess}/>
+            <Route path={'/revoke-access/:app?'} component={RevokeAccess}/>
+            <Route path={'/role-manage/:id'} component={RoleManagement}/>
+            <Route path={'/'} component={AppsList}/>
+          </Switch>
+        );
+      }
+    return (
+      <Switch>
+        <Route path={'/grant-access/:app?'} component={GrantAccess}/>
+        <Route path={'/revoke-access/:app?'} component={RevokeAccess}/>
+        <Route path={'/'} component={AppOwners} />
+      </Switch>
+    );
   }
 
     render() {
@@ -56,18 +78,9 @@ class App extends Component {
                  <Container>
                     <Row>
                       <Col lg="12">
-                          <Switch>
-                              <Route path={'/login'} component={LogIn}/>
-                              <Route path={'/app-owner'} component={AppOwners}/>
-                              <Route path={'/edit-app/:id'} component={EditApp}/>
-                              <Route path={'/create-apps'} component={CreateApp}/>
-                              <Route path={'/review-apps'} component={ReviewApps}/>
-                              <Route path={'/grant-access'} component={GrantAccess}/>
-                              <Route path={'/revoke-access'} component={RevokeAccess}/>
-                              <Route path={'/revoke-access/:app'} component={RevokeAccess}/>
-                              <Route path={'/role-manage/:id'} component={RoleManagement}/>
-                              <Route path={'/'} component={AppsList}/>
-                          </Switch>
+                         {
+                           this.getRoutes()
+                         }
                       </Col>
                     </Row>
                    <Footer />

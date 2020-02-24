@@ -15,7 +15,10 @@ class RoleModal extends React.Component {
   async componentDidMount() {
     const that = this
     const {role} = this.props
-    Promise.all([this._apiService.getRoleByRoleName(role), this._apiService.getUsersByRoles(role)]).then(function(results) {
+    Promise.all([
+      this._apiService.getRoleByRoleName(role),
+      this._apiService.getUsersByRoles(role)
+    ]).then((results) => {
       console.log(results);
       let result1 = results[0]
       let result2 = results[1]
