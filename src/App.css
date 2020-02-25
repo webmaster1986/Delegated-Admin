@@ -155,3 +155,8 @@
 .link-text {
   color: deepskyblue;
 }
+
+.anticon svg {
+  padding-bottom: 5px ;
+  font-size: larger;
+}

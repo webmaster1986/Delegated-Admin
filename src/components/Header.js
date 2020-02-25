@@ -25,7 +25,7 @@ class Header extends Component {
             </Navbar.Brand>
 
             {
-              this.props.userRole === "super_admin" ?
+              (this.props.userRole === 'SUPER_ADMIN' || this.props.userRole === 'SUPER_APP_OWNER') ?
                   <Nav>
                     <Nav.Item>
                       <Link

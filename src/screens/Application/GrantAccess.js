@@ -662,8 +662,7 @@ class GrantAccess extends Component {
                                                 operations={['Select', 'Remove']}
                                             />
                                         </div>
-                                        <br/>
-                                        <div className="text-right">
+                                        <div className="text-right mt-5">
                                             {
                                                 category === "byUser" ?
                                                     <button className="btn btn-outline-success btn-sm" onClick={() => this.preview()} disabled={!(rolesData && rolesData.length)}>Review</button> :

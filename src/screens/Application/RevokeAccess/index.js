@@ -210,9 +210,9 @@ class RevokeAccess extends Component {
       {
         dataIndex: 'email',
         title: 'Email',
-        render: (record) => {
+        render: (record, data) => {
           return (
-          <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(record.data)}>Revoke Access</button>
+          <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(data)}>Revoke Access</button>
           )
         }
       },
@@ -245,7 +245,6 @@ class RevokeAccess extends Component {
         dataIndex: 'appCode',
         title: 'Action',
         render: (record, data) => {
-          debugger
           if ( data.status !== "Active") return
           return (
               <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(data)}>Revoke Role</button>
@@ -418,17 +417,17 @@ class RevokeAccess extends Component {
         <div>
           {this.renderStep(step)}
         </div>
-        <br/>
-        <div className="text-right">
+
+        <div className="text-right mt-5">
           {
             step > 0 && step !== 2 ?
-              <Button className="btn-sm" onClick={() => this.onStepChange('back')}>Back</Button>
+              <button className="btn-sm" onClick={() => this.onStepChange('back')}>Back</button>
               : null
           }
           &nbsp;&nbsp;
           {
             step === 0 ?
-              <Button className="btn btn-info btn-sm" onClick={this.onStepChange} disabled={!revokeBy}>Next</Button> : null
+              <button className="btn btn-info btn-sm" onClick={this.onStepChange} disabled={!revokeBy}>Next</button> : null
           }
         </div>
       </Container>
