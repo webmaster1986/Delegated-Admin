@@ -24,7 +24,7 @@ class RevokeAccess extends Component {
       searchedUsers: "",
       searchedUserList: [],
       step: 0,
-      isLoading: true,
+      isLoading: false,
       revokeBy: 'role',
       users: [],
       revokeRole: {},
@@ -35,45 +35,12 @@ class RevokeAccess extends Component {
   }
 
   componentDidMount() {
-    this.getData()
-  }
-
-  getData = () => {
     const {location} = this.props
-    const {user} = this.state
     const data = (location && location.pathname && location.pathname.split("/")) || []
-    const that = this
-    Promise.all([
-      this._apiService.getOwnerApplications(user.login),
-      this._apiService.getOwnerRoles(user.login),
-      this._apiService.getAllUsers()
-    ]).then((results) => {
-      console.log(results);
-      let applicationsList = results[0]
-      let roles = results[1]
-      let users = results[2]
-      if (!applicationsList || applicationsList.error) {
-        applicationsList = {}
-        message.error('something is wrong! please try again');
-      }
-      if (!roles || roles.error) {
-        roles = []
-        message.error('something is wrong! please try again');
-      }
-      if (!users || users.error) {
-        users = []
-        message.error('something is wrong! please try again');
-      }
-      that.setState({
-        isLoading: false,
-        applicationsList,
-        allRoles: roles,
-        users,
-        allUsers: [...users],
-        selectedApp: data && data[2] ? [data[2]] : []
-      }, () => that.getRoles())
-    });
-  };
+    this.setState({
+      selectedApp: (data && data[2]) ? [data[2]] : []
+    })
+  }
 
   getRoles = async () => {
     const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
@@ -114,6 +81,44 @@ class RevokeAccess extends Component {
       step: prevState.step + 1,
       revokeRole
     }))
+  }
+
+  getDataForUser = async () => {
+    let users = await this._apiService.getAllUsers()
+    if (!users || users.error) {
+      users = []
+      message.error('something is wrong! please try again');
+    }
+    const usersData = (users || []).map((f, i) => ({
+      id: i, key: i, ...f
+    }))
+    this.setState({
+      isLoading: false,
+      users: usersData,
+      allUsers: [...users],
+    })
+  }
+
+  getDataForRole = async () => {
+    const {user} = this.state
+
+    let applicationsList = await this._apiService.getOwnerApplications(user.login)
+    let roles =  await this._apiService.getOwnerRoles(user.login)
+
+    if (!applicationsList || applicationsList.error) {
+      applicationsList = []
+      message.error('something is wrong! please try again');
+    }
+    if (!roles || roles.error) {
+      roles = []
+      message.error('something is wrong! please try again');
+    }
+
+    this.setState({
+      isLoading: false,
+      applicationsList,
+      allRoles: roles
+    }, () => this.getRoles())
   }
 
   renderStep = (step) => {
@@ -352,7 +357,14 @@ class RevokeAccess extends Component {
   onStepChange = (action) => {
     this.setState(prevState => ({
       step: action === "back" ? prevState.step - 1 : prevState.step + 1
-    }))
+    }), () => {
+      const {revokeBy} = this.state
+      if (revokeBy === "user") {
+        this.getDataForUser()
+      } else {
+        this.getDataForRole()
+      }
+    })
   }
 
   toggleModal = (event, info) => {

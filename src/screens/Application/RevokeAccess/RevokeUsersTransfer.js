@@ -480,7 +480,7 @@ class RevokeUsersTransfer extends React.Component {
               </div>
               <br/>
               <div className="text-right">
-                <Button onClick={this.review} disabled={!(selectedData && selectedData.length)}>Review</Button>
+                <button className="btn btn-outline-success btn-sm" onClick={this.review} disabled={!(selectedData && selectedData.length)}>Review</button>
               </div>
             </div>
         }
