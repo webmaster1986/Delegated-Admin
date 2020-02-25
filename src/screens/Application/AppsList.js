@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom'
 import Spin from 'antd/lib/spin'
 import message from 'antd/lib/message'
 import { ApiService } from '../../services/ApiService'
-import {Column} from "devextreme-react/data-grid";
-import CustomGrid from "../../components/CustomGrid";
+import {Select, Table} from "antd";
 
 
 class AppsList extends Component {
@@ -36,6 +35,47 @@ class AppsList extends Component {
             })
         }
     }
+    appListColumn =[
+        {
+            dataIndex:'appCode',
+            title:'Application Code',
+            defaultSortOrder: 'ascend',
+            sorter: (a, b) => a.appCode.localeCompare(b.appCode),
+            sortDirections: ['descend', 'ascend']
+        },
+        {
+            dataIndex:'appName',
+            title:'Application Name',
+            sorter: (a, b) => a.appName.localeCompare(b.appName),
+            sortDirections: ['descend', 'ascend']
+        },
+        {
+            dataIndex:'appDescription',
+            title:'Description',
+            sorter: (a, b) => a.appDescription.localeCompare(b.appDescription),
+            sortDirections: ['descend', 'ascend']
+        },
+        {
+            dataIndex:'ownerGroup',
+            title:'Owner Group',
+            sorter: (a, b) => a.ownerGroup.localeCompare(b.ownerGroup),
+            sortDirections: ['descend', 'ascend']
+        },
+        {
+            dataIndex:'appCode',
+            title:'Action',
+            render: (appCode) => {
+                return (
+                    <div className="text-center">
+                        <Link to={`/role-manage/${appCode}`}>
+                            <Button variant={'primary'} size={'sm'}>Edit</Button>
+                        </Link>
+                    </div>
+                )
+            }
+        }
+
+    ];
 
     render() {
         const { applicationsList, isLoading } = this.state
@@ -65,31 +105,16 @@ class AppsList extends Component {
 
                 {
                     isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
-                        <CustomGrid
-                            refCallback={(dg) => this.dg = dg}
-                            dataSource={applicationsList}
-                            keyExpr="appCode"
-                            columnHidingEnabled={false}
-                            showBorders={true}
-                            isHideSearchPanel={true}
-                        >
-                            <Column alignment={'left'} sortOrder={'asc'} caption={'Application Code'} dataField={'appCode'}/>
-                            <Column alignment={'left'} caption={'Application Name'} dataField={'appName'}/>
-                            <Column alignment={'left'} caption={'Description'} dataField={'appDescription'}/>
-                            <Column alignment={'left'} caption={'Owner Group'} dataField={'ownerGroup'}/>
-                            <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'}
-                                cellRender={(record) => {
-                                    return (
-                                        <div className="text-center">
-                                            <Link to={`/role-manage/${record.data.appCode}`}>
-                                                <Button variant={'primary'} size={'sm'}>Edit</Button>
-                                            </Link>
-                                        </div>
-                                    )
-                                }}
-                            />
-                        </CustomGrid>
+                        <Table
+                            rowKey={'id'}
+                            columns={ this.appListColumn }
+                            size={"small"}
+                            dataSource={applicationsList || [] }
+                            pagination={false}
+
+                        />
                 }
+
 
             </Container>
         )

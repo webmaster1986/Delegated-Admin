@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Button, Row, Col, Form, InputGroup } from 'react-bootstrap'
-import { Column } from 'devextreme-react/data-grid'
-import CustomGrid from "../../components/CustomGrid"
+import {Table} from "antd";
 
 const products = [
     {
@@ -67,34 +66,51 @@ class ReviewApps extends Component {
     }
 
     render() {
+        const   productsColumn = [
+            {
+                dataIndex:'appCode',
+                title:'App Code',
+                defaultSortOrder: 'ascend',
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'description',
+                title:'Description',
+                sorter: (a, b) => a.description.localeCompare(b.description),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'ownerGroup',
+                title:'Owner Group',
+                sorter: (a, b) => a.ownerGroup.localeCompare(b.ownerGroup),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'appCode',
+                title:'Action',
+                render: (record) => {
+                    return(
+                        <div>
+                            <Button variant={'outline-success'} size={'sm'}>Approve</Button>&nbsp;&nbsp;
+                            <Button variant={'outline-danger'} size={'sm'}>Revoke</Button>
+                        </div>
+                    )
+                }
+            }
+        ];
         return(
             <Container className={'container-design'}>
                 <h4 className="text-right">
                     Applications
                 </h4>
                 <hr/>
-                <CustomGrid
-                    refCallback={(dg) => this.dg = dg}
-                    dataSource={products}
-                    // columnAutoWidth={false}
-                    keyExpr="appCode"
-                    columnHidingEnabled={false}
-                    showBorders={true}
-                    // title="Bids"
-                >
-                    <Column alignment={'left'} caption={'Application Code'} dataField={'appCode'} />
-                    <Column alignment={'left'} caption={'Application Name'} dataField={'appName'} />
-                    <Column alignment={'left'} caption={'Description'} dataField={'description'} />
-                    <Column alignment={'left'} caption={'Owner Group'} dataField={'ownerGroup'} />
-                    <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'} cellRender={(record) => {
-                        return(
-                            <div>
-                                <Button variant={'outline-success'} size={'sm'}>Approve</Button>&nbsp;&nbsp;
-                                <Button variant={'outline-danger'} size={'sm'}>Revoke</Button>
-                            </div>
-                        )
-                    }} />
-                </CustomGrid>
+                <Table
+                    rowKey={"id"}
+                    columns={productsColumn}
+                    size={"small"}
+                    dataSource={products || []}
+                    pagination={false}
+                />
 
             </Container>
         )

@@ -46,7 +46,7 @@ class App extends Component {
   }
 
   getRoutes = () => {
-      if (this.state.userRole === 'super_admin') {
+      if (this.state.userRole === 'SUPER_ADMIN' || this.state.userRole === 'SUPER_APP_OWNER' ) {
         return (
           <Switch>
             <Route path={'/edit-app/:id'} component={EditApp}/>
@@ -63,7 +63,7 @@ class App extends Component {
       <Switch>
         <Route path={'/grant-access/:app?'} component={GrantAccess}/>
         <Route path={'/revoke-access/:app?'} component={RevokeAccess}/>
-        <Route path={'/'} component={AppOwners} />
+          <Route path={'/'} component={AppOwners} />
       </Switch>
     );
   }

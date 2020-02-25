@@ -3,9 +3,8 @@ import {Row, Col, Form, Button, Container} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
-import {Column, Paging} from "devextreme-react/data-grid";
-import CustomGrid from "../../components/CustomGrid";
 import {ApiService} from "../../services/ApiService";
+import {Table} from "antd";
 
 
 class RoleManagement extends React.Component {
@@ -98,9 +97,68 @@ class RoleManagement extends React.Component {
 
 
     render() {
-        const { rolesObject, appObject, rolesList, isLoading, oimTargetList } = this.state
-        const { appName, appCode, appDescription, ownerGroup } = appObject || {}
-        const { roleName, roleDescription, oimTarget } = rolesObject || {}
+        const { rolesObject, appObject, rolesList, isLoading, oimTargetList } = this.state;
+        const { appName, appCode, appDescription, ownerGroup } = appObject || {};
+        const { roleName, roleDescription, oimTarget } = rolesObject || {};
+        const rolesListColumn = [
+            {
+                dataIndex:'roleName',
+                title:'Role Name',
+                defaultSortOrder: 'ascend',
+                sorter: (a, b) => a.roleName.localeCompare(b.roleName),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'roleDescription',
+                title:'Role Description',
+                sorter: (a, b) => a.roleDescription.localeCompare(b.roleDescription),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'oimTarget',
+                title:'Oim Target',
+                sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'creationDate',
+                title:'Creation Date',
+                sorter: (a, b) => a.creationDate.localeCompare(b.creationDate),
+                render:(creationDate) => {
+                    debugger;
+                    return(
+                        <div> { creationDate && moment(creationDate.value).format('MM/DD/YYYY HH:MM A') } </div>
+                    )
+                }
+            },
+            {
+                dataIndex:'status',
+                title:'Status',
+                sorter: (a, b) => a.status.localeCompare(b.status),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex: 'appCode',
+                title: 'Action',
+                render: (record, data) => {
+                    const buttonName = data.status === 'Active' ? 'Disable' : data.status === 'Disabled' ? 'Activate' : ''
+                    return (
+                        <div className="text-center">
+                            {
+                                buttonName ?
+                                    <Button
+                                        variant={'primary'}
+                                        size={'sm'}
+                                        onClick={() => this.onChangeStatus(data)}
+                                    >
+                                        {buttonName}
+                                    </Button> : null
+                            }
+                        </div>
+                    )
+                }
+            }
+        ];
         return (
             <Container className={'container-design'}>
                 <h4 className="text-right">
@@ -148,47 +206,13 @@ class RoleManagement extends React.Component {
                         </Form>
 
                         <p className="text-warning">Roles</p>
-
-                        <CustomGrid
-                            refCallback={(dg) => this.dg = dg}
-                            dataSource={rolesList}
-                            keyExpr="id"
-                            columnHidingEnabled={false}
-                            showBorders={true}
-                            isHideSearchPanel={true}
-                            isScrollDisabled={true}
-                        >
-                            <Paging defaultPageSize={5}/>
-                            <Column alignment={'left'} caption={'Role Name'} dataField={'roleName'}/>
-                            <Column alignment={'left'} caption={'Role Description'} dataField={'roleDescription'}/>
-                            <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
-                            <Column alignment={'left'} caption={'Created Date'} dataField={'creationDate'} cellRender={(record) => {
-                                return(
-                                    <div> { record && record.value && moment(record.value).format('MM/DD/YYYY HH:MM A') } </div>
-                                )
-                            }}/>
-                            <Column alignment={'left'} caption={'Status'} dataField={'status'}/>
-                            <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'}
-                                    cellRender={(record) => {
-                                        const buttonName = record.data.status === 'Active' ? 'Disable' : record.data.status === 'Disabled' ? 'Activate' : ''
-                                        return (
-                                            <div className="text-center">
-                                                {
-                                                    buttonName ?
-                                                    <Button
-                                                        variant={'primary'}
-                                                        size={'sm'}
-                                                        onClick={() => this.onChangeStatus(record.data)}
-                                                    >
-                                                        {buttonName}
-                                                    </Button> : null
-                                                }
-                                            </div>
-                                        )
-                                    }}
-                            />
-                        </CustomGrid>
-
+                        <Table
+                            rowKey={"id"}
+                            columns={rolesListColumn}
+                            size={"small"}
+                            dataSource={rolesList || []}
+                            pagination={false}
+                        />
                         <Form.Group as={Row}>
                             <Col sm={12} md={12}>
                                 <Form.Group as={Row}>

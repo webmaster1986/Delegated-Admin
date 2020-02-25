@@ -4,9 +4,8 @@ import Select from "antd/lib/select";
 import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
 import notification from "antd/lib/notification";
-import {Column} from "devextreme-react/data-grid";
-import CustomGrid from "../../components/CustomGrid";
 import Spin from "antd/lib/spin";
+import {Table} from "antd";
 
 const { Option } = Select
 
@@ -143,10 +142,41 @@ class CreateApp extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading } = this.state
-        const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {}
-        const { roleName, roleDescription, oimTarget } = rolesObject || {}
-        const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !ownerGroup || !rolesList.length
+        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading } = this.state;
+        const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
+        const { roleName, roleDescription, oimTarget } = rolesObject || {};
+        const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !ownerGroup || !rolesList.length;
+        const rolesListColumn = [
+            {
+                dataIndex:'roleName',
+                title:'Role Name',
+                defaultSortOrder: 'ascend',
+                sorter: (a, b) => a.roleName.localeCompare(b.roleName),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'roleDescription',
+                title:'Role Description',
+                sorter: (a, b) => a.roleDescription.localeCompare(b.roleDescription),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'oimTarget',
+                title:'Oim Target',
+                sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
+                sortDirections: ['descend', 'ascend']
+            },
+            {
+                dataIndex:'appCode',
+                title:'Action',
+                render:(record) => {
+                    return (
+                        <h6 className="text-primary cursor-pointer"
+                            onClick={() => this.onRemoveRole(record.rowIndex)}><u> Remove </u></h6>
+                    )
+                }
+            }
+        ];
         return (
             <Container className={'container-design'}>
                 { isLoading ? <div className="text-center"> <Spin className='mt-50 custom-loading'/></div> :
@@ -250,28 +280,13 @@ class CreateApp extends React.Component {
                         </Form>
 
                         <p className="text-warning">Roles</p>
-
-                        <CustomGrid
-                            refCallback={(dg) => this.dg = dg}
-                            dataSource={rolesList}
-                            keyExpr="id"
-                            columnHidingEnabled={false}
-                            showBorders={true}
-                            isHideSearchPanel={true}
-                        >
-                            <Column alignment={'left'} caption={'Role Name'} dataField={'roleName'}/>
-                            <Column alignment={'left'} caption={'Role Description'} dataField={'roleDescription'}/>
-                            <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
-                            <Column alignment={'left'} allowSorting={false} caption={'Action'} dataField={'appCode'}
-                                    cellRender={(record) => {
-                                        return (
-                                            <h6 className="text-primary cursor-pointer"
-                                                onClick={() => this.onRemoveRole(record.rowIndex)}><u> Remove </u></h6>
-                                        )
-                                    }}
-                            />
-                        </CustomGrid>
-
+                        <Table
+                            rowKey={"id"}
+                            columns={rolesListColumn}
+                            size={"small"}
+                            dataSource={rolesList || []}
+                            pagination={false}
+                        />
                         <Form.Group as={Row}>
                             <Col sm={12} md={12}>
                                 <Form.Group as={Row}>

@@ -7,8 +7,6 @@
     "availity-reactstrap-validation": "^2.5.2",
     "axios": "^0.18.0",
     "bootstrap": "^4.4.1",
-    "devextreme": "^19.2.6",
-    "devextreme-react": "^19.1.6",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",

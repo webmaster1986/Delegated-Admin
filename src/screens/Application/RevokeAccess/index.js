@@ -4,11 +4,10 @@ import {Select, Table, Transfer} from 'antd/lib'
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
-import CustomGrid from "../../../components/CustomGrid";
-import {Column} from "devextreme-react/data-grid";
 import RevokeUsersTransfer from "./RevokeUsersTransfer";
 import UserModal from "../UserModal";
 import RoleModal from "../RoleModal";
+import {Link} from "react-router-dom";
 
 const { Option } = Select;
 
@@ -74,7 +73,7 @@ class RevokeAccess extends Component {
         selectedApp: data && data[2] ? [data[2]] : []
       }, () => that.getRoles())
     });
-  }
+  };
 
   getRoles = async () => {
     const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
@@ -82,7 +81,8 @@ class RevokeAccess extends Component {
     const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
     const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
     this.setState({ roles: appRoles, searchRoleList: searchedRoles.length ? filteredRoles : [] })
-  }
+  };
+
 
   handleChange = (name, value) =>  {
     this.setState({
@@ -177,7 +177,78 @@ class RevokeAccess extends Component {
 
   step2 = () => {
     const { isLoading, roles, size, selectedApp, searchedRoles, searchedText, applicationsList, searchRoleList, revokeBy, users } = this.state;
-    const data = searchedRoles.length ? searchRoleList : roles
+    const data = searchedRoles.length ? searchRoleList : roles;
+
+    const usersCol = [
+      {
+        dataIndex: 'login',
+        title: 'Login',
+        defaultSortOrder: 'ascend',
+        sorter: (a, b) => a.login.localeCompare(b.login),
+        sortDirections: ['descend', 'ascend'],
+        render: (record, data) => (
+            <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, data)}>{record}</a>
+        )
+      },
+      {
+        dataIndex: 'name',
+        title: 'Name',
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        dataIndex: 'bureau',
+        title: 'Bureau',
+        sorter: (a, b) => a.bureau.localeCompare(b.bureau),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        dataIndex: 'email',
+        title: 'Email',
+        render: (record) => {
+          return (
+          <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(record.data)}>Revoke Access</button>
+          )
+        }
+      },
+
+    ];
+    const rolesCol = [
+      {
+        dataIndex: 'roleName',
+        title: 'Role',
+        defaultSortOrder: 'ascend',
+        sorter: (a, b) => a.roleName.localeCompare(b.roleName),
+        sortDirections: ['descend', 'ascend'],
+        render: (record, data) => (
+            <a className="text-info" onClick={(e) => this.props.toggleModal(e, data)} >{record}</a>
+        )
+      },
+      {
+        dataIndex: 'roleDescription',
+        title: 'Application',
+        sorter: (a, b) => a.roleDescription.localeCompare(b.roleDescription),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        dataIndex: 'oimTarget',
+        title: 'OIM Target',
+        sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        dataIndex: 'appCode',
+        title: 'Action',
+        render: (record, data) => {
+          debugger
+          if ( data.status !== "Active") return
+          return (
+              <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(data)}>Revoke Role</button>
+          )
+        }
+      }
+    ]
+
     return (
       <>
         {
@@ -253,58 +324,23 @@ class RevokeAccess extends Component {
             <>
               {
                 revokeBy === "user" ?
-                  <CustomGrid
-                    refCallback={(dg) => this.dg = dg}
-                    dataSource={users}
-                    keyExpr="login"
-                    columnHidingEnabled={false}
-                    showBorders={true}
-                    isHideSearchPanel={true}
-                  >
-                    <Column alignment={'left'} sortOrder={'asc'} caption={'Login'} dataField={'login'}
-                            cellRender={(record) => {
-                              return (
-                                <a className="text-info" onClick={(e) => this.toggleUserModal(e, record.data)}>{record.data.login}</a>
-                              )
-                            }}
-                    />
-                    <Column alignment={'left'} caption={'Name'} dataField={'name'}/>
-                    <Column alignment={'left'} caption={'Bureau'} dataField={'bureau'}/>
-                    <Column alignment={'left'} allowSorting={false} caption={'Email'} dataField={'email'}
-                      cellRender={(record) => {
-                        return (
-                          <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(record.data)}>Revoke Access</button>
-                        )
-                      }}
-                    />
-                  </CustomGrid>
+                      <Table
+                          rowKey={'id'}
+                          columns={usersCol}
+                          size={"small"}
+                          dataSource={users || ''}
+                          pagination={false}
+                      />
                   :
-                  <CustomGrid
-                    refCallback={(dg) => this.dg = dg}
-                    dataSource={data}
-                    keyExpr="roleName"
-                    columnHidingEnabled={false}
-                    showBorders={true}
-                    isHideSearchPanel={true}
-                  >
-                    <Column alignment={'left'} sortOrder={'asc'} caption={'Role'} dataField={'roleName'}
-                            cellRender={(record) => {
-                              return (
-                                <a className="text-info" onClick={(e) => this.toggleModal(e, record.data)}>{record.data.roleName}</a>
-                              )
-                            }}
-                    />
-                    <Column alignment={'left'} caption={'Application'} dataField={'roleDescription'}/>
-                    <Column alignment={'left'} caption={'OIM Target'} dataField={'oimTarget'}/>
-                    <Column alignment={'left'} allowSorting={false} caption={'status'} dataField={'appCode'}
-                            cellRender={(record) => {
-                              if(record.data.status !== "Active") return
-                              return (
-                                <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(record.data)}>Revoke Role</button>
-                              )
-                            }}
-                    />
-                  </CustomGrid>
+                      <Table
+                          rowKey={'id'}
+                          columns={rolesCol}
+                          size={"small"}
+                          dataSource={data || ''}
+                          pagination={false}
+                      />
+
+
               }
 
             </>
