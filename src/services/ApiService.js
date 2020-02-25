@@ -8,7 +8,7 @@ const cookies = new Cookies();
 
 export const getLoginUser = () => {
     return {
-        "login": cookies.get('userLogin'),
+        "login": cookies.get('OAMUserName'),
     }
 }
 
