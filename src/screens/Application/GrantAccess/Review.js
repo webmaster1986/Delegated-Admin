@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Col, Row} from "react-bootstrap";
-import { Table } from 'antd';
+import { Table, Icon } from 'antd';
 const Review = (props) => {
 
     const columnsByUser = [
@@ -33,7 +33,7 @@ const Review = (props) => {
             title: 'Action',
             dataIndex: '',
             key: 'x',
-            render: (record) => <Button variant={'outline-danger'} size={'sm'} onClick={() => props.onUserRemove(record)}>Remove</Button>,
+            render: (record, data) => <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onUserRemove(data)}/>
         },
     ];
 
@@ -52,7 +52,7 @@ const Review = (props) => {
                     title: 'Action',
                     dataIndex: '',
                     key: 'x',
-                    render: (record) => <Button variant={'outline-danger'} size={'sm'} onClick={() => props.onTagRemove(rootRecord.roleName, record.login)}>Remove</Button>
+                    render: (record, data) => <Icon className="text-danger" style={{fontSize: 20}} type="delete"  onClick={() => props.onTagRemove(rootRecord.roleName, data.login)}/>
                 }
             ]
         )
@@ -73,7 +73,7 @@ const Review = (props) => {
                     title: 'Action',
                     dataIndex: '',
                     key: 'x',
-                    render: (record) => <Button variant={'outline-danger'} size={'sm'} onClick={() => props.onTagRemove(rootRecord.login, record.roleName)}>Remove</Button>
+                    render: (record, data) => <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.login, data.roleName)}/>
                 }
             ]
         )

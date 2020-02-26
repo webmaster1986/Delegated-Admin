@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Container} from "react-bootstrap";
+import {Row, Col, Form, Button, Container, Breadcrumb} from "react-bootstrap";
 import Select from "antd/lib/select";
 import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
@@ -149,60 +149,63 @@ class CreateApp extends React.Component {
         const rolesListColumn = [
             {
                 dataIndex:'roleName',
-                title:'Role Name',
-                defaultSortOrder: 'ascend',
-                sorter: (a, b) => a.roleName.localeCompare(b.roleName),
-                sortDirections: ['descend', 'ascend']
+                title:'Role Name'
             },
             {
                 dataIndex:'roleDescription',
-                title:'Role Description',
-                sorter: (a, b) => a.roleDescription.localeCompare(b.roleDescription),
-                sortDirections: ['descend', 'ascend']
+                title:'Role Description'
             },
             {
                 dataIndex:'oimTarget',
-                title:'Oim Target',
-                sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
-                sortDirections: ['descend', 'ascend']
+                title:'Oim Target'
             },
             {
                 dataIndex:'appCode',
                 title:'Action',
-                render:(record) => {
+                render:(record, data, index) => {
                     return (
-                        <h6 className="text-primary cursor-pointer"
-                            onClick={() => this.onRemoveRole(record.rowIndex)}><u> Remove </u></h6>
+                        <h6 className="text-primary cursor-pointer" onClick={() => this.onRemoveRole(index)}><u> Remove </u></h6>
                     )
                 }
             }
         ];
         return (
-            <Container className={'container-design'}>
-                { isLoading ? <div className="text-center"> <Spin className='mt-50 custom-loading'/></div> :
-                    <div className="1px solid black">
-                        <p className="text-warning mt-3">Enter details of the application to be onboarded</p>
-
-                        <Form>
-                            <Form.Group as={Row}>
-                                <Form.Label column sm={12} md={4}>
-                                    Application Name
-                                </Form.Label>
-                                <Col sm={12} md={8}>
-                                    <Form.Control
+            <Container>
+                <div className={'container-design'}>
+                    <Row>
+                        <Col md={12}>
+                            <h4 className="text-left">
+                                Application Onboarding
+                            </h4>
+                        </Col>
+                    </Row>
+                    <hr/>
+                    <Breadcrumb>
+                        <Breadcrumb.Item href="/">Applications</Breadcrumb.Item>
+                        <Breadcrumb.Item active>Onboard New Application</Breadcrumb.Item>
+                    </Breadcrumb>
+                    { isLoading ? <div className="text-center"> <Spin className='mt-50 custom-loading'/></div> :
+                      <div className="1px solid black">
+                          <Form>
+                              <Form.Group as={Row}>
+                                  <Form.Label column sm={12} md={4}>
+                                      Application Name <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Col sm={12} md={8}>
+                                      <Form.Control
                                         type="text"
                                         name={'appName'}
                                         value={appName || ""}
                                         onChange={this.onChange}
-                                    />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row}>
-                                <Form.Label column md={4}>
-                                    Application Code
-                                </Form.Label>
-                                <Col sm={10} md={8}>
-                                    <Form.Control
+                                      />
+                                  </Col>
+                              </Form.Group>
+                              <Form.Group as={Row}>
+                                  <Form.Label column md={4}>
+                                      Application Code <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Col sm={10} md={8}>
+                                      <Form.Control
                                         type="text"
                                         minLength={2}
                                         maxLength={5}
@@ -210,43 +213,44 @@ class CreateApp extends React.Component {
                                         value={appCode || ""}
                                         onChange={this.onChange}
                                         onBlur={this.onBlur}
-                                    />
-                                    {appCodeError ? <span className="color-red">{appCodeError}</span> : null}
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row}>
-                                <Form.Label column md={4}>
-                                    Application Description
-                                </Form.Label>
-                                <Col sm={10} md={8}>
-                                    <Form.Control
+                                      />
+                                      {appCodeError ? <span className="color-red">{appCodeError}</span> : null}
+                                  </Col>
+                              </Form.Group>
+                              <Form.Group as={Row}>
+                                  <Form.Label column md={4}>
+                                      Application Description <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Col sm={10} md={8}>
+                                      <Form.Control
                                         type="text"
                                         name={'appDescription'}
                                         value={appDescription || ""}
                                         onChange={this.onChange}
-                                    />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row}>
-                                <Form.Label column md={4}>
-                                    Application Owner Group
-                                </Form.Label>
-                                <Col sm={10} md={8}>
-                                    <Form.Group as={Row}>
-                                        <Col md={5}>
-                                            <Form.Control
+                                      />
+                                  </Col>
+                              </Form.Group>
+                              <Form.Group as={Row}>
+                                  <Form.Label column md={4}>
+                                      Application Owner Group <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Col sm={10} md={8}>
+                                      <Form.Group as={Row}>
+                                          <Col md={5}>
+                                              <Form.Control
                                                 type="text"
                                                 name={'ownerGroup'}
                                                 value={appCode ? ownerGroup : ""}
                                                 disabled={true}
                                                 onChange={this.onChange}
-                                            />
-                                        </Col>
-                                        <Col md={2} className="text-center">(OR)</Col>
-                                        <Col md={5}>
+                                              />
+                                          </Col>
+                                          <Col md={2} className="text-center">(OR)</Col>
+                                          <Col md={5}>
 
-                                            <Select
+                                              <Select
                                                 size={'large'}
+                                                allowClear
                                                 showSearch
                                                 style={{width: '100%'}}
                                                 placeholder="Select a person"
@@ -260,85 +264,90 @@ class CreateApp extends React.Component {
                                                     }
                                                 })}
                                                 filterOption={(input, option) =>
-                                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                 }
-                                            >
-                                                {
-                                                    (ownerGroupList || []).map((group, index) => {
-                                                        return (
+                                              >
+                                                  {
+                                                      (ownerGroupList || []).map((group, index) => {
+                                                          return (
                                                             <Option key={index.toString()}
                                                                     value={group}>{group}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
+                                                          )
+                                                      })
+                                                  }
+                                              </Select>
 
-                                        </Col>
-                                    </Form.Group>
-                                </Col>
-                            </Form.Group>
-                        </Form>
+                                          </Col>
+                                      </Form.Group>
+                                  </Col>
+                              </Form.Group>
+                          </Form>
 
-                        <p className="text-warning">Roles</p>
-                        <Table
-                            rowKey={"id"}
-                            columns={rolesListColumn}
-                            size={"small"}
-                            dataSource={rolesList || []}
-                            pagination={false}
-                        />
-                        <Form.Group as={Row}>
-                            <Col sm={12} md={12}>
-                                <Form.Group as={Row}>
-                                    <Col className="pt-2" md={3}>
-                                        <Form.Control type="text" placeholder="Role Name" name={'roleName'}
-                                                      value={roleName || ""} onChange={this.onRoleChange}/>
-                                    </Col>
-                                    <Col className="pt-2" md={3}>
-                                        <Form.Control type="text" placeholder="Role Description"
-                                                      name={'roleDescription'} value={roleDescription || ""}
-                                                      onChange={this.onRoleChange}/>
-                                    </Col>
-                                    <Col className="pt-2" md={3}>
-                                        <Form.Group>
-                                            <Form.Control as="select" placeholder="OIM Target" name={'oimTarget'}
-                                                          value={oimTarget || ""} onChange={this.onRoleChange}>
-                                                {
-                                                    (oimTargetList || []).map((oim, index) => {
-                                                        return (
+                          <p className="text-warning">Roles <span className="text-danger">*</span></p>
+                          {
+                              rolesList.length ?
+                                <Table
+                                  rowKey={"id"}
+                                  columns={rolesListColumn}
+                                  size={"small"}
+                                  dataSource={rolesList || []}
+                                  pagination={false}
+                                /> : null
+                          }
+                          <Form.Group as={Row}>
+                              <Col sm={12} md={12}>
+                                  <Form.Group as={Row}>
+                                      <Col className="pt-2" md={3}>
+                                          <Form.Control type="text" placeholder="Role Name" name={'roleName'}
+                                                        value={roleName || ""} onChange={this.onRoleChange}/>
+                                      </Col>
+                                      <Col className="pt-2" md={3}>
+                                          <Form.Control type="text" placeholder="Role Description"
+                                                        name={'roleDescription'} value={roleDescription || ""}
+                                                        onChange={this.onRoleChange}/>
+                                      </Col>
+                                      <Col className="pt-2" md={3}>
+                                          <Form.Group>
+                                              <Form.Control as="select" placeholder="OIM Target" name={'oimTarget'}
+                                                            value={oimTarget || ""} onChange={this.onRoleChange}>
+                                                  {
+                                                      (oimTargetList || []).map((oim, index) => {
+                                                          return (
                                                             <option key={index.toString()}>{oim}</option>
-                                                        )
-                                                    })
-                                                }
-                                            </Form.Control>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={3} className={'pt-2'}>
-                                        <Button
+                                                          )
+                                                      })
+                                                  }
+                                              </Form.Control>
+                                          </Form.Group>
+                                      </Col>
+                                      <Col md={3} className={'pt-2'}>
+                                          <Button
                                             type="submit"
                                             onClick={this.onAddRole}
                                             disabled={!roleName || !roleDescription}
-                                        >
-                                            Add Role
-                                        </Button>
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row}>
-                            <Col>
-                                <Button
+                                          >
+                                              Add Role
+                                          </Button>
+                                      </Col>
+                                  </Form.Group>
+                              </Col>
+                          </Form.Group>
+                          <Form.Group as={Row}>
+                              <Col>
+                                  <Button variant={'danger'} onClick={() => this.props.history.push('/')}>Cancel</Button>&nbsp;&nbsp;
+                                  <Button
                                     type="submit"
                                     variant={'success'}
                                     onClick={this.onOnBoardApplication}
                                     disabled={disabled}
-                                >
-                                    Submit
-                                </Button>
-                            </Col>
-                        </Form.Group>
-                    </div>
-                }
+                                  >
+                                      Submit
+                                  </Button>
+                              </Col>
+                          </Form.Group>
+                      </div>
+                    }
+                </div>
             </Container>
         );
     }

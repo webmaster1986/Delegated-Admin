@@ -1,7 +1,6 @@
 import React from "react"
-import {Col, Container, Form, InputGroup, Row} from "react-bootstrap";
+import {Col, Form, InputGroup, Row, Button} from "react-bootstrap";
 import {Table, Transfer} from "antd";
-import {Button} from "antd/es";
 import difference from "lodash/difference";
 import {ApiService} from "../../../services/ApiService";
 import message from "antd/lib/message";
@@ -446,6 +445,9 @@ class RevokeUsersTransfer extends React.Component {
                           value={searchRoleText || ""}
                           onChange={this.onRoleSearch}
                         />
+                        <InputGroup.Append>
+                          <Button variant="outline-secondary" onClick={() => this.onRoleSearch({ target: { value: '' } })}>clear</Button>
+                        </InputGroup.Append>
                       </InputGroup>
                     </Col>
                   </Row>

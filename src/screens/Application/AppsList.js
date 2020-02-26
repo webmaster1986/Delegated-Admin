@@ -102,45 +102,46 @@ class AppsList extends Component {
         const { applicationsList, isLoading, searchString, searchList } = this.state
         const apps = searchString.length ? searchList : applicationsList
         return(
-            <Container className={'container-design'}>
-                <h4 className="text-left">
-                    Applications
-                </h4>
-                <hr/>
-                <Row>
-                    <Col md={8}>
-                        <InputGroup className="input-prepend">
-                            <InputGroup.Prepend>
-                                <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Form.Control
-                              type="text"
-                              placeholder="search"
-                              name="searchString"
-                              onChange={this.onSearch}
-                            />
-                        </InputGroup>
-                    </Col>
-                    <Col md={4}>
-                        <div className="mb-3 text-right marginTop-sm-1">
-                            <Link to={'/create-apps'}> <Button variant="primary">OnBoard New Application </Button> </Link>
-                        </div>
-                    </Col>
-                </Row>
+            <Container>
+                <div className="container-design">
+                    <Row>
+                        <Col md={8}>
+                            <h4 className="text-left">
+                                Applications
+                            </h4>
+                        </Col>
+                        <Col md={4}>
+                            <div className="text-right marginTop-sm-1">
+                                <Link to={'/create-apps'}> <Button variant="primary">OnBoard New Application </Button> </Link>
+                            </div>
+                        </Col>
+                    </Row>
+                    <hr/>
 
-                {
-                    isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
-                        <Table
+                    <InputGroup className="input-prepend">
+                        <InputGroup.Prepend>
+                            <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control
+                          type="text"
+                          placeholder="Search with application code or name"
+                          name="searchString"
+                          onChange={this.onSearch}
+                        />
+                    </InputGroup>
+                    <br/>
+                    {
+                        isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
+                          <Table
                             rowKey={'id'}
                             columns={this.appListColumn}
                             size={"small"}
                             dataSource={apps || [] }
                             pagination={false}
 
-                        />
-                }
-
-
+                          />
+                    }
+                </div>
             </Container>
         )
     }

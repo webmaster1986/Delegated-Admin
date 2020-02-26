@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Container, InputGroup} from "react-bootstrap";
+import {Row, Col, Form, Button, Container, InputGroup, Breadcrumb} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
@@ -109,26 +109,10 @@ class RoleManagement extends React.Component {
                 sortDirections: ['descend', 'ascend']
             },
             {
-                dataIndex:'roleDescription',
-                title:'Role Description',
-                sorter: (a, b) => a.roleDescription.localeCompare(b.roleDescription),
-                sortDirections: ['descend', 'ascend']
-            },
-            {
                 dataIndex:'oimTarget',
                 title:'Oim Target',
                 sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
                 sortDirections: ['descend', 'ascend']
-            },
-            {
-                dataIndex:'creationDate',
-                title:'Creation Date',
-                sorter: (a, b) => a.creationDate.localeCompare(b.creationDate),
-                render:(creationDate) => {
-                    return(
-                        <div> { creationDate && moment(creationDate.value).format('MM/DD/YYYY HH:MM A') } </div>
-                    )
-                }
             },
             {
                 dataIndex:'status',
@@ -159,109 +143,118 @@ class RoleManagement extends React.Component {
             }
         ];
         return (
-            <Container className={'container-design'}>
-                <h4 className="text-left">
-                    Role Management
-                </h4>
-                <hr/>
+            <Container>
+                <div className={'container-design'}>
+                    <Row>
+                        <Col md={12}>
+                            <h4 className="text-left">
+                                Role Management
+                            </h4>
+                        </Col>
+                    </Row>
+                    <hr/>
+                    <Breadcrumb>
+                        <Breadcrumb.Item href="/">Applications</Breadcrumb.Item>
+                        <Breadcrumb.Item active>Role Management</Breadcrumb.Item>
+                    </Breadcrumb>
+                    { isLoading ?
+                      <div className="text-center mt-5-p">
+                          <Spin className='mt-50 custom-loading'/>
+                      </div> :
+                      <div>
+                          <p className="text-warning mt-3">Selected Application Details</p>
+                          <Row>
+                              <Col xs={6} sm={4} md={2}>
+                                  <b>Application Name: </b>
+                              </Col>
+                              <Col xs={6} sm={4} md={3}>
+                                  <p>{appName}</p>
+                              </Col>
+                              <Col xs={6} sm={4} md={2} className={'marginTop-sm-1'}>
+                                  <b>App Owner Group:</b>
+                              </Col>
+                              <Col xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                  <p>{ownerGroup}</p>
+                              </Col>
+                          </Row>
+                          <Row>
+                              <Col xs={6} sm={4} md={2}>
+                                  <b>Application Code:</b>
+                              </Col>
+                              <Col xs={6} sm={4} md={3}>
+                                  <p>{appCode}</p>
+                              </Col>
+                              <Col xs={6} sm={4} md={2} className={'marginTop-sm-1'}>
+                                  <b>Application Description:</b>
+                              </Col>
+                              <Col xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                  <p>{appDescription}</p>
+                              </Col>
+                          </Row>
 
-                { isLoading ?
-                    <div className="text-center mt-5-p">
-                        <Spin className='mt-50 custom-loading'/>
-                    </div> :
-
-                    <div>
-                        <p className="text-warning mt-3">Selected Application Details</p>
-
-                        <Form>
-                            <Form.Group as={Row}>
-                                <Form.Label column xs={6} sm={4} md={3}>
-                                    Application Name:
-                                </Form.Label>
-                                <Form.Label column xs={6} sm={4} md={3}>
-                                    <p><b> {appName} </b></p>
-                                </Form.Label>
-                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                    App Owner Group:
-                                </Form.Label>
-                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                    <p><b> {ownerGroup} </b></p>
-                                </Form.Label>
-                            </Form.Group>
-                            <Form.Group as={Row}>
-                                <Form.Label column xs={6} sm={4} md={3}>
-                                    Application Code:
-                                </Form.Label>
-                                <Form.Label column xs={6} sm={4} md={3}>
-                                    <p><b> {appCode} </b></p>
-                                </Form.Label>
-                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                    Application Description:
-                                </Form.Label>
-                                <Form.Label column xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                    <p><b> {appDescription} </b></p>
-                                </Form.Label>
-                            </Form.Group>
-                        </Form>
-
-                        <p className="text-warning">Roles</p>
-                        <Table
+                          <p className="text-warning">Roles</p>
+                          <Table
                             rowKey={"id"}
                             columns={rolesListColumn}
                             size={"small"}
                             dataSource={rolesList || []}
                             pagination={false}
-                        />
-                        <Row>
-                            <Col sm={12} md={12}>
-                                <Row>
-                                    <Col className="pt-2" md={3}>
-                                        <InputGroup className="input-prepend">
-                                            <InputGroup.Prepend>
-                                                <InputGroup.Text>{`APP1_${appCode}`}</InputGroup.Text>
-                                            </InputGroup.Prepend>
-                                            <Form.Control
-                                              className="prefix-input"
-                                              type="text"
-                                              placeholder="Role Name"
-                                              name={'roleName'}
-                                              value={roleName || ""}
-                                              onChange={this.onChange}
-                                            />
-                                        </InputGroup>
-                                    </Col>
-                                    <Col className="pt-2" md={3}>
-                                        <Form.Control
+                            expandedRowRender={record => (
+                             <div>
+                                 <span>
+                                     <b>Role Description:</b>{"    "}{record.roleDescription}
+                                 </span>
+                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                 <span>
+                                     <b>Creation Date:</b>{"    "}{moment(record.creationDate).format("MM/DD/YYYY")}
+                                 </span>
+                             </div>
+                            )}
+                          />
+                          <Row>
+                              <Col sm={12} md={12}>
+                                  <Row>
+                                      <Col className="pt-2" md={3}>
+                                          <Form.Control
+                                            type="text"
+                                            placeholder="Role Name"
+                                            name={'roleName'}
+                                            value={roleName || ""}
+                                            onChange={this.onChange}
+                                          />
+                                      </Col>
+                                      <Col className="pt-2" md={3}>
+                                          <Form.Control
                                             type="text"
                                             placeholder="Role Description"
                                             name={'roleDescription'}
                                             value={roleDescription || ""}
                                             onChange={this.onChange}
-                                        />
-                                    </Col>
-                                    <Col className="pt-2" md={3}>
-                                        <Form.Group>
-                                            <Form.Control as="select" placeholder="Role Description" name={'oimTarget'}
-                                                          value={oimTarget || ""} onChange={this.onChange}>
-                                                {
-                                                    (oimTargetList || []).map((oim, index) => {
-                                                        return (
+                                          />
+                                      </Col>
+                                      <Col className="pt-2" md={3}>
+                                          <Form.Group>
+                                              <Form.Control as="select" placeholder="Role Description" name={'oimTarget'}
+                                                            value={oimTarget || ""} onChange={this.onChange}>
+                                                  {
+                                                      (oimTargetList || []).map((oim, index) => {
+                                                          return (
                                                             <option key={index.toString()}>{oim}</option>
-                                                        )
-                                                    })
-                                                }
-                                            </Form.Control>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={3} className={'pt-2'}>
-                                        <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </div>
-                }
-
+                                                          )
+                                                      })
+                                                  }
+                                              </Form.Control>
+                                          </Form.Group>
+                                      </Col>
+                                      <Col md={3} className={'pt-2'}>
+                                          <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
+                                      </Col>
+                                  </Row>
+                              </Col>
+                          </Row>
+                      </div>
+                    }
+                </div>
             </Container>
         );
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
+import {Container, Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
 import queryString from "query-string";
 import Spin from "antd/lib/spin";
 import { Table, Transfer, Select, Tag } from 'antd/lib'
@@ -394,7 +394,7 @@ class Index extends Component {
 
     onNext = () => {
         const {selectBy, selectedApp} = this.state
-        this.props.history.push(`/revoke-access?by=${selectBy}&app=${selectedApp}`)
+        this.props.history.push(`/grant-access?by=${selectBy}&app=${selectedApp}`)
         this.setState({
             step: false,
             category: selectBy,
@@ -614,6 +614,7 @@ class Index extends Component {
                                                         <Select
                                                             mode="multiple"
                                                             size={size}
+                                                            allowClear
                                                             placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
                                                             defaultValue={selectedApp}
                                                             onChange={(value) => this.handleChange('selectedApp', value)}
@@ -637,6 +638,7 @@ class Index extends Component {
                                                         <Select
                                                             mode="multiple"
                                                             size={size}
+                                                            allowClear
                                                             placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
                                                             defaultValue={searchedRoles}
                                                             onChange={(value) => this.handleChange('searchedRoles',value)}
@@ -701,6 +703,9 @@ class Index extends Component {
                                                             // name="username"
                                                             onChange={this.onSearch}
                                                         />
+                                                        <InputGroup.Append>
+                                                            <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>clear</Button>
+                                                        </InputGroup.Append>
                                                     </InputGroup>
                                                 </Col>
                                             </Row>

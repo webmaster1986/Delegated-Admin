@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
+import { Container, Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
 import {Select, Table} from 'antd/lib'
 import queryString from 'query-string';
 import {ApiService, getLoginUser} from "../../../services/ApiService";
@@ -276,6 +276,7 @@ class RevokeAccess extends Component {
                     <Select
                       mode="multiple"
                       size={size}
+                      allowClear
                       placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
                       defaultValue={selectedApp}
                       value={selectedApp}
@@ -300,6 +301,7 @@ class RevokeAccess extends Component {
                     <Select
                       mode="multiple"
                       size={size}
+                      allowClear
                       placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
                       defaultValue={searchedRoles}
                       onChange={(value) => this.handleChange('searchedRoles',value)}
@@ -328,6 +330,9 @@ class RevokeAccess extends Component {
                     value={searchedText || ""}
                     onChange={this.onSearch}
                   />
+                  <InputGroup.Append>
+                    <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>clear</Button>
+                  </InputGroup.Append>
                 </InputGroup>
               </Col>
             </Row>
