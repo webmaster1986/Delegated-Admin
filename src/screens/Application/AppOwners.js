@@ -24,7 +24,9 @@ class AppOwners extends Component {
       isLoading: false,
       onCategorySelect: false,
       applicationsList: [],
-      selectBy: ""
+      selectBy: "",
+      searchString: "",
+      searchList: []
     };
   }
 
@@ -82,13 +84,13 @@ class AppOwners extends Component {
               <Option value="manage access" disabled>
                 Manage Access
               </Option>
-              <Option value="grant access">
-                <Link to={`/grant-access/${appCode}`}>
+              <Option value="grant access" onClick={() => this.props.history.push(`/grant-access?app=${appCode}`)}>
+                <Link to={`/grant-access?app=${appCode}`}>
                   Grant Access
                 </Link>
               </Option>
-              <Option value="revoke access">
-                <Link to={`/revoke-access/${appCode}`}>
+              <Option value="revoke access" onClick={() => this.props.history.push(`/revoke-access?app=${appCode}`)}>
+                <Link to={`/revoke-access?app=${appCode}`}>
                   Revoke Access
                 </Link>
               </Option>
@@ -98,28 +100,51 @@ class AppOwners extends Component {
       }
     }
   ];
+
+  onSearch = (event) => {
+    const {applicationsList} = this.state
+    const searchString = (event && event.target.value) || ""
+    let searchList = []
+    if (searchString) {
+      searchList = applicationsList && applicationsList.filter(obj =>
+        ["appName", "appName", "ownerGroup", "appCode"].some(key => {
+          return (
+            obj && obj[key] && obj[key].toLowerCase().includes((searchString && searchString.toLowerCase()) || "")
+          )
+        })
+      )
+    }
+    this.setState({
+      searchString,
+      searchList
+    })
+  }
+
   render() {
     const {
       applicationsList,
       isLoading,
-      onCategorySelect,
-      id,
-      selectBy
+      searchString,
+      searchList
     } = this.state;
+    const apps = searchString.length ? searchList : applicationsList
     return (
       <Container className={"container-design"}>
-        <h4 className="text-right">Applications</h4>
+        <h4 className="text-left">Applications</h4>
         <hr />
         {
           <>
             <Row>
               <Col md={12}>
-                <InputGroup>
+                <InputGroup className="input-prepend">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                  </InputGroup.Prepend>
                   <Form.Control
                     type="text"
-                    placeholder="Search..."
-                    aria-describedby="inputGroupPrepend"
-                    name="username"
+                    placeholder="search"
+                    name="searchString"
+                    onChange={this.onSearch}
                   />
                 </InputGroup>
               </Col>
@@ -135,7 +160,7 @@ class AppOwners extends Component {
                     rowKey={"id"}
                     columns={this.appOwnersColumn}
                     size={"small"}
-                    dataSource={applicationsList || []}
+                    dataSource={apps || []}
                     pagination={false}
                 />
             )}

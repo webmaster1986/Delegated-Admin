@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import {Select, Table, Transfer} from 'antd/lib'
+import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
+import {Select, Table} from 'antd/lib'
+import queryString from 'query-string';
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import RevokeUsersTransfer from "./RevokeUsersTransfer";
 import UserModal from "../UserModal";
 import RoleModal from "../RoleModal";
-import {Link} from "react-router-dom";
 
 const { Option } = Select;
 
@@ -25,7 +25,7 @@ class RevokeAccess extends Component {
       searchedUserList: [],
       step: 0,
       isLoading: false,
-      revokeBy: 'role',
+      revokeBy: '',
       users: [],
       revokeRole: {},
       isInfoModal: false,
@@ -36,9 +36,14 @@ class RevokeAccess extends Component {
 
   componentDidMount() {
     const {location} = this.props
-    const data = (location && location.pathname && location.pathname.split("/")) || []
+    const parsed = queryString.parse(location.search);
     this.setState({
-      selectedApp: (data && data[2]) ? [data[2]] : []
+      selectedApp: parsed && parsed.app ? [parsed.app] : [],
+      revokeBy: parsed.by || ''
+    },() => {
+      if(parsed.by){
+        this.onStepChange()
+      }
     })
   }
 
@@ -129,9 +134,13 @@ class RevokeAccess extends Component {
       case 1:
         return <div>{this.step2(revokeBy)}</div>
       case 2:
+      case 3:
         return (
           <RevokeUsersTransfer
             {...this.props}
+            onNextStep={() => this.setState(prevState => ({
+              step: prevState.step + 1
+            }))}
             toggleUserModal={this.toggleUserModal}
             toggleModal={this.toggleModal}
             user={user}
@@ -267,7 +276,7 @@ class RevokeAccess extends Component {
                     <Select
                       mode="multiple"
                       size={size}
-                      placeholder="Please select"
+                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
                       defaultValue={selectedApp}
                       value={selectedApp}
                       onChange={(value) => this.handleChange('selectedApp', value)}
@@ -291,7 +300,7 @@ class RevokeAccess extends Component {
                     <Select
                       mode="multiple"
                       size={size}
-                      placeholder="Please select"
+                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
                       defaultValue={searchedRoles}
                       onChange={(value) => this.handleChange('searchedRoles',value)}
                       style={{ width: '100%' }}
@@ -308,12 +317,14 @@ class RevokeAccess extends Component {
                 <Form.Label >
                   Users:
                 </Form.Label>
-                <InputGroup>
+                <InputGroup className="input-prepend">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                  </InputGroup.Prepend>
                   <Form.Control
                     type="text"
-                    placeholder="Search..."
+                    placeholder="search"
                     aria-describedby="inputGroupPrepend"
-                    // name="username"
                     value={searchedText || ""}
                     onChange={this.onSearch}
                   />
@@ -354,9 +365,15 @@ class RevokeAccess extends Component {
   }
 
   onStepChange = (action) => {
-    this.setState(prevState => ({
-      step: action === "back" ? prevState.step - 1 : prevState.step + 1
-    }), () => {
+    this.setState(prevState => {
+      if(prevState.step+1 === 1){
+        const selectedApp = prevState.selectedApp.length ? prevState.selectedApp[0] : ""
+        this.props.history.push(`/revoke-access?by=${prevState.revokeBy}&app=${selectedApp}`)
+      }
+      return {
+        step: action === "back" ? prevState.step - 1 : prevState.step + 1
+      }
+    }, () => {
       const {revokeBy} = this.state
       if (revokeBy === "user") {
         this.getDataForUser()
@@ -393,42 +410,43 @@ class RevokeAccess extends Component {
   render() {
     const { step, revokeBy, isInfoModal, info, isUserModal } = this.state;
     return(
-      <Container className={'container-design'}>
+      <Container className={"mt-5"}>
         {
-          isInfoModal ?
-            <RoleModal
-              role={info}
-              toggleModal={this.toggleModal}
-            />
+          step > 1 && step !== 3  ?
+            <a className="back-btn" onClick={() => this.onStepChange('back')}><i className="fa fa-chevron-left"/>{"  Back"}</a>
             : null
         }
-        {
-          isUserModal ?
-            <UserModal
-              user={info}
-              toggleModal={this.toggleUserModal}
-            />
-            : null
-        }
-        <h4 className="text-right">
-          Revoke Access
-        </h4>
-        <hr/>
-        <div>
-          {this.renderStep(step)}
-        </div>
-
-        <div className="text-right mt-5">
+        <div className="container-design">
           {
-            step > 0 && step !== 2 ?
-              <button className="btn-sm" onClick={() => this.onStepChange('back')}>Back</button>
+            isInfoModal ?
+              <RoleModal
+                role={info}
+                toggleModal={this.toggleModal}
+              />
               : null
           }
-          &nbsp;&nbsp;
           {
-            step === 0 ?
-              <button className="btn btn-info btn-sm" onClick={this.onStepChange} disabled={!revokeBy}>Next</button> : null
+            isUserModal ?
+              <UserModal
+                user={info}
+                toggleModal={this.toggleUserModal}
+              />
+              : null
           }
+          <h4 className="text-left">
+            Revoke Access
+          </h4>
+          <hr/>
+          <div>
+            {this.renderStep(step)}
+          </div>
+
+          <div className="text-right mt-5">
+            {
+              step === 0 ?
+                <button className="btn btn-info btn-sm" onClick={this.onStepChange} disabled={!revokeBy}>Next</button> : null
+            }
+          </div>
         </div>
       </Container>
     )

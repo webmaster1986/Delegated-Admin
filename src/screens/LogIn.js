@@ -5,7 +5,7 @@ class LogIn extends React.Component {
     render() {
         return (
             <Container className={'container-design'}>
-                <h4 className="text-right">
+                <h4 className="text-left">
                     Log In
                 </h4>
                 <hr/>

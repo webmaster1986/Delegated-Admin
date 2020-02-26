@@ -1,0 +1,146 @@
+
+/* nav header */
+nav {
+    display: block;
+    text-align: center;
+}
+nav ul {
+    margin: 0;
+    padding:0;
+    list-style: none;
+}
+.nav a {
+    display: block;
+    background: transparent;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.31em 1.8em;
+    position: relative;
+}
+.nav{
+    vertical-align: top;
+    display: inline-block;
+    border-radius:6px;
+}
+.nav li {
+    position: relative;
+}
+.nav > li {
+    float: left;
+    /*border-bottom: 4px #aaa solid;*/
+    list-style: none;
+    margin-right: 1px;
+}
+.nav li {
+    list-style: none;
+}
+.nav > li > a {
+    margin-bottom: 1px;
+}
+.nav > li:hover,
+.nav > li:hover > a {
+    /*border-bottom-color: orange;*/
+}
+.nav li:hover > a {
+    /*color:orange;*/
+}
+.nav > li:first-child {
+    border-radius: 4px 0 0 4px;
+}
+.nav > li:first-child > a {
+    border-radius: 4px 0 0 0;
+}
+.nav > li:last-child {
+    border-radius: 0 0 4px 0;
+    margin-right: 0;
+}
+.nav > li:last-child > a {
+    border-radius: 0 4px 0 0;
+}
+.nav li li a {
+    margin-top: 1px;
+}
+
+/* submenu positioning*/
+.nav ul {
+    position: absolute;
+    white-space: nowrap;
+    z-index: 1;
+    left: -99999em;
+}
+.nav > li:hover > ul {
+    left: auto;
+    /*margin-top: 5px;*/
+    min-width: 100%;
+}
+.nav > li li:hover > ul {
+    left: 100%;
+    margin-left: 1px;
+    top: -1px;
+}
+.nav li a:first-child:nth-last-child(2):before {
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    border: 5px solid transparent;
+    top: 50% ;
+    right:5px;
+}
+.nav .nav-submenu {
+    background: #CC0000;
+    padding: 0;
+}
+.nav .nav-submenu li {
+    padding: 6px;
+}
+.nav .nav-submenu .nav-item {
+    padding: 5px
+}
+.nav .nav-submenu .nav-item:hover, .nav .nav-submenu li:hover {
+    background: #80808036;
+}
+
+.nav .nav-submenu li a, .nav .nav-submenu li .nav-link {
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: normal;
+}
+/* arrow hover styling */
+.nav > li > a:first-child:nth-last-child(2):before {
+    border-top-color: #fff;
+}
+.nav > li:hover > a:first-child:nth-last-child(2):before {
+    border: 5px solid transparent;
+    margin-top:-5px
+}
+.nav li li > a:first-child:nth-last-child(2):before {
+    border-left-color: #aaa;
+    margin-top: -5px
+}
+.nav li li:hover > a:first-child:nth-last-child(2):before {
+    border: 5px solid transparent;
+    border-right-color: #aaa;
+    right: 10px;
+}
+
+.header-nav-right {
+    align-items: center;
+    display: inline-flex;
+}
+
+.header-nav-right .wc-username {
+    margin: 0;
+    padding: 10px;
+    color: #ffffff;
+    font-size: 1.15rem;
+}
+
+.header-nav-right .logout {
+    padding-left: 15px;
+    border-left: 1px solid gray;
+    align-items: center;
+    align-content: center;
+    color: #fff;
+    font-size: 18px;
+}

@@ -13,7 +13,9 @@ class AppsList extends Component {
         super(props)
         this.state = {
             isLoading: false,
-            applicationsList: []
+            applicationsList: [],
+            searchString: "",
+            searchList: []
         }
     }
 
@@ -77,22 +79,45 @@ class AppsList extends Component {
 
     ];
 
+    onSearch = (event) => {
+        const {applicationsList} = this.state
+        const searchString = (event && event.target.value) || ""
+        let searchList = []
+        if (searchString) {
+            searchList = applicationsList && applicationsList.filter(obj =>
+              ["appName", "appName", "ownerGroup", "appCode"].some(key => {
+                  return (
+                    obj && obj[key] && obj[key].toLowerCase().includes((searchString && searchString.toLowerCase()) || "")
+                  )
+              })
+            )
+        }
+        this.setState({
+            searchString,
+            searchList
+        })
+    }
+
     render() {
-        const { applicationsList, isLoading } = this.state
+        const { applicationsList, isLoading, searchString, searchList } = this.state
+        const apps = searchString.length ? searchList : applicationsList
         return(
             <Container className={'container-design'}>
-                <h4 className="text-right">
+                <h4 className="text-left">
                     Applications
                 </h4>
                 <hr/>
                 <Row>
                     <Col md={8}>
-                        <InputGroup>
+                        <InputGroup className="input-prepend">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                            </InputGroup.Prepend>
                             <Form.Control
-                                type="text"
-                                placeholder="Search..."
-                                aria-describedby="inputGroupPrepend"
-                                name="username"
+                              type="text"
+                              placeholder="search"
+                              name="searchString"
+                              onChange={this.onSearch}
                             />
                         </InputGroup>
                     </Col>
@@ -107,9 +132,9 @@ class AppsList extends Component {
                     isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
                         <Table
                             rowKey={'id'}
-                            columns={ this.appListColumn }
+                            columns={this.appListColumn}
                             size={"small"}
-                            dataSource={applicationsList || [] }
+                            dataSource={apps || [] }
                             pagination={false}
 
                         />

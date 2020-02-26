@@ -6,11 +6,12 @@ import {
 export default class Footer extends React.Component {
     render() {
         return (
-            <Row>
-              <Col /* style={{paddingLeft: '40px', paddingRight: '40px'}} */>
-              <hr style={{borderTop: '1px solid #808080', marginTop: '40px', marginBottom: '5px',}} /><p style={{marginBottom: '20px'}}><span>&copy;</span> 2019 Fire Department City of New York</p>
-              </Col>
-            </Row>
+            <div className="container footer">
+              <hr style={{borderTop: '1px solid #808080'}} />
+              <p>
+                <span>&copy;</span> 2019 Fire Department City of New York
+              </p>
+            </div>
         );
       }
 }

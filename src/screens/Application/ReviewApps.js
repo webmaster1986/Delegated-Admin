@@ -100,7 +100,7 @@ class ReviewApps extends Component {
         ];
         return(
             <Container className={'container-design'}>
-                <h4 className="text-right">
+                <h4 className="text-left">
                     Applications
                 </h4>
                 <hr/>

@@ -82,11 +82,11 @@ const Review = (props) => {
     return (
         <>
             <Table
-                columns={props.category === "byRole" ? columnsByRole : columnsByUser}
+                columns={props.category === "roles" ? columnsByRole : columnsByUser}
                 dataSource={props && props.data}
                 defaultExpandAllRows={true}
                 expandedRowRender={record => {
-                     if (props.category === "byRole") {
+                     if (props.category === "roles") {
                          return ( <Table dataSource={record && record.users} columns={userColumn(record)} /> )
                      } else {
                          return ( <Table dataSource={record && record.roles} columns={tagColumn(record)} /> )

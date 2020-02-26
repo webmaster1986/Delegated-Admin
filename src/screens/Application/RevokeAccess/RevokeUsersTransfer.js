@@ -170,6 +170,7 @@ class RevokeUsersTransfer extends React.Component {
         })
       }
     }
+    this.props.onNextStep()
     this.setState({
       isReview: !this.state.isReview,
       reviewList
@@ -434,10 +435,13 @@ class RevokeUsersTransfer extends React.Component {
                       <Form.Label >
                         Roles:
                       </Form.Label>
-                      <InputGroup>
+                      <InputGroup className="input-prepend">
+                        <InputGroup.Prepend>
+                          <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                        </InputGroup.Prepend>
                         <Form.Control
                           type="text"
-                          placeholder="Search..."
+                          placeholder="search"
                           aria-describedby="inputGroupPrepend"
                           value={searchRoleText || ""}
                           onChange={this.onRoleSearch}
@@ -451,10 +455,13 @@ class RevokeUsersTransfer extends React.Component {
                       <Form.Label >
                         Users:
                       </Form.Label>
-                      <InputGroup>
+                      <InputGroup className="input-prepend">
+                        <InputGroup.Prepend>
+                          <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                        </InputGroup.Prepend>
                         <Form.Control
                           type="text"
-                          placeholder="Search..."
+                          placeholder="search"
                           aria-describedby="inputGroupPrepend"
                           // name="username"
                           onChange={this.onSearch}

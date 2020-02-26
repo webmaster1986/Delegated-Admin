@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Container} from "react-bootstrap";
+import {Row, Col, Form, Button, Container, InputGroup} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
@@ -125,7 +125,6 @@ class RoleManagement extends React.Component {
                 title:'Creation Date',
                 sorter: (a, b) => a.creationDate.localeCompare(b.creationDate),
                 render:(creationDate) => {
-                    debugger;
                     return(
                         <div> { creationDate && moment(creationDate.value).format('MM/DD/YYYY HH:MM A') } </div>
                     )
@@ -161,7 +160,7 @@ class RoleManagement extends React.Component {
         ];
         return (
             <Container className={'container-design'}>
-                <h4 className="text-right">
+                <h4 className="text-left">
                     Role Management
                 </h4>
                 <hr/>
@@ -213,19 +212,23 @@ class RoleManagement extends React.Component {
                             dataSource={rolesList || []}
                             pagination={false}
                         />
-                        <Form.Group as={Row}>
+                        <Row>
                             <Col sm={12} md={12}>
-                                <Form.Group as={Row}>
-                                    <Col className="pt-2 input-group" md={3}>
-                                        <span className="input-group-addon prefix">{`APP1_${appCode}`}</span>
-                                        <Form.Control
-                                            className="prefix-input"
-                                            type="text"
-                                            placeholder="Role Name"
-                                            name={'roleName'}
-                                            value={roleName || ""}
-                                            onChange={this.onChange}
-                                        />
+                                <Row>
+                                    <Col className="pt-2" md={3}>
+                                        <InputGroup className="input-prepend">
+                                            <InputGroup.Prepend>
+                                                <InputGroup.Text>{`APP1_${appCode}`}</InputGroup.Text>
+                                            </InputGroup.Prepend>
+                                            <Form.Control
+                                              className="prefix-input"
+                                              type="text"
+                                              placeholder="Role Name"
+                                              name={'roleName'}
+                                              value={roleName || ""}
+                                              onChange={this.onChange}
+                                            />
+                                        </InputGroup>
                                     </Col>
                                     <Col className="pt-2" md={3}>
                                         <Form.Control
@@ -253,9 +256,9 @@ class RoleManagement extends React.Component {
                                     <Col md={3} className={'pt-2'}>
                                         <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
                                     </Col>
-                                </Form.Group>
+                                </Row>
                             </Col>
-                        </Form.Group>
+                        </Row>
                     </div>
                 }
 
