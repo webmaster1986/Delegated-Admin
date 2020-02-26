@@ -141,11 +141,11 @@ code {
   margin-top: 5% !important;
 }
 
-.input-group {
+/* .input-group {
   position: relative !important;
-  /* display: table !important; */
+  display: table !important;
   border-collapse: separate !important;
-}
+} */
 
 .input-prepend .input-group-text {
   background: white !important;
@@ -196,6 +196,18 @@ code {
 .anticon svg {
   padding-bottom: 5px ;
   font-size: larger;
+}
+
+.card{
+  border-radius: 0 !important;
+}
+
+.card-header{
+  background-color: white !important;
+}
+
+.terminal-font {
+  font-size: medium
 }
 
 .back-btn {

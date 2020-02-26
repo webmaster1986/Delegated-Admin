@@ -18,6 +18,8 @@ import './App.css';
 import 'antd/dist/antd.css';
 
 import AppOwners from "./screens/Application/AppOwners";
+import TerminalAssignment from "./screens/Application/TerminalAssignment";
+import Terminal from "./screens/Application/Terminal";
 const cookies = new Cookies();
 
 class App extends Component {
@@ -49,12 +51,14 @@ class App extends Component {
       if (this.state.userRole === 'SUPER_ADMIN' || this.state.userRole === 'SUPER_APP_OWNER' ) {
         return (
           <Switch>
+              <Route path={'/terminal'} component={Terminal}/>
               <Route path={'/edit-app/:id'} component={EditApp}/>
             <Route path={'/create-apps'} component={CreateApp}/>
             {/*<Route path={'/review-apps'} component={ReviewApps}/>*/}
             <Route path={'/grant-access'} component={GrantAccess}/>
             <Route path={'/revoke-access'} component={RevokeAccess}/>
             <Route path={'/role-manage/:id'} component={RoleManagement}/>
+            <Route path={'/terminal-assignment'} component={TerminalAssignment}/>
             <Route path={'/'} component={AppsList}/>
           </Switch>
         );
