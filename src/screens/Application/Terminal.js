@@ -1,5 +1,5 @@
 import React from "react"
-import {Col, Container, Form, InputGroup, Row, Badge, Dropdown, ButtonToolbar} from "react-bootstrap";
+import {Col, Container, Form, InputGroup, Row, Badge, Button} from "react-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
@@ -91,10 +91,10 @@ class Terminal extends React.Component {
         const options = {
             paginationSize: 4,
             pageStartIndex: 0,
-            // alwaysShowAllBtns: true, // Always show next and previous button
-            // withFirstAndLast: false, // Hide the going to First and Last page button
-            // hideSizePerPage: true, // Hide the sizePerPage dropdown always
-            // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
+            // alwaysShowAllBtns: true,
+            // withFirstAndLast: false,
+            // hideSizePerPage: true,
+            // hidePageListOnlyOnePage: true,
             firstPageText: 'First',
             prePageText: 'Back',
             nextPageText: 'Next',
@@ -111,7 +111,7 @@ class Terminal extends React.Component {
                 text: '10', value: 10
             }, {
                 text: 'All', value: products.length
-            }] // A numeric array is also available. the purpose of above example is custom the text
+            }]
         };
 
         return (
@@ -132,38 +132,37 @@ class Terminal extends React.Component {
                                 </InputGroup>
                             </Col>
                             <Col md={5}>
-                                <ButtonToolbar>
-                                    <Dropdown className="ml-2 mt-1">
-                                        <Dropdown.Toggle id="dropdown-basic">Borough</Dropdown.Toggle>
+                                <Form.Row>
+                                    <Form.Group className="ml-2 mt-1" controlId="exampleForm.ControlSelect1">
+                                        {/*<Form.Label>Borough</Form.Label>*/}
+                                        <Form.Control as="select">
+                                            <option>Italy</option>
+                                            <option>France</option>
+                                            <option>Poland</option>
+                                        </Form.Control>
+                                    </Form.Group>
 
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item href="#/action-1">Italy</Dropdown.Item>
-                                            <Dropdown.Item href="#/action-2">France</Dropdown.Item>
-                                            <Dropdown.Item href="#/action-3">Poland</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                                    <Form.Group className="ml-2 mt-1" controlId="exampleForm.ControlSelect1">
+                                        {/*<Form.Label>Terminal</Form.Label>*/}
+                                        <Form.Control as="select">
+                                            <option>26 Class E</option>
+                                            <option>56 Value</option>
+                                            <option>27 Value</option>
+                                        </Form.Control>
+                                    </Form.Group>
 
-                                    <Dropdown className="ml-2 mt-1">
-                                        <Dropdown.Toggle id="dropdown-basic">Terminal</Dropdown.Toggle>
-
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item href="#/action-1">1</Dropdown.Item>
-                                            <Dropdown.Item href="#/action-2">2</Dropdown.Item>
-                                            <Dropdown.Item href="#/action-3">3</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-
-                                    <Dropdown className="ml-2 mt-1">
-                                        <Dropdown.Toggle id="dropdown-basic">Comp.</Dropdown.Toggle>
-
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item href="#/action-1">SFC</Dropdown.Item>
-                                            <Dropdown.Item href="#/action-2">HPA</Dropdown.Item>
-                                            <Dropdown.Item href="#/action-3">AFA</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                    <button type="button" className="btn btn-primary ml-2 mt-1">Search</button>
-                                </ButtonToolbar>
+                                    <Form.Group className="ml-2 mt-1" controlId="exampleForm.ControlSelect1">
+                                        {/*<Form.Label>Terminal</Form.Label>*/}
+                                        <Form.Control as="select">
+                                            <option>SFC</option>
+                                            <option>HPA</option>
+                                            <option>AFA</option>
+                                        </Form.Control>
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Button type="button" className="btn btn-primary ml-2 mt-1">Search</Button>
+                                    </Form.Group>
+                                </Form.Row>
                             </Col>
                             <Col md={2}>
                                 <span className="terminal-font ml-2">All filters </span><span> | </span><span className="terminal-font"> Clear <Badge variant="secondary">2</Badge></span>

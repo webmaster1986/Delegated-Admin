@@ -1,14 +1,37 @@
 import React, { Component } from "react";
 import { Table, Container, Card, Row, Col} from "react-bootstrap";
+import EditPremise from "../EditPremise";
+import TerminalModal from "../TerminalModal";
 
 class Reference extends Component {
-    render() {
+    state = {
+        isTerminalModal: false,
+        isPremiseModal: false
+    }
 
+    handleTerminalModal = () => {
+        const {isTerminalModal} = this.state
+        this.setState({
+            isTerminalModal: !isTerminalModal
+        })
+    }
+
+    handlePremiseModal = () => {
+        const {isPremiseModal} = this.state
+        this.setState({
+            isPremiseModal: !isPremiseModal
+        })
+    }
+
+    render() {
+        const {isTerminalModal, isPremiseModal} = this.state
         return (
            <>
                <h4 className="m-2">Reference Number</h4>
                <hr />
                <Container>
+                   { isTerminalModal ? <TerminalModal handleModal={this.handleTerminalModal}/> : null }
+                   { isPremiseModal ? <EditPremise handleModal={this.handlePremiseModal}/> : null }
                    <Table bordered>
                        <thead>
                        <tr>
@@ -36,8 +59,8 @@ class Reference extends Component {
                                <Col md={3}>
                                    Factory & Industrial
                                </Col>
-                               <Col md={2}>
-
+                               <Col md={2} className="text-right">
+                                   <i className="fa fa-pencil cursor-pointer" onClick={this.handlePremiseModal}/>
                                </Col>
                            </Row>
                        </Card.Header>
@@ -52,7 +75,14 @@ class Reference extends Component {
                    </Card>
                    <Card className="mt-4">
                        <Card.Header>
-                          <h6>Terminals</h6>
+                           <Row>
+                               <Col md={10}>
+                                   <h6 className="text-left">Terminals</h6>
+                               </Col>
+                               <Col md={2} className="text-right">
+                                   <i className="fa fa-plus text-right cursor-pointer" onClick={this.handleTerminalModal}/>
+                               </Col>
+                           </Row>
                        </Card.Header>
                        <Card.Body>
                            There are currently no terminals. Add a terminal now

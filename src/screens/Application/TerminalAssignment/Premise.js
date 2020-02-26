@@ -164,7 +164,7 @@ class Premise extends Component {
             </Col>
           </Row>
           <div className="text-right mt-5">
-            <Button variant="primary">Save</Button>
+            <Button variant="primary" onClick={this.props.toggle}>Save</Button>
           </div>
         </Form>
       </>
