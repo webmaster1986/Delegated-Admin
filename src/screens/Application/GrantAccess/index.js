@@ -208,52 +208,34 @@ class Index extends Component {
         })
     }
 
-    onTagRemove = (userId, tagId) => {
-        const {usersData, roles, category} = this.state
-        {
-            (category === "user") ?
-                usersData.forEach(item => {
-                    if ((item.roles && item.roles.length > 1)) {
-                        if (item.login === userId) {
-                            const index = item.roles.findIndex(f => f.roleName === tagId)
-                            if (index !== -1) {
-                                item.roles.splice(index, 1)
-                                message.success('role successfully removed')
-                            }
-                        }
-                    } else {
-                        message.warn('minimum one role is required')
-                    }
-                }) :
-                roles.forEach(item => {
-                    if ((item.users && item.users.length > 1)) {
-                        if (item.roleName === userId) {
-                            const index = item.users.findIndex(f => f.login === tagId)
-                            if (index !== -1) {
-                                item.users.splice(index, 1)
-                                message.success('user successfully removed')
-                            }
-                        }
-                    } else {
-                        message.warn('minimum one user is required')
-                    }
-                })
+    onTagRemove = (rootId, subId) => {
+        const {usersData, rolesData, category} = this.state
+        if (category === "user") {
+            const findIndex = usersData.findIndex(user => user.login === rootId)
+            const findSubIndex = usersData[findIndex].roles.findIndex(role => role.roleName === subId)
+            if(findIndex === -1 || findSubIndex === -1) return
+            usersData[findIndex].roles.splice(findSubIndex, 1)
+        } else {
+            const findIndex = rolesData.findIndex(role => role.roleName === rootId)
+            const findSubIndex = rolesData[findIndex].users.findIndex(role => role.login === subId)
+            if(findIndex === -1 || findSubIndex === -1) return
+            rolesData[findIndex].users.splice(findSubIndex, 1)
         }
-        this.setState({ usersData, roles })
+        this.setState({ usersData, rolesData })
     }
 
     onUserRemove = (data) => {
-        const {usersData, roles, category} = this.state
+        const {usersData, rolesData, category} = this.state
         if (category === "user") {
             const index = usersData.findIndex(f => f.login === (data && data.login))
             usersData.splice(index, 1)
             message.success('User successfully removed')
         } else {
-            const index = roles.findIndex(f => f.roleName === (data && data.roleName))
-            roles.splice(index, 1)
+            const index = rolesData.findIndex(f => f.roleName === (data && data.roleName))
+            rolesData.splice(index, 1)
             message.success('Role successfully removed')
         }
-        this.setState({ usersData, roles })
+        this.setState({ usersData, rolesData })
     }
 
     handelModal = (e, record) => {
@@ -467,6 +449,17 @@ class Index extends Component {
         }))
     }
 
+    onRemove = (index) => {
+        const {roleTargetKeys, userTargetKeys, category, usersData, rolesData} = this.state
+        if (category === "roles") {
+            roleTargetKeys.splice(index, 1)
+            rolesData.splice(index, 1)
+        } else {
+            userTargetKeys.splice(index, 1)
+            usersData.splice(index, 1)
+        }
+    }
+
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
             info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy } = this.state;
@@ -600,7 +593,8 @@ class Index extends Component {
                                                   <Row>
                                                       <Col md={8}>
                                                           {
-                                                              usersData && usersData.length ? usersData.map(a => <Tag>{a.name}</Tag>) : null
+                                                              usersData && usersData.length ?
+                                                                  usersData.map((user, i) => <Tag closable onClose={() => this.onRemove(i)}>{user.name}</Tag>) : null
                                                           }
                                                       </Col>
                                                   </Row> : null
@@ -682,7 +676,8 @@ class Index extends Component {
                                                   <Row>
                                                       <Col md={8}>
                                                           {
-                                                              rolesData && rolesData.length ? rolesData.map(a => <Tag>{a.roleName}</Tag>) : null
+                                                              (rolesData && rolesData.length) ?
+                                                                  rolesData.map((role, i) => <Tag closable onClose={() => this.onRemove(i)}>{role.roleName}</Tag>) : null
                                                           }
                                                       </Col>
                                                   </Row> : null

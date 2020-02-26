@@ -85,16 +85,18 @@ const Review = (props) => {
                 columns={props.category === "roles" ? columnsByRole : columnsByUser}
                 dataSource={props && props.data}
                 defaultExpandAllRows={true}
+                size="small"
+                pagination={props && props.data && props.data.length > 10}
                 expandedRowRender={record => {
                      if (props.category === "roles") {
-                         return ( <Table dataSource={record && record.users} columns={userColumn(record)} /> )
+                         return ( <Table dataSource={record && record.users}  size="small" pagination={record && record.users && record.users.length > 10} columns={userColumn(record)} /> )
                      } else {
-                         return ( <Table dataSource={record && record.roles} columns={tagColumn(record)} /> )
+                         return ( <Table dataSource={record && record.roles}  size="small" pagination={record && record.roles && record.roles.length > 10} columns={tagColumn(record)} /> )
                      }
                 }}
             />
 
-            <div className="text-right">
+            <div className="text-right mt-3">
                 <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
                 <button className="btn btn-outline-success btn-sm" onClick={() => props.onSubmit()}>Submit</button>
             </div>
