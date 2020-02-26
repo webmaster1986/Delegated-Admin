@@ -1,6 +1,6 @@
 import React from "react"
 import {Col, Form, InputGroup, Row, Button} from "react-bootstrap";
-import {Table, Transfer} from "antd";
+import {Icon, Table, Transfer} from "antd";
 import difference from "lodash/difference";
 import {ApiService} from "../../../services/ApiService";
 import message from "antd/lib/message";
@@ -248,7 +248,7 @@ class RevokeUsersTransfer extends React.Component {
         dataIndex: 'id',
         title: 'Action',
         render: (record, data) => (
-          <button className="btn btn-outline-danger btn-sm" onClick={() => this.onUserRemove(rootRecord, data.id)}>Remove</button>
+          <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => this.onUserRemove(rootRecord, data.id)}/>
         )
       }
     ]
@@ -272,7 +272,7 @@ class RevokeUsersTransfer extends React.Component {
         dataIndex: 'appCode',
         title: 'Action',
         render: (record, data) => (
-          <button className="btn btn-outline-danger btn-sm" onClick={() => this.onRoleRemove(rootRecord, data.id)}>Remove</button>
+          <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => this.onRoleRemove(rootRecord, data.id)}/>
         )
       }
     ]
@@ -291,12 +291,13 @@ class RevokeUsersTransfer extends React.Component {
           defaultExpandAllRows={true}
           expandedRowRender={this.renderExpandedRow}
           dataSource={reviewList}
+          pagination={reviewList.length > 10}
+          size="small"
         />
-        <div className="text-right">
+        <div className="text-right mt-5">
           <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
           <button className="btn btn-outline-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length}>Submit</button>
         </div>
-        <br/>
       </div>
     )
   }

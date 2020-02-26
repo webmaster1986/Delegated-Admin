@@ -445,13 +445,13 @@ class RevokeAccess extends Component {
           <div>
             {this.renderStep(step)}
           </div>
-
-          <div className="text-right mt-5">
-            {
-              step === 0 ?
-                <button className="btn btn-info btn-sm" onClick={this.onStepChange} disabled={!revokeBy}>Next</button> : null
-            }
-          </div>
+          {
+            step === 0 ?
+              <div className="text-right mt-5">
+                <button className="btn btn-info btn-sm" onClick={this.onStepChange} disabled={!revokeBy}>Next</button>
+              </div>
+              : null
+          }
         </div>
       </Container>
     )
