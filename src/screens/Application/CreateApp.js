@@ -62,12 +62,18 @@ class CreateApp extends React.Component {
     }
 
     onChange = (event) => {
+        const { appObject } = this.state
         const { name, value } = event.target
         let object = {}
         if(name === 'appCode'){
             object = {
                 ownerGroup: `${value}_OWNER`
             }
+        }
+        if(name === "selectedOwnerGroup") {
+          object = {
+            ownerGroup: value ? "" : `${appObject.appCode}_OWNER`,
+          }
         }
         this.setState({
             appObject: {
@@ -131,10 +137,8 @@ class CreateApp extends React.Component {
         if(!object.appCodeError){
             const appDetails =  await this._apiService.getAllApplications(value)
             if (!appDetails || appDetails.error) {
-                object.appCodeError = ""
-            } else {
                 object.appCodeError = "Application Code is not valid!"
-                object.appObject = {...this.state.appObject, appCode: ""}
+                object.appObject = { ...this.state.appObject, appCode: "" }
             }
         }
 
