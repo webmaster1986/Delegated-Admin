@@ -140,7 +140,8 @@ const Review = (props) => {
         />
       )
     },
-    showExpandColumn: true
+    showExpandColumn: true,
+    expandByColumnOnly: true
   };
 
   return (

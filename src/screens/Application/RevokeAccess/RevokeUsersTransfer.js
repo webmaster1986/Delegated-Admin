@@ -226,7 +226,8 @@ class RevokeUsersTransfer extends React.Component {
             columns={this.renderCols(row, revokeBy === 'user' ? 'role' : 'user')}
         />
     )},
-    showExpandColumn: true
+    showExpandColumn: true,
+    expandByColumnOnly: true
   };
 
   renderCols = (rootRecord, type) => {

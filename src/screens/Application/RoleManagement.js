@@ -149,7 +149,8 @@ class RoleManagement extends React.Component {
                     </span>
                 </div>
             ),
-            showExpandColumn: true
+            showExpandColumn: true,
+            expandByColumnOnly: true
         };
 
         const options = {
