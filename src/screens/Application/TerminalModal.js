@@ -2,20 +2,39 @@ import React from "react";
 import {Modal} from 'antd';
 import {Col, Form, Row} from "react-bootstrap";
 import Spin from "antd/lib/spin";
+import Select from "react-select";
 
 class TerminalModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            terminalObject: {}
+        };
+    }
     state = {
         isLoading: false,
         coverage: ""
-    }
+    };
 
+    onChange = event => {
+        const { name, value } = event.target;
+        this.setState({
+            terminalObject: {
+                ...this.state.terminalObject,
+                [name]: value
+            }
+        });
+    };
+    terminalTypeOption=[{label:'Carbon Monoxide', value:'carbonMonoxide'}];
     render(){
-        const {isLoading, coverage} = this.state
+        const {isLoading, coverage, areaOfProtection, description, comment} = this.state;
         return (
             <Modal
                 title="New Terminal"
                 visible={true}
                 onOk={this.props.handleModal}
+                okText="Save"
+                cancelText="Close"
                 onCancel={this.props.handleModal}
             >
                 <>
@@ -23,16 +42,11 @@ class TerminalModal extends React.Component {
                         isLoading ? <div className={'text-center'}><Spin className='mt-50 custom-loading'/></div> :
                             <div className="ml-3 mr-3">
                                 <Row>
-                                    <Col>
-                                        <Row>
+                                    <Col style={{padding:0}}>
+
                                             <label>Terminal type(Required)</label>
-                                        </Row>
-                                        <Row style={{width: "100%"}}>
-                                            <Form.Control as="select">
-                                                <option>Carbon Monoxide</option>
-                                                <option>Carbon Dioxide</option>
-                                            </Form.Control>
-                                        </Row>
+                                            <Select isClearable isSearchable name="terminalType" value="terminalType" options={this.terminalTypeOption} />
+
                                     </Col>
                                     <Col>
                                         <Row>
@@ -47,7 +61,7 @@ class TerminalModal extends React.Component {
                                                     id={'custom-1'}
                                                     value='byRole'
                                                     checked={coverage === 'byRole'}
-                                                    // onChange={(e) => this.onCheck(e)}
+                                                    onChange={this.onChange}
                                                     label="Entire Building"
                                                 />
                                             </Col>
@@ -59,7 +73,7 @@ class TerminalModal extends React.Component {
                                                     id={'custom-2'}
                                                     value='byUser'
                                                     checked={coverage === 'byUser'}
-                                                    // onChange={(e) => this.onCheck(e)}
+                                                    onChange={this.onChange}
                                                     label="Partial"
                                                 />
                                             </Col>
@@ -72,7 +86,7 @@ class TerminalModal extends React.Component {
                                             <label>Area of Protection</label>
                                         </Row>
                                         <Row>
-                                            <Form.Control type="text" placeholder="Back of the Building" />
+                                            <Form.Control type="text" placeholder="Back of the Building" name="areaOfProtection"  value={areaOfProtection} onChange={this.onChange} />
                                         </Row>
                                     </Col>
                                 </Row>
@@ -82,7 +96,7 @@ class TerminalModal extends React.Component {
                                             <label>Description</label>
                                         </Row>
                                         <Row>
-                                            <Form.Control type="text" placeholder="Please read the manual" />
+                                            <Form.Control type="text" placeholder="Please read the manual" name="description"  value={description} onChange={this.onChange} />
                                         </Row>
                                     </Col>
                                 </Row>
@@ -92,7 +106,7 @@ class TerminalModal extends React.Component {
                                             <label>Comment</label>
                                         </Row>
                                         <Row>
-                                            <Form.Control type="text" placeholder="Enter a comment.." />
+                                            <Form.Control type="text" placeholder="Enter a comment.." name="comment"  value={comment} onChange={this.onChange}/>
                                         </Row>
                                     </Col>
                                 </Row>

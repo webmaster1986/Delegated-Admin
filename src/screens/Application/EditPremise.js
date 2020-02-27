@@ -2,19 +2,23 @@ import React from "react";
 import {Modal} from 'antd';
 import {Col, Form, Row} from "react-bootstrap";
 import Spin from "antd/lib/spin";
+import Select from "react-select";
+import InputMask from "react-input-mask";
 
 class EditPremise extends React.Component {
     state = {
         isLoading: false,
-    }
-
+    };
+    occupancyClassificationOption=[{label:'Factory & Industrial', value:'carbonMonoxide'}];
     render(){
-        const {isLoading} = this.state
+        const {isLoading} = this.state;
         return (
             <Modal
                 title="Edit Premise"
                 visible={true}
                 onOk={this.props.handleModal}
+                okText="Save"
+                cancelText="Close"
                 onCancel={this.props.handleModal}
             >
                 <>
@@ -32,41 +36,24 @@ class EditPremise extends React.Component {
                                     </Col>
                                 </Row>
                                 <Row className="mt-2">
-                                    <Col>
-                                        <Row>
-                                            <label>Zip Code</label>
-                                        </Row>
-                                        <Row>
-                                            <Form.Control type="text"/>
-                                        </Row>
+                                    <Col style={{padding:0}}>
+                                        <Form.Label>Zip Code</Form.Label>
+                                        <InputMask mask="99999-9999"
+                                                   className="form-control"
+                                                   placeholder="Enter Zip Code"
+                                                   name={"zipCode"}
+                                                   value={""}
+                                                   onChange={this.onChange} />
                                     </Col>
                                     <Col/>
                                 </Row>
                                 <Row className="mt-2">
-                                    <Col>
-                                        <Row>
-                                            <label>Building Dominant Occupancy Classification</label>
-                                        </Row>
-                                        <Row style={{width: "50%"}}>
-                                            <Form.Control as="select">
-                                                <option>Factory & Industrial</option>
-                                                <option>Factory</option>
-                                                <option>Industrial</option>
-                                            </Form.Control>
-                                            {/*<Form.Row>
-                                                <Form.Group className="ml-2 mt-1" controlId="exampleForm.ControlSelect1">
-                                                    <Form.Label>Borough</Form.Label>
-                                                    <Form.Control as="select">
-                                                        <option>Factory & Industrial</option>
-                                                        <option>Factory</option>
-                                                        <option>Industrial</option>
-                                                    </Form.Control>
-                                                </Form.Group>
-                                            </Form.Row>*/}
-                                        </Row>
+                                    <Col style={{padding:0}}>
+                                        <label>Building Dominant Occupancy Classification</label>
+                                        <Select isClearable isSearchable name="occupancyClassification" value="occupancyClassification" options={this.occupancyClassificationOption} />
                                     </Col>
                                 </Row>
-                                <Row >
+                                <Row>
                                     <Col>
                                         <Row>
                                             <label>Comment</label>

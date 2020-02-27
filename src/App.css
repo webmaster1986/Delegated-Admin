@@ -197,7 +197,9 @@ code {
   padding-bottom: 5px ;
   font-size: larger;
 }
-
+.table-head-color{
+  background: #EFF0F1;
+}
 .card{
   border-radius: 0 !important;
 }
@@ -215,6 +217,14 @@ code {
   align-content: center;
   font-weight: 600;
   color: #808080d9;
+}
+
+.icon-filled{
+  background: rgb(239, 240, 241);
+  padding: 8px;
+  border-radius: 22px;
+  color: rgb(0, 105, 217);
+  font-size: 20px;
 }
 
 .footer {
