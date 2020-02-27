@@ -91,30 +91,67 @@ class Header extends Component {
                       </ul>
                     </Nav> :
                     <Nav className="mr-auto">
-                      <Nav.Item>
-                        <Link
-                            to="/"
-                            className={'nav-link color-white'}
-                        >
-                          Applications
-                        </Link>
-                      </Nav.Item>
-                      <Nav.Item>
-                        <Link
-                            to="/grant-access"
-                            className={'nav-link color-white'}
-                        >
-                          Grant
-                        </Link>
-                      </Nav.Item>
-                      <Nav.Item>
-                        <Link
-                            to="/revoke-access"
-                            className={'nav-link color-white'}
-                        >
-                          Revoke
-                        </Link>
-                      </Nav.Item>
+                      <ul className="nav">
+                        <li>
+                          <Nav.Item>
+                            <Link
+                              to="/"
+                              className={'nav-link color-white'}
+                            >
+                              Applications
+                            </Link>
+                          </Nav.Item>
+                        </li>
+                        <li>
+                          <Nav.Item>
+                            <a className={'nav-link color-white'}>
+                              Manage Access
+                            </a>
+                          </Nav.Item>
+                          <ul className="nav-submenu">
+                            <li><a>Grant Access</a>
+                              <ul className="nav-submenu">
+                                <li>
+                                  <a
+                                    href={"/grant-access?by=user"}
+                                    className={'nav-link color-white'}
+                                  >
+                                    By User
+                                  </a>
+                                </li>
+                                <li>
+                                  <a
+                                    href={"/grant-access?by=roles"}
+                                    className={'nav-link color-white'}
+                                  >
+                                    By Role
+                                  </a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li><a>Revoke Access</a>
+                              <ul className="nav-submenu">
+                                <li>
+                                  <a
+                                    href={"/revoke-access?by=user"}
+                                    className={'nav-link color-white'}
+                                  >
+                                    By User
+                                  </a>
+                                </li>
+                                <li>
+                                  <a
+                                    href={"/revoke-access?by=roles"}
+                                    className={'nav-link color-white'}
+                                  >
+                                    By Role
+                                  </a>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
                     </Nav>
               }
               <div className="header-nav-right">

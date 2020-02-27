@@ -49,7 +49,7 @@ class App extends Component {
       if (this.state.userRole === 'SUPER_ADMIN' || this.state.userRole === 'SUPER_APP_OWNER' ) {
         return (
           <Switch>
-              <Route path={'/edit-app/:id'} component={EditApp}/>
+            <Route path={'/edit-app/:id'} component={EditApp}/>
             <Route path={'/create-apps'} component={CreateApp}/>
             {/*<Route path={'/review-apps'} component={ReviewApps}/>*/}
             <Route path={'/grant-access'} component={GrantAccess}/>
@@ -61,9 +61,9 @@ class App extends Component {
       }
     return (
       <Switch>
-        <Route path={'/grant-access/:app?'} component={GrantAccess}/>
-        <Route path={'/revoke-access/:app?'} component={RevokeAccess}/>
-          <Route path={'/'} component={AppOwners} />
+        <Route path={'/grant-access'} component={GrantAccess}/>
+        <Route path={'/revoke-access'} component={RevokeAccess}/>
+        <Route path={'/'} component={AppOwners} />
       </Switch>
     );
   }
