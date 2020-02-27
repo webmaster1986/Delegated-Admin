@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Button, Row, Col, Form, InputGroup } from 'react-bootstrap'
-import {Table} from "antd";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 const products = [
     {
@@ -66,50 +67,54 @@ class ReviewApps extends Component {
     }
 
     render() {
-        const   productsColumn = [
+        const productsColumn = [
             {
-                dataIndex:'appCode',
-                title:'App Code',
-                defaultSortOrder: 'ascend',
-                sortDirections: ['descend', 'ascend']
+                dataField:'appCode',
+                text:'App Code',
+                sort: true
             },
             {
-                dataIndex:'description',
-                title:'Description',
-                sorter: (a, b) => a.description.localeCompare(b.description),
-                sortDirections: ['descend', 'ascend']
+                dataField:'description',
+                text:'Description',
+                sort: true
             },
             {
-                dataIndex:'ownerGroup',
-                title:'Owner Group',
-                sorter: (a, b) => a.ownerGroup.localeCompare(b.ownerGroup),
-                sortDirections: ['descend', 'ascend']
+                dataField:'ownerGroup',
+                text:'Owner Group',
+                sort: true
             },
             {
-                dataIndex:'appCode',
-                title:'Action',
-                render: (record) => {
-                    return(
+                dataField:'appCode',
+                text:'Action',
+                headerStyle: {width: 100},
+                formatter: () => {
+                    return (
                         <div>
                             <Button variant={'outline-success'} size={'sm'}>Approve</Button>&nbsp;&nbsp;
                             <Button variant={'outline-danger'} size={'sm'}>Revoke</Button>
                         </div>
-                    )
-                }
+                    )}
             }
         ];
+
+        const options = {
+            hidePageListOnlyOnePage: true,
+            hideSizePerPage: true
+        };
         return(
             <Container className={'container-design'}>
                 <h4 className="text-left">
                     Applications
                 </h4>
                 <hr/>
-                <Table
-                    rowKey={"id"}
-                    columns={productsColumn}
-                    size={"small"}
-                    dataSource={products || []}
-                    pagination={false}
+                <BootstrapTable
+                  bootstrap4
+                  striped
+                  keyField='id'
+                  data={products || [] }
+                  headerClasses="styled-header"
+                  columns={ productsColumn }
+                  pagination={ paginationFactory(options) }
                 />
 
             </Container>

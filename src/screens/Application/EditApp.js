@@ -3,7 +3,8 @@ import {Row, Col, Form, Button, Container} from "react-bootstrap";
 import Select from "antd/lib/select";
 import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
-import {Table} from "antd";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 const { Option } = Select
 
@@ -110,34 +111,36 @@ class EditApp extends React.Component {
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const rolesListColumn = [
             {
-                dataIndex:'roleName',
-                title:'Role Name',
-                defaultSortOrder: 'ascend',
-                sorter: (a, b) => a.roleName.localeCompare(b.roleName),
-                sortDirections: ['descend', 'ascend']
+                dataField:'roleName',
+                text:'Role Name',
+                sort: true
             },
             {
-                dataIndex:'roleDescription',
-                title:'Role Description',
-                sorter: (a, b) => a.roleDescription.localeCompare(b.roleDescription),
-                sortDirections: ['descend', 'ascend']
+                dataField:'roleDescription',
+                text:'Role Description',
+                sort: true
             },
             {
-                dataIndex:'oimTarget',
-                title:'Oim Target',
-                sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
-                sortDirections: ['descend', 'ascend']
+                dataField:'oimTarget',
+                text:'Oim Target',
+                sort: true
             },
             {
-                dataIndex:'appCode',
-                title:'Action',
-                render: (record) => {
+                dataField:'appCode',
+                text:'Action',
+                headerStyle: {width: 100},
+                formatter: () => {
                     return (
                         <h6 className="text-primary pointer-event"> <u> Remove </u></h6>
                     )
                 }
             }
         ];
+
+        const options = {
+            hidePageListOnlyOnePage: true,
+            hideSizePerPage: true
+        };
         return (
             <Container className={'container-design'}>
                 <div className="1px solid black">
@@ -206,12 +209,14 @@ class EditApp extends React.Component {
 
                     <p className="text-warning">Roles</p>
 
-                    <Table
-                        rowKey={"id"}
-                        columns={rolesListColumn}
-                        size={"small"}
-                        dataSource={rolesList || []}
-                        pagination={false}
+                    <BootstrapTable
+                      bootstrap4
+                      striped
+                      keyField='id'
+                      data={rolesList || [] }
+                      headerClasses="styled-header"
+                      columns={ rolesListColumn }
+                      pagination={ paginationFactory(options) }
                     />
 
                     <Form.Group as={Row}>

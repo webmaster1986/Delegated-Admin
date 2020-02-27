@@ -1,8 +1,10 @@
 import React from "react";
-import {Modal, Table} from 'antd';
+import {Modal} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import {ApiService} from "../../services/ApiService";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 class UserModal extends React.Component {
   _apiService = new ApiService();
@@ -40,6 +42,11 @@ class UserModal extends React.Component {
 
   render(){
     const {user, isLoading, roles} = this.state
+    const options = {
+      hidePageListOnlyOnePage: true,
+      hideSizePerPage: true
+    };
+
     return (
       <Modal
         title="User Info"
@@ -60,29 +67,35 @@ class UserModal extends React.Component {
                   )
                 }
                 <br/>
-                <Table
-                  rowKey={'id'}
+                <BootstrapTable
+                  bootstrap4
+                  striped
+                  keyField='id'
+                  data={roles || [] }
+                  headerClasses="styled-header"
+                  pagination={ paginationFactory(options) }
                   columns={[
                     {
-                      dataIndex: 'roleName',
-                      title: 'Role'
+                      dataField: 'roleName',
+                      text: 'Role',
+                      sort: true
                     },
                     {
-                      dataIndex: 'roleDescription',
-                      title: 'Application',
+                      dataField: 'roleDescription',
+                      text: 'Application',
+                      sort: true
                     },
                     {
-                      dataIndex: 'oimTarget',
-                      title: 'OIM Target',
+                      dataField: 'oimTarget',
+                      text: 'OIM Target',
+                      sort: true
                     },
                     {
-                      dataIndex: 'appCode',
-                      title: 'App Code'
+                      dataField: 'appCode',
+                      text: 'App Code',
+                      sort: true
                     }
                   ]}
-                  size="small"
-                  dataSource={roles || []}
-                  pagination={false}
                 />
               </>
           }

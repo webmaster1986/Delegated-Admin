@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import Spin from 'antd/lib/spin'
 import message from 'antd/lib/message'
 import { ApiService } from '../../services/ApiService'
-import {Select, Table} from "antd";
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 
 class AppsList extends Component {
@@ -37,46 +38,41 @@ class AppsList extends Component {
             })
         }
     }
-    appListColumn =[
+
+    appListColumn = [
         {
-            dataIndex:'appCode',
-            title:'Application Code',
-            defaultSortOrder: 'ascend',
-            sorter: (a, b) => a.appCode.localeCompare(b.appCode),
-            sortDirections: ['descend', 'ascend']
+            dataField:'appCode',
+            text:'Application Code',
+            sort: true
         },
         {
-            dataIndex:'appName',
-            title:'Application Name',
-            sorter: (a, b) => a.appName.localeCompare(b.appName),
-            sortDirections: ['descend', 'ascend']
+            dataField:'appName',
+            text:'Application Name',
+            sort: true
         },
         {
-            dataIndex:'appDescription',
-            title:'Description',
-            sorter: (a, b) => a.appDescription.localeCompare(b.appDescription),
-            sortDirections: ['descend', 'ascend']
+            dataField:'appDescription',
+            text:'Description',
+            sort: true
         },
         {
-            dataIndex:'ownerGroup',
-            title:'Owner Group',
-            sorter: (a, b) => a.ownerGroup.localeCompare(b.ownerGroup),
-            sortDirections: ['descend', 'ascend']
+            dataField:'ownerGroup',
+            text:'Owner Group',
+            sort: true
         },
         {
-            dataIndex:'appCode',
-            title:'Action',
-            render: (appCode) => {
+            dataField:'appCode',
+            text:'Action',
+            headerStyle: {width: 100},
+            formatter: (appCode) => {
                 return (
                     <div className="text-center">
                         <Link to={`/role-manage/${appCode}`}>
                             <Button variant={'primary'} size={'sm'}>Edit</Button>
                         </Link>
                     </div>
-                )
-            }
+            )},
         }
-
     ];
 
     onSearch = (event) => {
@@ -101,6 +97,11 @@ class AppsList extends Component {
     render() {
         const { applicationsList, isLoading, searchString, searchList } = this.state
         const apps = searchString.length ? searchList : applicationsList
+        const options = {
+            hidePageListOnlyOnePage: true,
+            hideSizePerPage: true
+        };
+
         return(
             <Container>
                 <div className="container-design">
@@ -132,14 +133,15 @@ class AppsList extends Component {
                     <br/>
                     {
                         isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
-                          <Table
-                            rowKey={'id'}
-                            columns={this.appListColumn}
-                            size={"small"}
-                            dataSource={apps || [] }
-                            pagination={false}
-
-                          />
+                            <BootstrapTable
+                                bootstrap4
+                                striped
+                                keyField='id'
+                                data={ apps || [] }
+                                headerClasses="styled-header"
+                                columns={ this.appListColumn }
+                                pagination={ paginationFactory(options) }
+                            />
                     }
                 </div>
             </Container>

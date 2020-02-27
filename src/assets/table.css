@@ -1,0 +1,9 @@
+.react-bootstrap-table table thead .styled-header th {
+    background-color: #367aba;
+    color: rgb(255, 255, 255);
+}
+
+.table td, .table th {
+    padding: 5px !important;
+    vertical-align: unset !important;
+}

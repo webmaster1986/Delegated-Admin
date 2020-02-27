@@ -4,7 +4,8 @@ import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
 import {ApiService} from "../../services/ApiService";
-import {Table} from "antd";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 
 class RoleManagement extends React.Component {
@@ -102,38 +103,31 @@ class RoleManagement extends React.Component {
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const rolesListColumn = [
             {
-                dataIndex:'roleName',
-                title:'Role Name',
-                defaultSortOrder: 'ascend',
-                sorter: (a, b) => a.roleName.localeCompare(b.roleName),
-                sortDirections: ['descend', 'ascend']
+                dataField:'roleName',
+                text:'Role Name',
+                sort: true
             },
             {
-                dataIndex:'oimTarget',
-                title:'Oim Target',
-                sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
-                sortDirections: ['descend', 'ascend']
+                dataField:'oimTarget',
+                text:'Oim Target',
+                sort: true
             },
             {
-                dataIndex:'status',
-                title:'Status',
-                sorter: (a, b) => a.status.localeCompare(b.status),
-                sortDirections: ['descend', 'ascend']
+                dataField:'status',
+                text:'Status',
+                sort: true
             },
             {
-                dataIndex: 'appCode',
-                title: 'Action',
-                render: (record, data) => {
-                    const buttonName = data.status === 'Active' ? 'Disable' : data.status === 'Disabled' ? 'Activate' : ''
+                dataField:'roleName',
+                text: 'Action',
+                headerStyle: {width: 100},
+                formatter: (cell, row) => {
+                    const buttonName = row.status === 'Active' ? 'Disable' : row.status === 'Disabled' ? 'Activate' : ''
                     return (
                         <div className="text-center">
                             {
                                 buttonName ?
-                                    <Button
-                                        variant={'primary'}
-                                        size={'sm'}
-                                        onClick={() => this.onChangeStatus(data)}
-                                    >
+                                    <Button variant={'primary'} size={'sm'} onClick={() => this.onChangeStatus(row)}>
                                         {buttonName}
                                     </Button> : null
                             }
@@ -142,6 +136,27 @@ class RoleManagement extends React.Component {
                 }
             }
         ];
+
+        const expandRow = {
+            renderer: row => (
+                <div>
+                    <span>
+                        <b>Role Description:</b>{"    "}{row.roleDescription}
+                    </span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span>
+                        <b>Creation Date:</b>{"    "}{moment(row.creationDate).format("MM/DD/YYYY")}
+                    </span>
+                </div>
+            ),
+            showExpandColumn: true
+        };
+
+        const options = {
+            hidePageListOnlyOnePage: true,
+            hideSizePerPage: true
+        };
+
         return (
             <Container>
                 <div className={'container-design'}>
@@ -193,23 +208,15 @@ class RoleManagement extends React.Component {
                           </Row>
 
                           <p className="text-warning">Roles</p>
-                          <Table
-                            rowKey={"id"}
-                            columns={rolesListColumn}
-                            size={"small"}
-                            dataSource={rolesList || []}
-                            pagination={false}
-                            expandedRowRender={record => (
-                             <div>
-                                 <span>
-                                     <b>Role Description:</b>{"    "}{record.roleDescription}
-                                 </span>
-                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                 <span>
-                                     <b>Creation Date:</b>{"    "}{moment(record.creationDate).format("MM/DD/YYYY")}
-                                 </span>
-                             </div>
-                            )}
+                          <BootstrapTable
+                            bootstrap4
+                            striped
+                            keyField='id'
+                            data={rolesList || []}
+                            columns={ rolesListColumn }
+                            headerClasses="styled-header"
+                            expandRow={expandRow}
+                            pagination={ paginationFactory(options) }
                           />
                           <Row>
                               <Col sm={12} md={12}>

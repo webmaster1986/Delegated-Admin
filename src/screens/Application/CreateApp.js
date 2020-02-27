@@ -5,7 +5,8 @@ import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
 import notification from "antd/lib/notification";
 import Spin from "antd/lib/spin";
-import {Table} from "antd";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 const { Option } = Select
 
@@ -152,27 +153,34 @@ class CreateApp extends React.Component {
         const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !ownerGroup || !rolesList.length;
         const rolesListColumn = [
             {
-                dataIndex:'roleName',
-                title:'Role Name'
+                dataField:'roleName',
+                text:'Role Name',
             },
             {
-                dataIndex:'roleDescription',
-                title:'Role Description'
+                dataField:'roleDescription',
+                text:'Role Description'
             },
             {
-                dataIndex:'oimTarget',
-                title:'Oim Target'
+                dataField:'oimTarget',
+                text:'Oim Target'
             },
             {
-                dataIndex:'appCode',
-                title:'Action',
-                render:(record, data, index) => {
+                dataField:'roleName',
+                text:'Action',
+                headerStyle: {width: 100},
+                formatter: (cell, row, rowIndex) => {
                     return (
-                        <h6 className="text-primary cursor-pointer" onClick={() => this.onRemoveRole(index)}><u> Remove </u></h6>
+                        <h6 className="text-primary cursor-pointer" onClick={() => this.onRemoveRole(rowIndex)}><u> Remove </u></h6>
                     )
                 }
             }
         ];
+
+        const options = {
+            hidePageListOnlyOnePage: true,
+            hideSizePerPage: true
+        };
+
         return (
             <Container>
                 <div className={'container-design'}>
@@ -290,13 +298,15 @@ class CreateApp extends React.Component {
                           <p className="text-warning">Roles <span className="text-danger">*</span></p>
                           {
                               rolesList.length ?
-                                <Table
-                                  rowKey={"id"}
-                                  columns={rolesListColumn}
-                                  size={"small"}
-                                  dataSource={rolesList || []}
-                                  pagination={false}
-                                /> : null
+                                  <BootstrapTable
+                                    bootstrap4
+                                    striped
+                                    keyField='id'
+                                    data={ rolesList || [] }
+                                    headerClasses="styled-header"
+                                    columns={ rolesListColumn }
+                                    pagination={ paginationFactory(options) }
+                                  /> : null
                           }
                           <Form.Group as={Row}>
                               <Col sm={12} md={12}>

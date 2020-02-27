@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
-import {Select, Table} from 'antd/lib'
+import {Select} from 'antd/lib'
 import queryString from 'query-string';
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
@@ -8,6 +8,8 @@ import Spin from "antd/lib/spin";
 import RevokeUsersTransfer from "./RevokeUsersTransfer";
 import UserModal from "../UserModal";
 import RoleModal from "../RoleModal";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 const { Option } = Select;
 
@@ -193,72 +195,69 @@ class RevokeAccess extends Component {
     const { isLoading, roles, size, selectedApp, searchedRoles, searchedText, applicationsList, searchRoleList, revokeBy, users } = this.state;
     const data = searchedRoles.length ? searchRoleList : roles;
 
+    const options = {
+      hidePageListOnlyOnePage: true,
+      hideSizePerPage: true
+    };
+
     const usersCol = [
       {
-        dataIndex: 'login',
-        title: 'Login',
-        defaultSortOrder: 'ascend',
-        sorter: (a, b) => a.login.localeCompare(b.login),
-        sortDirections: ['descend', 'ascend'],
-        render: (record, data) => (
-            <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, data)}>{record}</a>
-        )
-      },
-      {
-        dataIndex: 'name',
-        title: 'Name',
-        sorter: (a, b) => a.name.localeCompare(b.name),
-        sortDirections: ['descend', 'ascend']
-      },
-      {
-        dataIndex: 'bureau',
-        title: 'Bureau',
-        sorter: (a, b) => a.bureau.localeCompare(b.bureau),
-        sortDirections: ['descend', 'ascend']
-      },
-      {
-        dataIndex: 'email',
-        title: 'Email',
-        render: (record, data) => {
+        dataField: 'login',
+        text: 'Login',
+        sort: true,
+        formatter: (cell, row) => {
           return (
-          <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(data)}>Revoke Access</button>
-          )
-        }
+              <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, row)}>{cell}</a>
+          )}
       },
-
+      {
+        dataField: 'name',
+        text: 'Name',
+        sort: true
+      },
+      {
+        dataField: 'bureau',
+        text: 'Bureau',
+        sort: true
+      },
+      {
+        text: 'Action',
+        headerStyle: {width: 200},
+        formatter: (cell, row) => {
+          return (
+              <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(row)}>Revoke Access</button>
+          )}
+      },
     ];
+
     const rolesCol = [
       {
-        dataIndex: 'roleName',
-        title: 'Role',
-        defaultSortOrder: 'ascend',
-        sorter: (a, b) => a.roleName.localeCompare(b.roleName),
-        sortDirections: ['descend', 'ascend'],
-        render: (record, data) => (
-            <a className="text-info" onClick={(e) => this.props.toggleModal(e, data)} >{record}</a>
-        )
-      },
-      {
-        dataIndex: 'roleDescription',
-        title: 'Application',
-        sorter: (a, b) => a.roleDescription.localeCompare(b.roleDescription),
-        sortDirections: ['descend', 'ascend']
-      },
-      {
-        dataIndex: 'oimTarget',
-        title: 'OIM Target',
-        sorter: (a, b) => a.oimTarget.localeCompare(b.oimTarget),
-        sortDirections: ['descend', 'ascend']
-      },
-      {
-        dataIndex: 'appCode',
-        title: 'Action',
-        render: (record, data) => {
-          if ( data.status !== "Active") return
+        dataField: 'roleName',
+        text: 'Role',
+        sort: true,
+        formatter: (cell, row) => {
           return (
-              <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(data)}>Revoke Role</button>
-          )
-        }
+              <a className="text-info" onClick={(e) => this.props.toggleModal(e, row)}>{cell}</a>
+          )}
+      },
+      {
+        dataField: 'roleDescription',
+        text: 'Application',
+        sort: true
+      },
+      {
+        dataField: 'oimTarget',
+        text: 'OIM Target',
+        sort: true
+      },
+      {
+        text: 'Action',
+        headerStyle: {width: 150},
+        formatter: (cell, row) => {
+          if (row.status !== "Active") return
+          return (
+              <button className="btn btn-success btn-sm" onClick={() => this.onRevoke(row)}>Revoke Role</button>
+          )}
       }
     ]
 
@@ -344,23 +343,25 @@ class RevokeAccess extends Component {
             <>
               {
                 revokeBy === "user" ?
-                      <Table
-                          rowKey={'id'}
-                          columns={usersCol}
-                          size={"small"}
-                          dataSource={users || ''}
-                          pagination={false}
-                      />
+                  <BootstrapTable
+                    bootstrap4
+                    striped
+                    keyField='id'
+                    data={users || [] }
+                    headerClasses="styled-header"
+                    columns={ usersCol }
+                    pagination={ paginationFactory(options) }
+                  />
                   :
-                      <Table
-                          rowKey={'id'}
-                          columns={rolesCol}
-                          size={"small"}
-                          dataSource={data || ''}
-                          pagination={false}
-                      />
-
-
+                  <BootstrapTable
+                    bootstrap4
+                    striped
+                    keyField='id'
+                    data={data || [] }
+                    headerClasses="styled-header"
+                    columns={ rolesCol }
+                    pagination={ paginationFactory(options) }
+                  />
               }
 
             </>

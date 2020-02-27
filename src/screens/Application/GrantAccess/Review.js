@@ -1,107 +1,168 @@
 import React from "react";
-import {Button, Col, Row} from "react-bootstrap";
-import { Table, Icon } from 'antd';
+import {Icon} from 'antd';
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
+
 const Review = (props) => {
+  const options = {
+    hidePageListOnlyOnePage: true,
+    hideSizePerPage: true
+  };
 
-    const columnsByUser = [
-        { title: 'User Login',
-          dataIndex: 'login',
-          key: 'login',
-          render: (record, data) => <div className="link-text" onClick={(e) => props.toggleUserModal(e, data)}><u>{record}</u></div>
-        },
-        { title: 'User Name', dataIndex: 'name', key: 'name' },
-        { title: 'Email', dataIndex: 'email', key: 'email' },
-        { title: 'Bureau', dataIndex: 'bureau', key: 'bureau' },
-        {
-            title: 'Action',
-            dataIndex: '',
-            key: 'x',
-            render: (record) => <Button variant={'outline-danger'} size={'sm'} onClick={() => props.onUserRemove(record)}>Remove</Button>,
-        },
-    ];
-
-    const columnsByRole = [
-        { title: 'Role Name',
-          dataIndex: 'roleName',
-          key: 'name',
-          render: (record, data) => <div className="link-text" onClick={(e) => props.toggleModal(e, data)}><u>{record}</u></div>
-        },
-        { title: 'App Code', dataIndex: 'appCode', key: 'age' },
-        { title: 'Role Description', dataIndex: 'roleDescription', key: 'roleDescription' },
-        { title: 'OIM Target', dataIndex: 'oimTarget', key: 'oimTarget' },
-        {
-            title: 'Action',
-            dataIndex: '',
-            key: 'x',
-            render: (record, data) => <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onUserRemove(data)}/>
-        },
-    ];
-
-    const userColumn = (rootRecord) => {
+  const columnsByUser = [
+    {
+      text: 'User Login',
+      dataField: 'login',
+      formatter: (cell, row) => {
         return (
-            [
-                { title: 'Login',
-                  dataIndex: 'login',
-                  key: 'login',
-                  render: (record, data) => <div className="link-text" onClick={(e) => props.toggleUserModal(e, data)}><u>{record}</u></div>
-                },
-                { title: 'Name', dataIndex: 'name', key: 'name' },
-                { title: 'Email', dataIndex: 'email', key: 'email' },
-                { title: 'Bureau', dataIndex: 'bureau', key: 'bureau' },
-                {
-                    title: 'Action',
-                    dataIndex: '',
-                    key: 'x',
-                    render: (record, data) => <Icon className="text-danger" style={{fontSize: 20}} type="delete"  onClick={() => props.onTagRemove(rootRecord.roleName, data.login)}/>
-                }
-            ]
+          <div className="link-text"><u onClick={(e) => props.toggleUserModal(e, row)}>{cell}</u></div>
         )
-    }
-
-    const tagColumn = (rootRecord) => {
+      }
+    },
+    {text: 'User Name', dataField: 'name'},
+    {text: 'Email', dataField: 'email'},
+    {text: 'Bureau', dataField: 'bureau'},
+    {
+      text: 'Action',
+      headerStyle: {width: 100},
+      formatter: (cell, row) => {
         return (
-            [
-                { title: 'App Code',
-                  dataIndex: 'appCode',
-                  key: 'appCode',
-                  render: (record, data) => <div className="link-text" onClick={(e) => props.toggleModal(e, data)}><u>{record}</u></div>
-                },
-                { title: 'Role Name', dataIndex: 'roleName', key: 'roleName' },
-                { title: 'Role Description', dataIndex: 'roleDescription', key: 'roleDescription' },
-                { title: 'OIM Target', dataIndex: 'oimTarget', key: 'oimTarget' },
-                {
-                    title: 'Action',
-                    dataIndex: '',
-                    key: 'x',
-                    render: (record, data) => <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.login, data.roleName)}/>
-                }
-            ]
+          <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onUserRemove(row)}/>
         )
+      }
     }
+  ];
 
+  const columnsByRole = [
+    {
+      text: 'Role Name',
+      dataField: 'roleName',
+      formatter: (cell, row) => {
+        return (
+          <div className="link-text"><u onClick={(e) => props.toggleModal(e, row)}>{cell}</u></div>
+        )
+      }
+    },
+    {text: 'App Code', dataField: 'appCode'},
+    /* {text: 'Role Description', dataField: 'roleDescription'}, */
+    {text: 'OIM Target', dataField: 'oimTarget'},
+    {
+      text: 'Action',
+      headerStyle: {width: 100},
+      formatter: (cell, row) => {
+        return (
+          <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onUserRemove(row)}/>
+        )
+      }
+    }
+  ];
+
+  const userColumn = (rootRecord) => {
     return (
-        <>
-            <Table
-                columns={props.category === "roles" ? columnsByRole : columnsByUser}
-                dataSource={props && props.data}
-                defaultExpandAllRows={true}
-                size="small"
-                pagination={props && props.data && props.data.length > 10}
-                expandedRowRender={record => {
-                     if (props.category === "roles") {
-                         return ( <Table dataSource={record && record.users}  size="small" pagination={record && record.users && record.users.length > 10} columns={userColumn(record)} /> )
-                     } else {
-                         return ( <Table dataSource={record && record.roles}  size="small" pagination={record && record.roles && record.roles.length > 10} columns={tagColumn(record)} /> )
-                     }
-                }}
-            />
+      [
+        {
+          text: 'Login',
+          dataField: 'login',
+          formatter: (cell, row) => {
+            return (
+              <div className="link-text"><u onClick={(e) => props.toggleUserModal(e, row)}>{cell}</u></div>
+            )
+          }
+        },
+        {text: 'Name', dataField: 'name'},
+        {text: 'Email', dataField: 'email'},
+        {text: 'Bureau', dataField: 'bureau'},
+        {
+          text: 'Action',
+          headerStyle: {width: 100},
+          formatter: (cell, row) => {
+            return (
+              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.roleName, row.login)}/>
+            )
+          }
+        }
+      ]
+    )
+  }
 
-            <div className="text-right mt-3">
-                <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
-                <button className="btn btn-outline-success btn-sm" onClick={() => props.onSubmit()}>Submit</button>
-            </div>
-        </>
-    );
+  const tagColumn = (rootRecord) => {
+    return (
+      [
+        {
+          text: 'App Code',
+          dataField: 'appCode',
+          formatter: (cell, row) => {
+            return (
+              <div className="link-text"><u onClick={(e) => props.toggleModal(e, row)}>{cell}</u></div>
+            )
+          }
+        },
+        {text: 'Role Name', dataField: 'roleName'},
+        /* {text: 'Role Description', dataField: 'roleDescription'}, */
+        {text: 'OIM Target', dataField: 'oimTarget'},
+        {
+          text: 'Action',
+          headerStyle: {width: 100},
+          formatter: (cell, row) => {
+            return (
+              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.login, row.roleName)}/>
+            )
+          }
+        }
+      ]
+    )
+  }
+
+  const expandRow = {
+    renderer: row => {
+      if (props.category === "roles") {
+        return (
+          <BootstrapTable
+            bootstrap4
+            striped
+            keyField={'id'}
+            data={row && row.users}
+            headerClasses="styled-header"
+            columns={userColumn(row)}
+            pagination={ paginationFactory(options) }
+          />
+        )
+      }
+      return (
+        <BootstrapTable
+          bootstrap4
+          striped
+          keyField={'id'}
+          data={row && row.roles}
+          headerClasses="styled-header"
+          columns={tagColumn(row)}
+          pagination={ paginationFactory(options) }
+        />
+      )
+    },
+    showExpandColumn: true
+  };
+
+  return (
+    <>
+      <BootstrapTable
+        bootstrap4
+        striped
+        keyField={'id'}
+        data={props && props.data}
+        headerClasses="styled-header"
+        columns={props.category === "roles" ? columnsByRole : columnsByUser}
+        expandRow={expandRow}
+        pagination={ paginationFactory(options) }
+      />
+
+      <div className="text-right mt-3">
+        <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/app-owner')}>Cancel</button>
+        &nbsp;&nbsp;
+        <button className="btn btn-outline-success btn-sm" onClick={() => props.onSubmit()}>Submit</button>
+      </div>
+    </>
+  );
 }
 
 export default Review;

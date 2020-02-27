@@ -589,7 +589,7 @@ class Index extends Component {
                                                       <Col md={8}>
                                                           {
                                                               usersData && usersData.length ?
-                                                                  usersData.map((user, i) => <Tag closable onClose={() => this.onRemove(i)}>{user.name}</Tag>) : null
+                                                                  usersData.map((user, i) => <Tag closable onClose={() => this.onRemove(i)}>{user.name || user.login}</Tag>) : null
                                                           }
                                                       </Col>
                                                   </Row> : null

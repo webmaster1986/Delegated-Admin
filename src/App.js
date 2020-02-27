@@ -15,6 +15,7 @@ import RoleManagement from "./screens/Application/RoleManagement";
 import LogIn from "./screens/LogIn";
 import {ApiService} from "./services/ApiService";
 import './App.css';
+import './assets/table.css';
 import 'antd/dist/antd.css';
 
 import AppOwners from "./screens/Application/AppOwners";

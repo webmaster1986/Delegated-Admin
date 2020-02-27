@@ -4,6 +4,8 @@ import {Icon, Table, Transfer} from "antd";
 import difference from "lodash/difference";
 import {ApiService} from "../../../services/ApiService";
 import message from "antd/lib/message";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   <Transfer {...restProps} showSelectAll={false}>
@@ -53,6 +55,11 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
     }}
   </Transfer>
 );
+
+const options = {
+  hidePageListOnlyOnePage: true,
+  hideSizePerPage: true
+};
 
 class RevokeUsersTransfer extends React.Component {
   _apiService = new ApiService();
@@ -209,70 +216,74 @@ class RevokeUsersTransfer extends React.Component {
     })
   }
 
-  renderExpandedRow = (rootRecord) => {
-    const {revokeBy} = this.props
-    return (
-      <Table
-        rowKey={'id'}
-        columns={this.renderCols(rootRecord, revokeBy === 'user' ? 'role' : 'user')}
-        size="small"
-        dataSource={revokeBy === "user" ? rootRecord.roles : rootRecord.users}
-        pagination={false}
-      />
-    )
-  }
+  renderExpandedRow = {
+    renderer: row => {
+      const {revokeBy} = this.props
+      return (
+        <BootstrapTable
+            keyField='id'
+            data={revokeBy === "user" ? row.roles : row.users}
+            columns={this.renderCols(row, revokeBy === 'user' ? 'role' : 'user')}
+        />
+    )},
+    showExpandColumn: true
+  };
 
   renderCols = (rootRecord, type) => {
     const usersCol = [
       {
-        dataIndex: 'login',
-        title: 'Login',
-        render: (record, data) => (
-          <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, data)}>{record}</a>
-        )
+        dataField: 'login',
+        text: 'Login',
+        formatter: (cell, row) => {
+          return (
+              <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, row)}>{cell}</a>
+          )}
       },
       {
-        dataIndex: 'name',
-        title: 'Name',
+        dataField: 'name',
+        text: 'Name',
       },
       {
-        dataIndex: 'bureau',
-        title: 'Bureau',
+        dataField: 'bureau',
+        text: 'Bureau',
       },
       {
-        dataIndex: 'email',
-        title: 'Email',
+        dataField: 'email',
+        text: 'Email',
       },
       {
-        dataIndex: 'id',
-        title: 'Action',
-        render: (record, data) => (
-          <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => this.onUserRemove(rootRecord, data.id)}/>
-        )
+        text: 'Action',
+        headerStyle: {width: 100},
+        formatter: (cell, row) => {
+          return (
+              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => this.onUserRemove(rootRecord, row.id)}/>
+          )}
       }
     ]
     const rolesCol = [
       {
-        dataIndex: 'roleName',
-        title: 'Role',
-        render: (record, data) => (
-          <a className="text-info" onClick={(e) => this.props.toggleModal(e, data)} >{record}</a>
-        )
+        dataField: 'roleName',
+        text: 'Role',
+        formatter: (cell, row) => {
+          return (
+              <a className="text-info" onClick={(e) => this.props.toggleModal(e, row)} >{cell}</a>
+          )}
       },
       {
-        dataIndex: 'roleDescription',
-        title: 'Application',
+        dataField: 'roleDescription',
+        text: 'Application',
       },
       {
-        dataIndex: 'oimTarget',
-        title: 'OIM Target',
+        dataField: 'oimTarget',
+        text: 'OIM Target',
       },
       {
-        dataIndex: 'appCode',
-        title: 'Action',
-        render: (record, data) => (
-          <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => this.onRoleRemove(rootRecord, data.id)}/>
-        )
+        text: 'Action',
+        headerStyle: {width: 100},
+        formatter: (cell, row) => {
+          return (
+              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => this.onRoleRemove(rootRecord, row.id)}/>
+          )}
       }
     ]
     return type === 'user' ? usersCol : rolesCol
@@ -283,15 +294,15 @@ class RevokeUsersTransfer extends React.Component {
     const {revokeBy} = this.props
     return (
       <div>
-        <Table
-          rowKey={'id'}
-          className="components-table-demo-nested"
+        <BootstrapTable
+          bootstrap4
+          striped
+          keyField={'id'}
+          data={reviewList}
           columns={this.renderCols(null, revokeBy)}
-          defaultExpandAllRows={true}
-          expandedRowRender={this.renderExpandedRow}
-          dataSource={reviewList}
-          pagination={reviewList.length > 10}
-          size="small"
+          headerClasses="styled-header"
+          expandRow={this.renderExpandedRow}
+          pagination={ paginationFactory(options) }
         />
         <div className="text-right mt-5">
           <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;

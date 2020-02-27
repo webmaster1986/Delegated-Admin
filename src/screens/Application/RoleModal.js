@@ -1,8 +1,10 @@
 import React from "react";
-import {Modal, Table} from 'antd';
+import {Modal} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import {ApiService} from "../../services/ApiService";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 class RoleModal extends React.Component {
   _apiService = new ApiService();
@@ -41,6 +43,11 @@ class RoleModal extends React.Component {
   render(){
     const {isLoading, users} = this.state
     const {role} = this.props
+    const options = {
+      hidePageListOnlyOnePage: true,
+      hideSizePerPage: true
+    };
+
     return (
       <Modal
         title="Role Info"
@@ -85,29 +92,35 @@ class RoleModal extends React.Component {
                   <span>{role.status || "" }</span>
                 </div>
                 <br/>
-                <Table
-                  rowKey={'id'}
+                <BootstrapTable
+                  bootstrap4
+                  striped
+                  keyField='id'
+                  data={users || [] }
+                  headerClasses="styled-header"
+                  pagination={ paginationFactory(options) }
                   columns={[
                     {
-                      dataIndex: 'login',
-                      title: 'Login'
+                      dataField: 'login',
+                      text: 'Login',
+                      sort: true
                     },
                     {
-                      dataIndex: 'name',
-                      title: 'Name',
+                      dataField: 'name',
+                      text: 'Name',
+                      sort: true
                     },
                     {
-                      dataIndex: 'bureau',
-                      title: 'Bureau',
+                      dataField: 'bureau',
+                      text: 'Bureau',
+                      sort: true
                     },
                     {
-                      dataIndex: 'email',
-                      title: 'Email',
+                      dataField: 'email',
+                      text: 'Email',
+                      sort: true
                     }
                   ]}
-                  size="small"
-                  dataSource={users || []}
-                  pagination={false}
                 />
               </div>
           }
