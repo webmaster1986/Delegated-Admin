@@ -60,7 +60,6 @@ class RevokeUsersTransfer extends React.Component {
     super(props)
     this.state = {
       targetKeys: [],
-      showSearch: false,
       isReview: false,
       isLoading: true,
       size: 'default',
@@ -310,7 +309,7 @@ class RevokeUsersTransfer extends React.Component {
       roles = allRoles.filter(obj =>
         ["roleName"].some(key => {
           return (
-            obj && obj[key].toLowerCase().includes(searchRoleText.toLowerCase())
+            obj && obj[key] && obj[key].toLowerCase().includes(searchRoleText.toLowerCase())
           )
         })
       )
@@ -373,7 +372,7 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   render() {
-    const {users, isReview, showSearch, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
+    const {users, isReview, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
     const {revokeList, revokeBy} = this.props
     const data = revokeBy === 'user' ? roles : searchString ? searchList : users
     const selectedRevoke = revokeList && revokeList.length && revokeList.map(role => role.roleName || role.login)
@@ -478,11 +477,23 @@ class RevokeUsersTransfer extends React.Component {
                 <TableTransfer
                   dataSource={data}
                   targetKeys={targetKeys}
-                  showSearch={showSearch}
+                  showSearch
                   onChange={this.onChange}
-                  filterOption={(inputValue, item) =>
-                    item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-                  }
+                  filterOption={(inputValue, item) => {
+                    if(revokeBy === "user"){
+                      return ["roleName", "roleDescription"].some(key => {
+                        return (
+                          item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                        )
+                      })
+                    }else {
+                      return ["login", "name", "bureau", "email"].some(key => {
+                        return (
+                          item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                        )
+                      })
+                    }
+                  }}
                   leftColumns={revokeBy === 'user' ? roleColumns : userColumns}
                   rightColumns={revokeBy === 'user' ? roleColumns : userColumns}
                   operations={['Select', 'Remove']}

@@ -68,7 +68,6 @@ class Index extends Component {
         this.state = {
             roleTargetKeys: [],
             userTargetKeys: [],
-            showSearch: false,
             size: 'default',
             selectedApp: [],
             rolesData: [],
@@ -142,10 +141,6 @@ class Index extends Component {
         }
     };
 
-    triggerShowSearch = showSearch => {
-        this.setState({ showSearch });
-    };
-
     handleChange = (name, value) =>  {
         this.setState({
             [name]: value
@@ -176,7 +171,7 @@ class Index extends Component {
             searchList = users && users.filter(obj =>
                 ["login", "name", "bureau", "email"].some(key => {
                     return (
-                        obj && obj[key].toLowerCase().includes(searchString.toLowerCase())
+                        obj && obj[key] && obj[key].toLowerCase().includes(searchString.toLowerCase())
                     )
                 })
             )
@@ -461,7 +456,7 @@ class Index extends Component {
     }
 
     render() {
-        const { isLoading, roleTargetKeys, userTargetKeys, showSearch, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
+        const { isLoading, roleTargetKeys, userTargetKeys, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
             info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy } = this.state;
         const roleData = searchedRoles.length ? searchRoleList : roles
         const data = searchString ? searchList : users
@@ -648,11 +643,15 @@ class Index extends Component {
                                                 <TableTransfer
                                                     dataSource={roleData}
                                                     targetKeys={roleTargetKeys}
-                                                    showSearch={showSearch}
+                                                    showSearch
                                                     onChange={this.onRoleTableChange}
-                                                    filterOption={(inputValue, item) =>
-                                                        item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-                                                    }
+                                                    filterOption={(inputValue, item) => {
+                                                        return ["roleName", "roleDescription"].some(key => {
+                                                            return (
+                                                              item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                                                            )
+                                                        })
+                                                    }}
                                                     leftColumns={roleTableColumns}
                                                     rightColumns={roleTableColumns}
                                                     operations={['Select', 'Remove']}
@@ -709,11 +708,15 @@ class Index extends Component {
                                                 <TableTransfer
                                                     dataSource={data}
                                                     targetKeys={userTargetKeys}
-                                                    showSearch={showSearch}
+                                                    showSearch
                                                     onChange={this.onUserTableChange}
-                                                    filterOption={(inputValue, item) =>
-                                                        item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-                                                    }
+                                                    filterOption={(inputValue, item) => {
+                                                        return ["login", "name", "bureau", "email"].some(key => {
+                                                            return (
+                                                              item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                                                            )
+                                                        })
+                                                    }}
                                                     leftColumns={TableColumns}
                                                     rightColumns={TableColumns}
                                                     operations={['Select', 'Remove']}

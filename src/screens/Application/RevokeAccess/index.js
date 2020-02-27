@@ -70,7 +70,7 @@ class RevokeAccess extends Component {
       users = allUsers.filter(obj =>
         ["login", "name", "bureau", 'email'].some(key => {
           return (
-            obj && obj[key].toLowerCase().includes(searchedText.toLowerCase())
+            obj && obj[key] && obj[key].toLowerCase().includes(searchedText.toLowerCase())
           )
         })
       )
