@@ -19,6 +19,7 @@ import './assets/table.css';
 import 'antd/dist/antd.css';
 
 import AppOwners from "./screens/Application/AppOwners";
+import {getLoginUser} from "./services/ApiService";
 const cookies = new Cookies();
 
 class App extends Component {
@@ -31,8 +32,8 @@ class App extends Component {
     }
 
   async componentDidMount() {
-      const userLogin = cookies.get('userLogin');
-      const data =  await this._apiService.getLoginUserRole(userLogin)
+      const user = getLoginUser();
+      const data = await this._apiService.getLoginUserRole(user.login)
       if(!data || data.error){
           this.setState({
               isLoading: false
