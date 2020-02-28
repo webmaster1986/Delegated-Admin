@@ -56,7 +56,7 @@ class Reference extends Component {
                            <Table bordered>
                                <tbody>
                                <tr>
-                                   <td width="70%">ROCKAWAYAVE-RIVERROCKAPARTMENTS(MULTIPLEDWELLING/EN), 11201-2911</td>
+                                   <td width="70%">ROCKAWAYAVE-RIVERROCKAPARTMENTS (MULTIPLEDWELLING /EN), 11201-2911</td>
                                    <td width="25%">Factory & Industrial</td>
                                    <td width="5%" className="text-center"><i className="fa fa-pencil cursor-pointer icon-filled" onClick={this.handlePremiseModal}/></td>
                                </tr>

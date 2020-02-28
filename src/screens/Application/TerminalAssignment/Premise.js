@@ -5,12 +5,7 @@ import cellEditFactory from "react-bootstrap-table2-editor";
 import InputMask from "react-input-mask";
 import Select from "react-select";
 import { Icon } from "antd";
-const styles = {
-  col: {
-    paddingLeft: 0,
-    paddingRight: 0
-  }
-};
+import './Premises.css'
 
 class Premise extends Component {
   constructor(props) {
@@ -64,9 +59,9 @@ class Premise extends Component {
         <hr />
         <Form>
           <Row className="mb-2">
-            <Col md={8}>
+            <Col md={12} lg={8} >
               <Row>
-                <Col md={2} style={{ paddingRight: 0 }}>
+                <Col lg={2} md={3} className="borough-padding">
                   <Form.Label>Borough</Form.Label>
                   <Select
                     isClearable
@@ -77,7 +72,7 @@ class Premise extends Component {
                     options={this.boroughOptions}
                   />
                 </Col>
-                <Col md={2} style={styles.col}>
+                <Col lg={2} md={3} className="house-no-padding">
                   <Form.Label>House No</Form.Label>
                   <Form.Control
                     type="text"
@@ -87,7 +82,7 @@ class Premise extends Component {
                     onChange={this.onChange}
                   />
                 </Col>
-                <Col md={8} style={styles.col}>
+                <Col lg={8} md={6} className="street-padding">
                   <Form.Label>Street</Form.Label>
                   <InputGroup style={{ display: "flex !important" }}>
                     <Form.Control
@@ -104,7 +99,7 @@ class Premise extends Component {
                 </Col>
               </Row>
             </Col>
-            <Col md={2}>
+            <Col md={6} lg={2}>
               <Form.Label>Zip Code</Form.Label>
               <InputMask
                 mask="99999-9999"
@@ -115,17 +110,20 @@ class Premise extends Component {
                 onChange={this.onChange}
               />
             </Col>
-            <Col md={2}>
+            <Col md={6} lg={2} className="table-col">
               <BootstrapTable
                 keyField="id"
                 data={[{}]}
                 columns={this.columns}
+                className="mt-2"
                 cellEdit={cellEditFactory({ mode: "click" })}
+                // headerClasses={{marginTop: "5px"}}
+                headerClasses="styled-header"
               />
             </Col>
           </Row>
           <Row className="mb-2">
-            <Col md={4}>
+            <Col lg={4} md={6}>
               <Form.Label>Monitoring Company</Form.Label>
               <Select
                 isClearable
@@ -136,7 +134,7 @@ class Premise extends Component {
                 options={this.monitoringCompanyOption}
               />
             </Col>
-            <Col md={4}>
+            <Col lg={4} md={6}>
               <Form.Label>Monitored Name</Form.Label>
               <Form.Control
                 type="text"
@@ -146,7 +144,7 @@ class Premise extends Component {
                 onChange={this.onChange}
               />
             </Col>
-            <Col md={4}>
+            <Col lg={4} md={12}>
               <Form.Label>
                 Building Dominant Occupancy Classification
               </Form.Label>

@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import {Button, Col, Form, Badge, Row} from "react-bootstrap";
+import Select from "react-select";
+import InputMask from "react-input-mask";
+import {Icon} from "antd";
 
 
-class CompanyDetailsSFC extends Component {
+class   CompanyDetailsSFC extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,7 +21,8 @@ class CompanyDetailsSFC extends Component {
             }
         });
     };
-
+    stateOption= [{ label: "NY", value: "New York" }];
+    companyStatusOption= [{ label: "Active", value: "active" },{label: "Inactive", value: "Inactive"}];
     render() {
         const { companyDetailsObject } = this.state;
         const {
@@ -34,15 +38,40 @@ class CompanyDetailsSFC extends Component {
             phoneNumber1,
             contact2,
             phoneNumber2,
+            companyStatus,
             comment
         } = companyDetailsObject || {};
         return (
             <>
-                <h3 className='ml-3'>Company Details - SFC</h3>
+                <Row>
+                    <Col md={8}>
+                        <h3 className='ml-3'>Company Details - SFC</h3>
+                    </Col>
+                    <Col md={2} className={"text-right mt-2"}>
+                        Company Status:
+                    </Col>
+                    <Col md={2}>
+                        <Select
+                            isClearable
+                            isSearchable
+                            name="companyStatus"
+                            value={companyStatus}
+                            options={this.companyStatusOption}
+                            onChange={option =>
+                                this.onChange({
+                                    target: { name: "companyStatus", value: option }
+                                })
+                            }
+                        />
+                    </Col>
+                </Row>
+
+
+
                 <hr/>
                 <Form>
                     <Row className="mb-2">
-                        <Col md={6}>
+                        <Col lg={6} md={12}>
                             <Form.Label>Name</Form.Label>
                             <Form.Control
                                 type="text"
@@ -52,7 +81,7 @@ class CompanyDetailsSFC extends Component {
                                 onChange={this.onChange}
                             />
                         </Col>
-                        <Col md={6}>
+                        <Col lg={6} md={12}>
                             <Row>
                                 <Col md={6}>
                                     <Row>
@@ -92,7 +121,7 @@ class CompanyDetailsSFC extends Component {
                         </Col>
                     </Row>
                     <Row className="mb-2">
-                        <Col md={6}>
+                        <Col lg={6} md={12}>
                             <Form.Label>Address</Form.Label>
                             <Form.Control
                                 type="text"
@@ -102,7 +131,7 @@ class CompanyDetailsSFC extends Component {
                                 onChange={this.onChange}
                             />
                         </Col>
-                        <Col md={6}>
+                        <Col lg={6} md={12}>
                             <Row>
                                 <Col md={6}>
                                     <Form.Label>City</Form.Label>
@@ -120,25 +149,29 @@ class CompanyDetailsSFC extends Component {
                                             <Form.Label>
                                                 State
                                             </Form.Label>
-                                            <Form.Control
-                                                as="select"
-                                                name={"state"}
-                                                placeholder="Select state"
-                                                value={state || ""}
-                                                onChange={this.onChange}
-                                            >
-                                                <option>NY</option>
-                                            </Form.Control>
+                                            <Select
+                                                isClearable
+                                                isSearchable
+                                                name="state"
+                                                value={state}
+                                                options={this.stateOption}
+                                                onChange={option =>
+                                                    this.onChange({
+                                                        target: { name: "state", value: option }
+                                                    })
+                                                }
+                                            />
                                         </Col>
                                         <Col md={6}>
-                                        <Form.Label>ZipCode</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter Zip Code"
-                                            name={"zipCode"}
-                                            value={zipCode|| ""}
-                                            onChange={this.onChange}
-                                        />
+                                            <Form.Label>Zip Code</Form.Label>
+                                            <InputMask
+                                                mask="99999-9999"
+                                                className="form-control"
+                                                placeholder="Enter Zip Code"
+                                                name={"zipCode"}
+                                                value={zipCode || ""}
+                                                onChange={this.onChange}
+                                            />
                                     </Col>
                                     </Row>
                                 </Col>
@@ -147,7 +180,7 @@ class CompanyDetailsSFC extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={6}>
+                        <Col lg={6} md={12}>
                             <Row>
                                 <Col md={6}>
                                     <Form.Label>Contact 1</Form.Label>
@@ -161,8 +194,9 @@ class CompanyDetailsSFC extends Component {
                                 </Col>
                                 <Col md={6}>
                                     <Form.Label>Phone Number</Form.Label>
-                                    <Form.Control
-                                        type="text"
+                                    <InputMask
+                                        mask="(999)999-9999"
+                                        className="form-control"
                                         placeholder="Phone Number"
                                         name={"phoneNumber1"}
                                         value={phoneNumber1|| ""}
@@ -171,7 +205,7 @@ class CompanyDetailsSFC extends Component {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col md={6}>
+                        <Col lg={6} md={12}>
                             <Row>
                                 <Col md={6}>
                                     <Form.Label>Contact 2</Form.Label>
@@ -185,8 +219,9 @@ class CompanyDetailsSFC extends Component {
                                 </Col>
                                 <Col md={6}>
                                     <Form.Label>Phone Number</Form.Label>
-                                    <Form.Control
-                                        type="text"
+                                    <InputMask
+                                        mask="(999)999-9999"
+                                        className="form-control"
                                         placeholder="Phone Number"
                                         name={"phoneNumber2"}
                                         value={phoneNumber2|| ""}
@@ -197,7 +232,7 @@ class CompanyDetailsSFC extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={2}>
+                        <Col md={2} style={{textAlign: "center",alignSelf: "flex-end"}}>
                             <h6>
                                 Comment <Badge variant="secondary">3</Badge>
                             </h6>
@@ -214,7 +249,11 @@ class CompanyDetailsSFC extends Component {
                         </Col>
                     </Row>
                     <div className="text-right mt-5">
-                        <Button variant="primary" onClick={this.props.toggle}>Save</Button>
+                        <Button variant="primary" onClick={this.props.toggle}>   <Icon
+                            type="save"
+                            style={{ fontSize: "22px", marginRight: "5px" }}
+                            theme="filled"
+                        />Save</Button>
                     </div>
                 </Form>
             </>

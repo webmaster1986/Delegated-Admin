@@ -1,0 +1,21 @@
+@media only screen and (min-width: 768px) {
+    .borough-padding {
+        padding-right: 0 !important;
+    }
+    .street-padding {
+        padding-left: 0 !important;
+    }
+    .house-no-padding {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .table-col .table{
+        margin-top: 0.5rem;
+        margin-bottom: 0 !important;
+    }
+
+}
+.react-bootstrap-table table .styled-header  {
+    background-color: #EFF0F1;
+    margin-top: 20px;
+}
