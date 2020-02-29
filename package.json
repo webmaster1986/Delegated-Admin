@@ -29,6 +29,7 @@
     "react-router-dom": "5.0.0",
     "react-scripts": "^3.0.1",
     "react-scroll-up-button": "^1.6.4",
+    "react-select": "^3.0.8",
     "react-sidebar": "^3.0.2",
     "react-slick": "^0.24.0",
     "react-visibility-sensor": "^5.1.1",

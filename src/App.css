@@ -223,3 +223,28 @@ code {
   color: #fff !important;
   font-size: 1.15rem;
 }
+
+.ant-transfer {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  list-style: none;
+  -webkit-font-feature-settings: 'tnum';
+  -webkit-box-sizing: border-box;
+  font-feature-settings: 'tnum', "tnum";
+  position: relative;
+  z-index: 0;
+}
+
+.custom-dropdown:hover {
+  background-color: #B2D4FF;
+  display: block;
+  width: 100%;
+  line-height: 1.5;
+  cursor: pointer;
+  box-sizing: border-box
+}

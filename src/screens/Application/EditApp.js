@@ -1,12 +1,10 @@
 import React from "react";
 import {Row, Col, Form, Button, Container} from "react-bootstrap";
-import Select from "antd/lib/select";
 import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-
-const { Option } = Select
+import Select from 'react-select';
 
 
 class EditApp extends React.Component {
@@ -17,7 +15,9 @@ class EditApp extends React.Component {
             isLoading: false,
             rolesList: [],
             rolesObject: {},
-            appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: ''}
+            appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: ''},
+            selectedOption: null,
+            selectedOwnerGroupOption: null
         }
     }
 
@@ -104,11 +104,45 @@ class EditApp extends React.Component {
         }
     }
 
+    handleChange = selectedOption => {
+        const {name, data} = selectedOption
+        if (name === "oimTarget") {
+            this.setState({
+                selectedOption: data,
+                rolesObject: {
+                    ...this.state.rolesObject,
+                    "oimTarget": (data && data.value) || ""
+                }
+            });
+        }
+        if (name === "ownerGroup") {
+            this.setState({
+                selectedOwnerGroupOption: data,
+                appObject: {
+                    ...this.state.appObject,
+                    "ownerGroup": (data && data.value) || ""
+                }
+            })
+        }
+    }
 
     render() {
-        const { rolesObject, appObject, rolesList } = this.state;
+        const { rolesObject, appObject, rolesList, selectedOption, selectedOwnerGroupOption } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
+
+        const oimOptions = [
+            { value: 'IDCS', label: 'IDCS' },
+            { value: 'SN', label: 'SN' },
+            { value: 'AD', label: 'AD' },
+        ];
+
+        const applicationOwners = [
+            { value: 'jack', label: 'Jack' },
+            { value: 'lucy', label: 'Lucy' },
+            { value: 'tom', label: 'Tom' },
+        ];
+
         const rolesListColumn = [
             {
                 dataField:'roleName',
@@ -182,25 +216,14 @@ class EditApp extends React.Component {
                                     </Col>
                                     <Col md={2} className="text-center">(OR)</Col>
                                     <Col md={5}>
-
                                         <Select
-                                            size={'large'}
-                                            showSearch
-                                            style={{ width: '100%' }}
-                                            placeholder="Select a person"
-                                            optionFilterProp="children"
-                                            name={'ownerGroup'}
-                                            value={ownerGroup || ""}
-                                            onChange={(value) => this.onChange({target: {name: 'ownerGroup', value}})}
-                                            filterOption={(input, option) =>
-                                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                            }
-                                        >
-                                            <Option value="jack">Jack</Option>
-                                            <Option value="lucy">Lucy</Option>
-                                            <Option value="tom">Tom</Option>
-                                        </Select>
-
+                                          isClearable
+                                          isSearchable
+                                          placeholder="Select a person"
+                                          value={selectedOwnerGroupOption}
+                                          onChange={(value) => this.handleChange({name: "ownerGroup", data: value})}
+                                          options={applicationOwners || []}
+                                        />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -229,13 +252,14 @@ class EditApp extends React.Component {
                                     <Form.Control type="text" placeholder="Role Description" name={'roleDescription'} value={roleDescription || ""} onChange={this.onRoleChange}/>
                                 </Col>
                                 <Col className="pt-2" md={3}>
-                                    <Form.Group>
-                                        <Form.Control as="select" placeholder="Role Description" name={'oimTarget'}  value={oimTarget || ""} onChange={this.onRoleChange}>
-                                            <option>IDCS</option>
-                                            <option>SN</option>
-                                            <option>AD</option>
-                                        </Form.Control>
-                                    </Form.Group>
+                                    <Select
+                                      isClearable
+                                      isSearchable
+                                      placeholder="Role Description"
+                                      value={selectedOption}
+                                      onChange={(value) => this.handleChange({name: "oimTarget", data: value})}
+                                      options={oimOptions || []}
+                                    />
                                 </Col>
                                 <Col md={3} className={'pt-2'}>
                                     <Button type="submit" onClick={this.onAddRole}>Add Role</Button>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import {
   Container,
   Button,
@@ -8,18 +8,17 @@ import {
   InputGroup,
   Dropdown
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Spin from "antd/lib/spin";
 import message from "antd/lib/message";
-import { ApiService } from "../../services/ApiService";
-import { Select } from "antd";
+import {ApiService} from "../../services/ApiService";
+import Select from 'react-select';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-const { Option } = Select;
-
 class AppOwners extends Component {
   _apiService = new ApiService();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -28,7 +27,12 @@ class AppOwners extends Component {
       applicationsList: [],
       selectBy: "",
       searchString: "",
-      searchList: []
+      searchList: [],
+      options: [
+        {value: 'grant-access', label: 'Grant Access'},
+        {value: 'revoke-access', label: 'Revoke Access'}
+      ],
+      selectedOption: null
     };
   }
 
@@ -50,6 +54,23 @@ class AppOwners extends Component {
       });
     }
   }
+
+  handleChange = selectedOption => {
+    this.setState({
+      selectedOption
+    });
+  }
+
+  CustomOption = (props, appCode) => {
+    const {data} = props;
+    return (
+      <Link to={`/${data && data.value}?app=${appCode}`}>
+        <div className={"text-left p-2 custom-dropdown"}>
+          {data && data.label}
+        </div>
+      </Link>
+    )
+  };
 
   appOwnersColumn = [
     {
@@ -75,25 +96,17 @@ class AppOwners extends Component {
     {
       dataField: "appCode",
       text: "Action",
-      headerStyle: {width: 100},
+      headerStyle: {width: 200},
       formatter: appCode => {
         return (
           <div className="text-center">
-            <Select defaultValue="manage access">
-              <Option value="manage access" disabled>
-                Manage Access
-              </Option>
-              <Option value="grant access" onClick={() => this.props.history.push(`/grant-access?app=${appCode}`)}>
-                <Link to={`/grant-access?app=${appCode}`}>
-                  Grant Access
-                </Link>
-              </Option>
-              <Option value="revoke access" onClick={() => this.props.history.push(`/revoke-access?app=${appCode}`)}>
-                <Link to={`/revoke-access?app=${appCode}`}>
-                  Revoke Access
-                </Link>
-              </Option>
-            </Select>
+            <Select
+              placeholder="Manage Access"
+              value={this.state.selectedOption}
+              components={{Option: (data) => this.CustomOption(data, appCode)}}
+              onChange={this.handleChange}
+              options={this.state.options || []}
+            />
           </div>
         )
       }
@@ -135,14 +148,14 @@ class AppOwners extends Component {
     return (
       <Container className={"container-design"}>
         <h4 className="text-left">Applications</h4>
-        <hr />
+        <hr/>
         {
           <>
             <Row>
               <Col md={12}>
                 <InputGroup className="input-prepend">
                   <InputGroup.Prepend>
-                    <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                    <InputGroup.Text><i className="fa fa-search"/></InputGroup.Text>
                   </InputGroup.Prepend>
                   <Form.Control
                     type="text"
@@ -153,22 +166,22 @@ class AppOwners extends Component {
                 </InputGroup>
               </Col>
             </Row>
-            <br />
+            <br/>
             {isLoading ? (
               <div className={"text-center"}>
                 {" "}
-                <Spin className="mt-50 custom-loading" />{" "}
+                <Spin className="mt-50 custom-loading"/>{" "}
               </div>
             ) : (
-                <BootstrapTable
-                  bootstrap4
-                  striped
-                  keyField='id'
-                  data={apps || [] }
-                  columns={ this.appOwnersColumn }
-                  headerClasses="styled-header"
-                  pagination={ paginationFactory(options) }
-                />
+              <BootstrapTable
+                bootstrap4
+                striped
+                keyField='id'
+                data={apps || []}
+                columns={this.appOwnersColumn}
+                headerClasses="styled-header"
+                pagination={paginationFactory(options)}
+              />
             )}
           </>
         }

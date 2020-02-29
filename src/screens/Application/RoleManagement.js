@@ -6,6 +6,7 @@ import moment from "moment"
 import {ApiService} from "../../services/ApiService";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import Select from 'react-select';
 
 
 class RoleManagement extends React.Component {
@@ -17,7 +18,8 @@ class RoleManagement extends React.Component {
             rolesList: [],
             oimTargetList: [],
             rolesObject: {},
-            appObject: {}
+            appObject: {},
+            selectedOption: null
         }
     }
 
@@ -96,9 +98,18 @@ class RoleManagement extends React.Component {
         }
     }
 
+    handleChange = selectedOption => {
+        this.setState({
+            selectedOption,
+            rolesObject: {
+                ...this.state.rolesObject,
+                "oimTarget": (selectedOption && selectedOption.value) || ""
+            }
+        });
+    }
 
     render() {
-        const { rolesObject, appObject, rolesList, isLoading, oimTargetList } = this.state;
+        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const rolesListColumn = [
@@ -241,18 +252,14 @@ class RoleManagement extends React.Component {
                                           />
                                       </Col>
                                       <Col className="pt-2" md={3}>
-                                          <Form.Group>
-                                              <Form.Control as="select" placeholder="Role Description" name={'oimTarget'}
-                                                            value={oimTarget || ""} onChange={this.onChange}>
-                                                  {
-                                                      (oimTargetList || []).map((oim, index) => {
-                                                          return (
-                                                            <option key={index.toString()}>{oim}</option>
-                                                          )
-                                                      })
-                                                  }
-                                              </Form.Control>
-                                          </Form.Group>
+                                          <Select
+                                            isClearable
+                                            isSearchable
+                                            placeholder="Role Description"
+                                            value={selectedOption}
+                                            onChange={this.handleChange}
+                                            options={oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))}
+                                          />
                                       </Col>
                                       <Col md={3} className={'pt-2'}>
                                           <Button type="submit" onClick={this.onAddRole}>Add Role</Button>

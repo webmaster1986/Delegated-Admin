@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import {Container, Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
 import queryString from "query-string";
 import Spin from "antd/lib/spin";
-import { Table, Transfer, Select, Tag } from 'antd/lib'
+import { Table, Transfer, Tag } from 'antd/lib'
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import Review from "./Review";
 import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
+import Select from 'react-select';
 
-const { Option } = Select;
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
     <Transfer {...restProps} showSelectAll={false}>
@@ -91,7 +91,7 @@ class Index extends Component {
         const {location} = this.props
         const parsed = queryString.parse(location.search);
         this.setState({
-            selectedApp: parsed && parsed.app ? [parsed.app] : [],
+            selectedApp: parsed && parsed.app ? [{ value: parsed.app, label: parsed.app }] : [],
             selectBy: parsed.by || ''
         },() => {
             if(parsed.by){
@@ -102,22 +102,41 @@ class Index extends Component {
 
     getRoles = async () => {
         const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
-        const apps = selectedApp.length ? selectedApp.map(item => item.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
+        const apps = (selectedApp && selectedApp.length) ? selectedApp.map(item => item.value.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
         const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
-        const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
+        // const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
+        const filteredRoles = []
+        if (appRoles && searchedRoles && appRoles.length && searchedRoles.length) {
+            appRoles.forEach(i => {
+                searchedRoles.forEach(j => {
+                    if (j.value === i.roleName) {
+                        filteredRoles.push(i)
+                    }
+                })
+            })
+        }
+
         const data = (appRoles || []).map((f, i) => ({
             id: i, key: i, ...f
         }))
 
-        this.setState({ roles: data, searchRoleList: searchedRoles.length ? filteredRoles : [] })
+        this.setState({
+            roles: data,
+            searchRoleList: (searchedRoles && searchedRoles.length) ? ((filteredRoles || []).map((f, i) => ({ id: i, key: i, ...f }))) : []
+        })
     }
 
     onRoleTableChange = nextTargetKeys => {
-        const {roles} = this.state
+        const {roles, searchedRoles} = this.state
         if (nextTargetKeys && nextTargetKeys.length) {
             const data = []
             nextTargetKeys.forEach(f => {
-                data.push(roles[f])
+                if (searchedRoles && searchedRoles.length) {
+                    const val = (searchedRoles[f] && searchedRoles[f].value) || ""
+                    data.push(roles.find(g => g.roleName === val))
+                } else {
+                    data.push(roles[f])
+                }
             })
             this.setState({ roleTargetKeys: nextTargetKeys, rolesData: data });
         } else {
@@ -371,7 +390,7 @@ class Index extends Component {
 
     onNext = () => {
         const {selectBy, selectedApp} = this.state
-        this.props.history.push(`/grant-access?by=${selectBy}&app=${selectedApp}`)
+        this.props.history.push(`/grant-access?by=${selectBy}&app=${(selectedApp && selectedApp[0] && selectedApp[0].value) || ""}`)
         this.setState({
             step: false,
             category: selectBy,
@@ -455,10 +474,17 @@ class Index extends Component {
         }
     }
 
+    handleAppChange = selectedOption => {
+        const {name, data} = selectedOption
+        this.setState({
+            [name]: data
+        }, () => this.getRoles())
+    }
+
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
             info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy } = this.state;
-        const roleData = searchedRoles.length ? searchRoleList : roles
+        const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
 
         const roleTableColumns = [
@@ -599,23 +625,18 @@ class Index extends Component {
                                                     <Form.Label >
                                                         APPLICATIONS:
                                                     </Form.Label>
-                                                    <InputGroup>
-                                                        <Select
-                                                            mode="multiple"
-                                                            size={size}
-                                                            allowClear
-                                                            placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
-                                                            defaultValue={selectedApp}
-                                                            onChange={(value) => this.handleChange('selectedApp', value)}
-                                                            style={{ width: '100%' }}
-                                                        >
-                                                            {
-                                                                applicationsList && applicationsList.map((g, i) => (
-                                                                    <Option key={i.toString() + i} value={g.appCode}>{g.appCode}</Option>
-                                                                ))
-                                                            }
-                                                        </Select>
-                                                    </InputGroup>
+                                                    <Select
+                                                      isClearable
+                                                      isSearchable
+                                                      isMulti
+                                                      closeMenuOnSelect={false}
+                                                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
+                                                      value={selectedApp}
+                                                      onChange={(value) => this.handleAppChange({name: "selectedApp", data: value})}
+                                                      options={applicationsList && applicationsList.map(app =>
+                                                        ({ value: app.appCode, label: app.appCode }))
+                                                      }
+                                                    />
                                                 </Col>
                                             </Row>
                                             <Row className={'mb-3'}>
@@ -623,19 +644,18 @@ class Index extends Component {
                                                     <Form.Label >
                                                         ROLES:
                                                     </Form.Label>
-                                                    <InputGroup>
-                                                        <Select
-                                                            mode="multiple"
-                                                            size={size}
-                                                            allowClear
-                                                            placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
-                                                            defaultValue={searchedRoles}
-                                                            onChange={(value) => this.handleChange('searchedRoles',value)}
-                                                            style={{ width: '100%' }}
-                                                        >
-                                                            {roles && roles.map((g, i) =>  <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
-                                                        </Select>
-                                                    </InputGroup>
+                                                    <Select
+                                                      isClearable
+                                                      isSearchable
+                                                      isMulti
+                                                      closeMenuOnSelect={false}
+                                                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
+                                                      value={searchedRoles}
+                                                      onChange={(value) => this.handleAppChange({name: "searchedRoles", data: value})}
+                                                      options={roles && roles.map(app =>
+                                                        ({ value: app.roleName, label: app.roleName }))
+                                                      }
+                                                    />
                                                 </Col>
                                             </Row>
 

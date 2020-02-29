@@ -1,14 +1,12 @@
 import React from "react";
 import {Row, Col, Form, Button, Container, Breadcrumb} from "react-bootstrap";
-import Select from "antd/lib/select";
 import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
 import notification from "antd/lib/notification";
 import Spin from "antd/lib/spin";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-
-const { Option } = Select
+import Select from 'react-select';
 
 const openNotificationWithIcon = (type, message) => {
     notification[type]({
@@ -27,7 +25,9 @@ class CreateApp extends React.Component {
             oimTargetList: [],
             rolesObject: {},
             appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: '', selectedOwnerGroup: ''},
-            appCodeError: ''
+            appCodeError: '',
+            selectedOption: null,
+            selectedOwnerGroupOption: null
         }
     }
 
@@ -80,6 +80,21 @@ class CreateApp extends React.Component {
             appObject: {
                 ...this.state.appObject,
                 [name]: value,
+                ...object
+            }
+        })
+    }
+
+    onSelectedOwnerGroupChange = (selectedOwnerGroupOption) => {
+        const { appObject } = this.state
+        const object = {
+            ownerGroup: selectedOwnerGroupOption ? "" : `${appObject.appCode}_OWNER`,
+        }
+        this.setState({
+            selectedOwnerGroupOption,
+            appObject: {
+                ...this.state.appObject,
+                "selectedOwnerGroup": (selectedOwnerGroupOption && selectedOwnerGroupOption.value) || "",
                 ...object
             }
         })
@@ -146,8 +161,18 @@ class CreateApp extends React.Component {
         this.setState({...object})
     }
 
+    handleChange = selectedOption => {
+        this.setState({
+            selectedOption,
+            rolesObject: {
+                ...this.state.rolesObject,
+                "oimTarget": (selectedOption && selectedOption.value) || ""
+            }
+        });
+    }
+
     render() {
-        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading } = this.state;
+        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption } = this.state;
         const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !ownerGroup || !rolesList.length;
@@ -259,36 +284,14 @@ class CreateApp extends React.Component {
                                           </Col>
                                           <Col md={2} className="text-center">(OR)</Col>
                                           <Col md={5}>
-
                                               <Select
-                                                size={'large'}
-                                                allowClear
-                                                showSearch
-                                                style={{width: '100%'}}
+                                                isClearable
+                                                isSearchable
                                                 placeholder="Select a person"
-                                                optionFilterProp="children"
-                                                name={'selectedOwnerGroup'}
-                                                value={selectedOwnerGroup || ""}
-                                                onChange={(value) => this.onChange({
-                                                    target: {
-                                                        name: 'selectedOwnerGroup',
-                                                        value
-                                                    }
-                                                })}
-                                                filterOption={(input, option) =>
-                                                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                }
-                                              >
-                                                  {
-                                                      (ownerGroupList || []).map((group, index) => {
-                                                          return (
-                                                            <Option key={index.toString()}
-                                                                    value={group}>{group}</Option>
-                                                          )
-                                                      })
-                                                  }
-                                              </Select>
-
+                                                value={selectedOwnerGroupOption}
+                                                onChange={this.onSelectedOwnerGroupChange}
+                                                options={ownerGroupList && ownerGroupList.map(oim => ({ value: oim, label: oim })) || []}
+                                              />
                                           </Col>
                                       </Form.Group>
                                   </Col>
@@ -321,18 +324,14 @@ class CreateApp extends React.Component {
                                                         onChange={this.onRoleChange}/>
                                       </Col>
                                       <Col className="pt-2" md={3}>
-                                          <Form.Group>
-                                              <Form.Control as="select" placeholder="OIM Target" name={'oimTarget'}
-                                                            value={oimTarget || ""} onChange={this.onRoleChange}>
-                                                  {
-                                                      (oimTargetList || []).map((oim, index) => {
-                                                          return (
-                                                            <option key={index.toString()}>{oim}</option>
-                                                          )
-                                                      })
-                                                  }
-                                              </Form.Control>
-                                          </Form.Group>
+                                          <Select
+                                            isClearable
+                                            isSearchable
+                                            placeholder="OIM Target"
+                                            value={selectedOption}
+                                            onChange={this.handleChange}
+                                            options={(oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))) || []}
+                                          />
                                       </Col>
                                       <Col md={3} className={'pt-2'}>
                                           <Button

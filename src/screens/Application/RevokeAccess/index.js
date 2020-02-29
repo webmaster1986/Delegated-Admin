@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
-import {Select} from 'antd/lib'
+import Select from 'react-select';
 import queryString from 'query-string';
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
@@ -10,8 +10,6 @@ import UserModal from "../UserModal";
 import RoleModal from "../RoleModal";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-
-const { Option } = Select;
 
 class RevokeAccess extends Component {
   _apiService = new ApiService();
@@ -40,7 +38,7 @@ class RevokeAccess extends Component {
     const {location} = this.props
     const parsed = queryString.parse(location.search);
     this.setState({
-      selectedApp: parsed && parsed.app ? [parsed.app] : [],
+      selectedApp: parsed && parsed.app ? [{ value: parsed.app, label: parsed.app }] : [],
       revokeBy: parsed.by || ''
     },() => {
       if(parsed.by){
@@ -51,10 +49,20 @@ class RevokeAccess extends Component {
 
   getRoles = async () => {
     const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
-    const apps = selectedApp.length ? selectedApp.map(item => item.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
+    const apps = (selectedApp && selectedApp.length) ? selectedApp.map(item => item.value.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
     const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
-    const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
-    this.setState({ roles: appRoles, searchRoleList: searchedRoles.length ? filteredRoles : [] })
+    // const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
+    const filteredRoles = []
+    if (appRoles && searchedRoles && appRoles.length && searchedRoles.length) {
+      appRoles.forEach(i => {
+        searchedRoles.forEach(j => {
+          if (j.value === i.roleName) {
+            filteredRoles.push(i)
+          }
+        })
+      })
+    }
+    this.setState({ roles: appRoles, searchRoleList: (searchedRoles && searchedRoles.length) ? filteredRoles : [] })
   };
 
 
@@ -191,9 +199,16 @@ class RevokeAccess extends Component {
     )
   }
 
+  handleAppChange = selectedOption => {
+    const {name, data} = selectedOption
+    this.setState({
+      [name]: data
+    }, () => this.getRoles())
+  }
+
   step2 = () => {
     const { isLoading, roles, size, selectedApp, searchedRoles, searchedText, applicationsList, searchRoleList, revokeBy, users } = this.state;
-    const data = searchedRoles.length ? searchRoleList : roles;
+    const data = (searchedRoles && searchedRoles.length) ? searchRoleList : roles;
 
     const options = {
       hidePageListOnlyOnePage: true,
@@ -271,24 +286,18 @@ class RevokeAccess extends Component {
                   <Form.Label>
                     APPLICATIONS:
                   </Form.Label>
-                  <InputGroup>
-                    <Select
-                      mode="multiple"
-                      size={size}
-                      allowClear
-                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
-                      defaultValue={selectedApp}
-                      value={selectedApp}
-                      onChange={(value) => this.handleChange('selectedApp', value)}
-                      style={{ width: '100%' }}
-                    >
-                      {
-                        applicationsList && applicationsList.map((g, i) => (
-                          <Option key={i.toString() + i} value={g.appCode}>{g.appCode}</Option>
-                        ))
-                      }
-                    </Select>
-                  </InputGroup>
+                  <Select
+                    isClearable
+                    isSearchable
+                    isMulti
+                    closeMenuOnSelect={false}
+                    placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
+                    value={selectedApp}
+                    onChange={(value) => this.handleAppChange({name: "selectedApp", data: value})}
+                    options={applicationsList && applicationsList.map(app =>
+                      ({ value: app.appCode, label: app.appCode }))
+                    }
+                  />
                 </Col>
               </Row>
               <Row className={'mb-3'}>
@@ -296,19 +305,18 @@ class RevokeAccess extends Component {
                   <Form.Label >
                     ROLES:
                   </Form.Label>
-                  <InputGroup>
-                    <Select
-                      mode="multiple"
-                      size={size}
-                      allowClear
-                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
-                      defaultValue={searchedRoles}
-                      onChange={(value) => this.handleChange('searchedRoles',value)}
-                      style={{ width: '100%' }}
-                    >
-                      {roles && roles.map((g, i) =>  <Option key={i.toString() + i} value={g.roleName}>{g.roleName}</Option>)}
-                    </Select>
-                  </InputGroup>
+                  <Select
+                    isClearable
+                    isSearchable
+                    isMulti
+                    closeMenuOnSelect={false}
+                    placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
+                    value={searchedRoles}
+                    onChange={(value) => this.handleAppChange({name: "searchedRoles", data: value})}
+                    options={roles && roles.map(app =>
+                      ({ value: app.roleName, label: app.roleName }))
+                    }
+                  />
                 </Col>
               </Row>
             </>
@@ -373,8 +381,8 @@ class RevokeAccess extends Component {
   onStepChange = (action) => {
     this.setState(prevState => {
       if(prevState.step+1 === 1){
-        const selectedApp = prevState.selectedApp.length ? prevState.selectedApp[0] : ""
-        this.props.history.push(`/revoke-access?by=${prevState.revokeBy}&app=${selectedApp}`)
+        const selectedApp = (prevState.selectedApp && prevState.selectedApp.length) ? prevState.selectedApp[0] : ""
+        this.props.history.push(`/revoke-access?by=${prevState.revokeBy}&app=${(selectedApp && selectedApp[0] && selectedApp[0].value) || ""}`)
       }
       return {
         step: action === "back" ? prevState.step - 1 : prevState.step + 1
