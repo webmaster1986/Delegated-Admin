@@ -73,7 +73,7 @@ class EditApp extends React.Component {
         let { rolesList, rolesObject, appObject } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
             rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: rolesList.length})
-            const data =  await this._apiService.addRole({ ...rolesObject }, appObject.appCode)
+            await this._apiService.addRole({ ...rolesObject }, appObject.appCode)
             this.setState({
                 rolesList,
                 rolesObject: {}
@@ -129,7 +129,7 @@ class EditApp extends React.Component {
     render() {
         const { rolesObject, appObject, rolesList, selectedOption, selectedOwnerGroupOption } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
-        const { roleName, roleDescription, oimTarget } = rolesObject || {};
+        const { roleName, roleDescription } = rolesObject || {};
 
         const oimOptions = [
             { value: 'IDCS', label: 'IDCS' },

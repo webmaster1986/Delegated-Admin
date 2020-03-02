@@ -2,12 +2,12 @@ import rootSaga from './rootSaga';
 import reducers from '../reducers';
 import createSagaMiddleware from 'redux-saga';
 import { createStore, compose, applyMiddleware } from 'redux';
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 
 const sagaMiddleware = createSagaMiddleware();
 
 let middlewares = applyMiddleware(sagaMiddleware);
-let logmiddlewares = applyMiddleware(logger);
+// let logmiddlewares = applyMiddleware(logger);
 
 const store = createStore(
     reducers,

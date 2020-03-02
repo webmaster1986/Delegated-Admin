@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button, Row, Col, Form, InputGroup } from 'react-bootstrap'
+import { Container, Button} from 'react-bootstrap'
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
@@ -25,39 +25,6 @@ const products = [
         description: 'Fourth App Description',
         ownerGroup: 'asdasda',
     }
-];
-
-const columns = [
-    {
-        title: 'Application Code',
-        dataIndex: 'appCode',
-        sorter: (a, b) => a.appCode - b.appCode
-    },
-    {
-        title: 'Application Name',
-        dataIndex: 'appName',
-        sorter: (a, b) => a.appName - b.appName
-    },
-    {
-        title: 'Description',
-        dataIndex: 'description',
-        sorter: (a, b) => a.description - b.description
-    },
-    {
-        title: 'Owner Group',
-        dataIndex: 'ownerGroup',
-        sorter: (a, b) => a.ownerGroup - b.ownerGroup
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        width: 200,
-        render: () =>
-            <div className="text-center">
-                <Button variant={'outline-success'} size={'sm'}>Approve</Button>&nbsp;&nbsp;
-                <Button variant={'outline-danger'} size={'sm'}>Revoke</Button>
-            </div>,
-    },
 ];
 
 class ReviewApps extends Component {

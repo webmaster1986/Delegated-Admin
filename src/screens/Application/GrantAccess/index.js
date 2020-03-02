@@ -203,14 +203,14 @@ class Index extends Component {
 
     preview = () => {
         const {usersData, category, rolesData} = this.state
-        {
-            (category === "user") ?
-                usersData.forEach(f => {
-                    f.roles = Object.assign([], rolesData);
-                }) :
-                rolesData.forEach(f => {
-                    f.users = Object.assign([], usersData);
-                })
+        if(category === "user") {
+            usersData.forEach(f => {
+                f.roles = Object.assign([], rolesData);
+            })
+        }else {
+            rolesData.forEach(f => {
+                f.users = Object.assign([], usersData);
+            })
         }
 
         this.setState({
@@ -482,7 +482,7 @@ class Index extends Component {
     }
 
     render() {
-        const { isLoading, roleTargetKeys, userTargetKeys, roles, size, selectedApp, applicationsList, step1, step2, users, searchRoleList,
+        const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users, searchRoleList,
             info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy } = this.state;
         const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
@@ -612,15 +612,18 @@ class Index extends Component {
                                             {
                                                 selectBy === "user" ?
                                                   <Row>
-                                                      <Col md={8}>
+                                                      <Col>
+                                                          <div className="mb-1">
+                                                              <b>Selected Users:</b>
+                                                          </div>
                                                           {
                                                               usersData && usersData.length ?
-                                                                  usersData.map((user, i) => <Tag closable onClose={() => this.onRemove(i)}>{user.name || user.login}</Tag>) : null
+                                                                usersData.map((user, i) => <Tag closable onClose={() => this.onRemove(i)}>{user.name || user.login}</Tag>) : null
                                                           }
                                                       </Col>
                                                   </Row> : null
                                             }
-                                            <Row className={'mb-3'}>
+                                            <Row className={'mb-3 mt-3'}>
                                                 <Col>
                                                     <Form.Label >
                                                         APPLICATIONS:
@@ -693,15 +696,18 @@ class Index extends Component {
                                             {
                                                 selectBy === "roles" ?
                                                   <Row>
-                                                      <Col md={8}>
+                                                      <Col>
+                                                          <div className="mb-1">
+                                                              <b>Selected Roles:</b>
+                                                          </div>
                                                           {
                                                               (rolesData && rolesData.length) ?
-                                                                  rolesData.map((role, i) => <Tag closable onClose={() => this.onRemove(i)}>{role.roleName}</Tag>) : null
+                                                                rolesData.map((role, i) => <Tag closable onClose={() => this.onRemove(i)}>{role.roleName}</Tag>) : null
                                                           }
                                                       </Col>
                                                   </Row> : null
                                             }
-                                            <Row className={'mb-3'}>
+                                            <Row className={'mb-3 mt-2'}>
                                                 <Col>
                                                     <Form.Label >
                                                         Users:

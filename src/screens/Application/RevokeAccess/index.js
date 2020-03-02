@@ -207,7 +207,7 @@ class RevokeAccess extends Component {
   }
 
   step2 = () => {
-    const { isLoading, roles, size, selectedApp, searchedRoles, searchedText, applicationsList, searchRoleList, revokeBy, users } = this.state;
+    const { isLoading, roles, selectedApp, searchedRoles, searchedText, applicationsList, searchRoleList, revokeBy, users } = this.state;
     const data = (searchedRoles && searchedRoles.length) ? searchRoleList : roles;
 
     const options = {

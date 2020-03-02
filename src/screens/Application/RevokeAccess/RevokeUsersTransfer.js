@@ -134,7 +134,7 @@ class RevokeUsersTransfer extends React.Component {
   };
 
   onSearch = (event) => {
-    const {users, allUsers} = this.state
+    const {allUsers} = this.state
     const searchString = (event && event.target.value) || ""
     let searchList = []
     if (searchString) {

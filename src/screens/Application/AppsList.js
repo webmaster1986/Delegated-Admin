@@ -141,6 +141,7 @@ class AppsList extends Component {
                                 headerClasses="styled-header"
                                 columns={ this.appListColumn }
                                 pagination={ paginationFactory(options) }
+                                wrapperClasses="table-responsive"
                             />
                     }
                 </div>

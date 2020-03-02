@@ -1,12 +1,10 @@
 import React, {Component} from "react";
 import {
   Container,
-  Button,
   Row,
   Col,
   Form,
-  InputGroup,
-  Dropdown
+  InputGroup
 } from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Spin from "antd/lib/spin";

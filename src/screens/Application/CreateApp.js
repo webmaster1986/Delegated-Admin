@@ -173,8 +173,8 @@ class CreateApp extends React.Component {
 
     render() {
         const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption } = this.state;
-        const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
-        const { roleName, roleDescription, oimTarget } = rolesObject || {};
+        const { appName, appCode, appDescription, ownerGroup } = appObject || {};
+        const { roleName, roleDescription } = rolesObject || {};
         const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !ownerGroup || !rolesList.length;
         const rolesListColumn = [
             {
@@ -290,7 +290,7 @@ class CreateApp extends React.Component {
                                                 placeholder="Select a person"
                                                 value={selectedOwnerGroupOption}
                                                 onChange={this.onSelectedOwnerGroupChange}
-                                                options={ownerGroupList && ownerGroupList.map(oim => ({ value: oim, label: oim })) || []}
+                                                options={(ownerGroupList && ownerGroupList.map(oim => ({ value: oim, label: oim }))) || []}
                                               />
                                           </Col>
                                       </Form.Group>
