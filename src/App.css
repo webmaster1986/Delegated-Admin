@@ -105,6 +105,9 @@ code {
   .ant-transfer {
     overflow: auto;
   }
+  .react-bootstrap-table table {
+    table-layout: initial !important;
+  }
 }
 
 @media (max-width: 767px) {
