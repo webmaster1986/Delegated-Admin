@@ -34,7 +34,7 @@ class AppsList extends Component {
         } else {
             this.setState({
                 isLoading: false,
-                applicationsList: data || []
+                applicationsList: (data && data.map((f, i) => ({ ...f, id: i}))) || []
             })
         }
     }
@@ -61,13 +61,13 @@ class AppsList extends Component {
             sort: true
         },
         {
-            dataField:'appCode',
+            dataField:'id',
             text:'Action',
             headerStyle: {width: 100},
-            formatter: (appCode) => {
+            formatter: (cell, row) => {
                 return (
                     <div className="text-center">
-                        <Link to={`/role-manage/${appCode}`}>
+                        <Link to={`/role-manage/${row.appCode}`}>
                             <Button variant={'primary'} size={'sm'}>Edit</Button>
                         </Link>
                     </div>

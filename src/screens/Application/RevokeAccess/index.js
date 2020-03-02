@@ -62,7 +62,9 @@ class RevokeAccess extends Component {
         })
       })
     }
-    this.setState({ roles: appRoles, searchRoleList: (searchedRoles && searchedRoles.length) ? filteredRoles : [] })
+    this.setState({
+      roles: (appRoles && appRoles.map((f, i) => ({ ...f, id: i}))) || [],
+      searchRoleList: (searchedRoles && searchedRoles.length) ? filteredRoles : [] })
   };
 
 
@@ -236,6 +238,7 @@ class RevokeAccess extends Component {
         sort: true
       },
       {
+        dataField: 'id',
         text: 'Action',
         headerStyle: {width: 200},
         formatter: (cell, row) => {
@@ -266,6 +269,7 @@ class RevokeAccess extends Component {
         sort: true
       },
       {
+        dataField: 'id',
         text: 'Action',
         headerStyle: {width: 150},
         formatter: (cell, row) => {

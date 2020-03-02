@@ -617,8 +617,8 @@ class Index extends Component {
                                                               <b>Selected Users:</b>
                                                           </div>
                                                           {
-                                                              usersData && usersData.length ?
-                                                                usersData.map((user, i) => <Tag closable onClose={() => this.onRemove(i)}>{user.name || user.login}</Tag>) : null
+                                                              (usersData && usersData.length) ?
+                                                                usersData.map((user, i) => <Tag key={i.toString() + i} closable onClose={() => this.onRemove(i)}>{user.name || user.login}</Tag>) : null
                                                           }
                                                       </Col>
                                                   </Row> : null
@@ -702,7 +702,7 @@ class Index extends Component {
                                                           </div>
                                                           {
                                                               (rolesData && rolesData.length) ?
-                                                                rolesData.map((role, i) => <Tag closable onClose={() => this.onRemove(i)}>{role.roleName}</Tag>) : null
+                                                                rolesData.map((role, i) => <Tag key={i.toString() + i} closable onClose={() => this.onRemove(i)}>{role.roleName}</Tag>) : null
                                                           }
                                                       </Col>
                                                   </Row> : null

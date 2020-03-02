@@ -106,7 +106,8 @@ class CreateApp extends React.Component {
             rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: rolesList.length})
             this.setState({
                 rolesList,
-                rolesObject: {}
+                rolesObject: {},
+                selectedOption: null
             }, () => this.refreshGrid())
         }
     }
@@ -190,7 +191,7 @@ class CreateApp extends React.Component {
                 text:'Oim Target'
             },
             {
-                dataField:'roleName',
+                dataField:'id',
                 text:'Action',
                 headerStyle: {width: 100},
                 formatter: (cell, row, rowIndex) => {

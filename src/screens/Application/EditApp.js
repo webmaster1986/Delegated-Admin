@@ -76,7 +76,8 @@ class EditApp extends React.Component {
             await this._apiService.addRole({ ...rolesObject }, appObject.appCode)
             this.setState({
                 rolesList,
-                rolesObject: {}
+                rolesObject: {},
+                selectedOption: null
             }, () => this.refreshGrid())
         }
     }
@@ -160,7 +161,7 @@ class EditApp extends React.Component {
                 sort: true
             },
             {
-                dataField:'appCode',
+                dataField:'id',
                 text:'Action',
                 headerStyle: {width: 100},
                 formatter: () => {
@@ -255,7 +256,7 @@ class EditApp extends React.Component {
                                     <Select
                                       isClearable
                                       isSearchable
-                                      placeholder="Role Description"
+                                      placeholder="OIM Target"
                                       value={selectedOption}
                                       onChange={(value) => this.handleChange({name: "oimTarget", data: value})}
                                       options={oimOptions || []}

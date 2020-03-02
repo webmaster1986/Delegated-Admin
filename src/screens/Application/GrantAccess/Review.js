@@ -24,6 +24,7 @@ const Review = (props) => {
     {text: 'Bureau', dataField: 'bureau'},
     {
       text: 'Action',
+      dataField: 'id',
       headerStyle: {width: 100},
       formatter: (cell, row) => {
         return (
@@ -48,6 +49,7 @@ const Review = (props) => {
     {text: 'OIM Target', dataField: 'oimTarget'},
     {
       text: 'Action',
+      dataField: 'id',
       headerStyle: {width: 100},
       formatter: (cell, row) => {
         return (
@@ -74,6 +76,7 @@ const Review = (props) => {
         {text: 'Bureau', dataField: 'bureau'},
         {
           text: 'Action',
+          dataField: 'id',
           headerStyle: {width: 100},
           formatter: (cell, row) => {
             return (
@@ -102,6 +105,7 @@ const Review = (props) => {
         {text: 'OIM Target', dataField: 'oimTarget'},
         {
           text: 'Action',
+          dataField: 'id',
           headerStyle: {width: 100},
           formatter: (cell, row) => {
             return (
@@ -121,7 +125,7 @@ const Review = (props) => {
             bootstrap4
             striped
             keyField={'id'}
-            data={row && row.users}
+            data={(row && row.users && row.users.map((f, i) => ({ ...f, id: i}))) || []}
             headerClasses="styled-header"
             columns={userColumn(row)}
             pagination={ paginationFactory(options) }
@@ -133,7 +137,7 @@ const Review = (props) => {
           bootstrap4
           striped
           keyField={'id'}
-          data={row && row.roles}
+          data={(row && row.roles && row.roles.map((f, i) => ({ ...f, id: i}))) || []}
           headerClasses="styled-header"
           columns={tagColumn(row)}
           pagination={ paginationFactory(options) }
@@ -150,7 +154,7 @@ const Review = (props) => {
         bootstrap4
         striped
         keyField={'id'}
-        data={props && props.data}
+        data={(props && props.data && props.data.map((f, i) => ({ ...f, id: i}))) || []}
         headerClasses="styled-header"
         columns={props.category === "roles" ? columnsByRole : columnsByUser}
         expandRow={expandRow}

@@ -253,6 +253,7 @@ class RevokeUsersTransfer extends React.Component {
         text: 'Email',
       },
       {
+        dataField: 'loginAction',
         text: 'Action',
         headerStyle: {width: 100},
         formatter: (cell, row) => {
@@ -279,6 +280,7 @@ class RevokeUsersTransfer extends React.Component {
         text: 'OIM Target',
       },
       {
+        dataField: 'roleAction',
         text: 'Action',
         headerStyle: {width: 100},
         formatter: (cell, row) => {

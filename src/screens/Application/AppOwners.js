@@ -48,7 +48,7 @@ class AppOwners extends Component {
     } else {
       this.setState({
         isLoading: false,
-        applicationsList: data || []
+        applicationsList: (data && data.map((f, i) => ({ ...f, id: i}))) || []
       });
     }
   }
@@ -92,16 +92,16 @@ class AppOwners extends Component {
       sort: true
     },
     {
-      dataField: "appCode",
+      dataField: "id",
       text: "Action",
       headerStyle: {width: 200},
-      formatter: appCode => {
+      formatter: (cell, row) => {
         return (
           <div className="text-center">
             <Select
               placeholder="Manage Access"
               value={this.state.selectedOption}
-              components={{Option: (data) => this.CustomOption(data, appCode)}}
+              components={{Option: (data) => this.CustomOption(data, row.appCode)}}
               onChange={this.handleChange}
               options={this.state.options || []}
             />

@@ -80,7 +80,7 @@ class RoleManagement extends React.Component {
                 this.setState({
                     isLoading: false,
                     list,
-                    rolesList: roles,
+                    rolesList: (roles || []).map((role, index) => ({...role, id: index})) || [],
                     rolesObject: {},
                     selectedOption: null
                 })
@@ -140,7 +140,7 @@ class RoleManagement extends React.Component {
                 sort: true
             },
             {
-                dataField:'roleName',
+                dataField:'id',
                 text: 'Action',
                 headerStyle: {width: 100},
                 formatter: (cell, row) => {
@@ -267,7 +267,7 @@ class RoleManagement extends React.Component {
                                           <Select
                                             isClearable
                                             isSearchable
-                                            placeholder="Role Description"
+                                            placeholder="OIM Target"
                                             value={selectedOption}
                                             onChange={this.handleChange}
                                             options={oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))}
