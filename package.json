@@ -63,6 +63,5 @@
   "devDependencies": {
     "prettier": "1.16.1",
     "redux-devtools-extension": "^2.13.8"
-  },
-  "proxy": "http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services"
+  }
 }
