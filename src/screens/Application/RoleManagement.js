@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Container, InputGroup, Breadcrumb} from "react-bootstrap";
+import {Row, Col, Form, Button, Container, Breadcrumb} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
@@ -64,16 +64,27 @@ class RoleManagement extends React.Component {
     }
 
     onAddRole = async () => {
-        let { list, rolesObject, oimTargetList, appObject } = this.state
+        let { list, rolesObject, oimTargetList, appObject, rolesList } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
             // list.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: list.length})
-            const body = [{roleName: `APP1_${appObject.appCode}${rolesObject.roleName}`, roleDescription: rolesObject.roleDescription, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
+            const body = [{roleName: rolesObject.roleName, roleDescription: rolesObject.roleDescription, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
             console.log({body})
             const data = await this._apiService.addRoleToApplication(appObject.appCode, body)
-            this.setState({
-                list,
-                rolesObject: {}
-            })
+            if (!data || data.error) {
+                this.setState({
+                    isLoading: false
+                })
+                return message.error('something is wrong! please try again');
+            } else {
+                const roles = [...rolesList, ...body]
+                this.setState({
+                    isLoading: false,
+                    list,
+                    rolesList: roles,
+                    rolesObject: {},
+                    selectedOption: null
+                })
+            }
         }
     }
 
@@ -111,7 +122,7 @@ class RoleManagement extends React.Component {
     render() {
         const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
-        const { roleName, roleDescription, oimTarget } = rolesObject || {};
+        const { roleName, roleDescription } = rolesObject || {};
         const rolesListColumn = [
             {
                 dataField:'roleName',
@@ -229,6 +240,7 @@ class RoleManagement extends React.Component {
                             headerClasses="styled-header"
                             expandRow={expandRow}
                             pagination={ paginationFactory(options) }
+                            defaultSorted={ [{dataField: 'roleName', order: 'asc'}] }
                           />
                           <Row>
                               <Col sm={12} md={12}>
