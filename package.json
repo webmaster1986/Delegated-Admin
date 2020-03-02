@@ -2,6 +2,9 @@
   "name": "fdnyreactframework",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "10.13.0"
+  },
   "dependencies": {
     "antd": "^3.26.9",
     "availity-reactstrap-validation": "^2.5.2",
