@@ -251,3 +251,7 @@ code {
   cursor: pointer;
   box-sizing: border-box
 }
+
+.heading-text-color {
+  color: #367aba
+}

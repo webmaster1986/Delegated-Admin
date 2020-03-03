@@ -201,7 +201,7 @@ class RoleManagement extends React.Component {
                           <Spin className='mt-50 custom-loading'/>
                       </div> :
                       <div>
-                          <p className="mt-3" style={{color: "#367aba"}}><b>Selected Application Details</b></p>
+                          <p className="mt-3 heading-text-color"><b>Selected Application Details</b></p>
                           <Row>
                               <Col xs={6} sm={4} md={2}>
                                   <b>Application Name: </b>
@@ -231,7 +231,7 @@ class RoleManagement extends React.Component {
                               </Col>
                           </Row>
 
-                          <p className="mt-3" style={{color: "#367aba"}}><b>Roles</b></p>
+                          <p className="mt-3 heading-text-color"><b>Roles</b></p>
                           <BootstrapTable
                             bootstrap4
                             striped

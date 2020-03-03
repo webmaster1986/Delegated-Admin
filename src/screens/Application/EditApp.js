@@ -183,7 +183,7 @@ class EditApp extends React.Component {
         return (
             <Container className={'container-design'}>
                 <div className="1px solid black">
-                    <p className="text-warning mt-3">Enter details of the application to be onboarded</p>
+                    <p className="heading-text-color mt-3">Enter details of the application to be onboarded</p>
 
                     <Form>
                         <Form.Group as={Row}>
@@ -235,7 +235,7 @@ class EditApp extends React.Component {
                         </Form.Group>
                     </Form>
 
-                    <p className="text-warning">Roles</p>
+                    <p className="heading-text-color">Roles</p>
 
                     <BootstrapTable
                       bootstrap4

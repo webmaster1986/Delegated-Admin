@@ -294,7 +294,7 @@ class CreateApp extends React.Component {
                               </Form.Group>
                           </Form>
 
-                          <p className="text-warning">Roles <span className="text-danger">*</span></p>
+                          <p>Roles <span className="text-danger">*</span></p>
                           {
                               rolesList.length ?
                                   <BootstrapTable

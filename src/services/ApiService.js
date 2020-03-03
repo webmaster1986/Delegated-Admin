@@ -155,14 +155,12 @@ export class ApiService {
 
     async logout () {
         const res = await ApiService.getData(`v1/logout`);
-        cookies.remove('USER_ROLE', { path: '/'})
-        window.history.pushState({}, document.title, "/");
-        window.location.reload()
         if (!res || res.error) {
             return message.error('something is wrong! please try again');
         } else {
-            window.location.pathname = "/logout"
             cookies.remove('USER_ROLE', { path: '/'})
+            window.history.pushState({}, document.title, "/");
+            window.location.reload()
         }
     }
 
