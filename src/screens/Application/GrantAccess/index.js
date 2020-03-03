@@ -265,8 +265,8 @@ class Index extends Component {
     }
 
     onRoleBack = () => {
-        const {usersData} = this.state
-        if (usersData && usersData.length) {
+        const {category} = this.state
+        if (category === "user") {
             this.setState({
                 step1: false,
                 step2: true
@@ -281,8 +281,8 @@ class Index extends Component {
     }
 
     onUserBack = () => {
-        const {rolesData} = this.state
-        if (rolesData && rolesData.length) {
+        const {category} = this.state
+        if (category === "roles") {
             this.setState({
                 step1: true,
                 step2: false
