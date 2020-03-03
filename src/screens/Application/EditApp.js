@@ -73,18 +73,22 @@ class EditApp extends React.Component {
         let { rolesList, rolesObject, appObject } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
             rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: rolesList.length})
-            await this._apiService.addRole({ ...rolesObject }, appObject.appCode)
             this.setState({
-                rolesList,
-                rolesObject: {},
-                selectedOption: null
-            }, () => this.refreshGrid())
-        }
-    }
-
-    refreshGrid = () => {
-        if (this.dg && this.dg.instance) {
-            this.dg.instance.refresh()
+                isLoading: true
+            })
+            const data = await this._apiService.addRole({ ...rolesObject }, appObject.appCode)
+            if (!data || data.error) {
+                this.setState({
+                    isLoading: false
+                })
+                return message.error('something is wrong! please try again');
+            } else {
+                this.setState({
+                    rolesList,
+                    rolesObject: {},
+                    selectedOption: null
+                })
+            }
         }
     }
 

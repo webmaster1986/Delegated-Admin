@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Container, Breadcrumb} from "react-bootstrap";
+import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
@@ -69,6 +69,9 @@ class RoleManagement extends React.Component {
             // list.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: list.length})
             const body = [{roleName: rolesObject.roleName, roleDescription: rolesObject.roleDescription, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
             console.log({body})
+            this.setState({
+                isLoading: true
+            })
             const data = await this._apiService.addRoleToApplication(appObject.appCode, body)
             if (!data || data.error) {
                 this.setState({

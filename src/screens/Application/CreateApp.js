@@ -108,13 +108,7 @@ class CreateApp extends React.Component {
                 rolesList,
                 rolesObject: {},
                 selectedOption: null
-            }, () => this.refreshGrid())
-        }
-    }
-
-    refreshGrid = () => {
-        if (this.dg && this.dg.instance) {
-            this.dg.instance.refresh()
+            })
         }
     }
 
@@ -137,7 +131,7 @@ class CreateApp extends React.Component {
         rolesList.splice(index, 1)
         this.setState({
             rolesList
-        },() => this.refreshGrid())
+        })
     }
 
     onBlur = async (event) => {

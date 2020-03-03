@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {Container} from "react-bootstrap";
 
 class LogOut extends React.Component {
     render() {

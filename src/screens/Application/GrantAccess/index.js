@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
+import {Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
 import queryString from "query-string";
 import Spin from "antd/lib/spin";
 import { Table, Transfer, Tag } from 'antd/lib'
@@ -485,7 +485,7 @@ class Index extends Component {
             usersData.splice(index, 1)
         }
         this.setState({
-            usersData, rolesData, roleTargetKeys, userTargetKeys
+            usersData, rolesData
         })
     }
 
