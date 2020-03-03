@@ -46,7 +46,7 @@ const Review = (props) => {
     },
     {text: 'App Code', dataField: 'appCode'},
     /* {text: 'Role Description', dataField: 'roleDescription'}, */
-    {text: 'OIM Target', dataField: 'oimTarget'},
+    /* {text: 'OIM Target', dataField: 'oimTarget'}, */
     {
       text: 'Action',
       dataField: 'id',
@@ -102,7 +102,7 @@ const Review = (props) => {
         },
         {text: 'Role Name', dataField: 'roleName'},
         /* {text: 'Role Description', dataField: 'roleDescription'}, */
-        {text: 'OIM Target', dataField: 'oimTarget'},
+        /* {text: 'OIM Target', dataField: 'oimTarget'}, */
         {
           text: 'Action',
           dataField: 'id',
@@ -125,7 +125,7 @@ const Review = (props) => {
             bootstrap4
             striped
             keyField={'id'}
-            data={(row && row.users && row.users.map((f, i) => ({ ...f, id: i}))) || []}
+            data={(row && row.users) || []}
             headerClasses="styled-header"
             columns={userColumn(row)}
             pagination={ paginationFactory(options) }
@@ -137,7 +137,7 @@ const Review = (props) => {
           bootstrap4
           striped
           keyField={'id'}
-          data={(row && row.roles && row.roles.map((f, i) => ({ ...f, id: i}))) || []}
+          data={(row && row.roles) || []}
           headerClasses="styled-header"
           columns={tagColumn(row)}
           pagination={ paginationFactory(options) }
@@ -154,7 +154,7 @@ const Review = (props) => {
         bootstrap4
         striped
         keyField={'id'}
-        data={(props && props.data && props.data.map((f, i) => ({ ...f, id: i}))) || []}
+        data={(props && props.data) || []}
         headerClasses="styled-header"
         columns={props.category === "roles" ? columnsByRole : columnsByUser}
         expandRow={expandRow}
@@ -164,7 +164,7 @@ const Review = (props) => {
       <div className="text-right mt-3">
         <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/app-owner')}>Cancel</button>
         &nbsp;&nbsp;
-        <button className="btn btn-outline-success btn-sm" onClick={() => props.onSubmit()}>Submit</button>
+        <button className="btn btn-success btn-sm" onClick={() => props.onSubmit()}>Submit</button>
       </div>
     </>
   );

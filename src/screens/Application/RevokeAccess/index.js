@@ -50,7 +50,7 @@ class RevokeAccess extends Component {
   getRoles = async () => {
     const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
     const apps = (selectedApp && selectedApp.length) ? selectedApp.map(item => item.value.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
-    const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
+    const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && item.status === "Active")
     // const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
     const filteredRoles = []
     if (appRoles && searchedRoles && appRoles.length && searchedRoles.length) {
@@ -261,11 +261,6 @@ class RevokeAccess extends Component {
       {
         dataField: 'roleDescription',
         text: 'Application',
-        sort: true
-      },
-      {
-        dataField: 'oimTarget',
-        text: 'OIM Target',
         sort: true
       },
       {

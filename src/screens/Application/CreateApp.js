@@ -247,6 +247,7 @@ class CreateApp extends React.Component {
                                         type="text"
                                         minLength={2}
                                         maxLength={5}
+                                        placeholder="3 to 5 character code"
                                         name={'appCode'}
                                         value={appCode || ""}
                                         onChange={this.onChange}
@@ -288,7 +289,7 @@ class CreateApp extends React.Component {
                                               <Select
                                                 isClearable
                                                 isSearchable
-                                                placeholder="Select a person"
+                                                placeholder="Select an existing App owner group"
                                                 value={selectedOwnerGroupOption}
                                                 onChange={this.onSelectedOwnerGroupChange}
                                                 options={(ownerGroupList && ownerGroupList.map(oim => ({ value: oim, label: oim }))) || []}

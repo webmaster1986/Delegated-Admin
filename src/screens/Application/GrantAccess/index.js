@@ -103,7 +103,7 @@ class Index extends Component {
     getRoles = async () => {
         const { selectedApp, allRoles, searchedRoles, applicationsList } = this.state
         const apps = (selectedApp && selectedApp.length) ? selectedApp.map(item => item.value.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
-        const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1)
+        const appRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && item.status === "Active")
         // const filteredRoles = allRoles.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && searchedRoles.indexOf(item.roleName) !== -1)
         const filteredRoles = []
         if (appRoles && searchedRoles && appRoles.length && searchedRoles.length) {
@@ -140,10 +140,7 @@ class Index extends Component {
             })
             this.setState({ roleTargetKeys: nextTargetKeys, rolesData: data });
         } else {
-            this.setState({
-                roleTargetKeys: [],
-                rolesData: []
-            });
+            this.setState({ roleTargetKeys: [], rolesData: [] });
         }
     };
 
@@ -156,7 +153,7 @@ class Index extends Component {
             })
             this.setState({ userTargetKeys: nextTargetKeys, usersData: data });
         } else {
-            this.setState({ userTargetKeys: [] });
+            this.setState({ userTargetKeys: [], usersData: [] });
         }
     };
 
@@ -184,7 +181,7 @@ class Index extends Component {
 
     onSearch = (event) => {
         const {users} = this.state
-        const searchString = (event && event.target.value) || ""
+        const searchString = event.target.value || ""
         let searchList = []
         if (searchString) {
             searchList = users && users.filter(obj =>
@@ -510,18 +507,7 @@ class Index extends Component {
                     if (t1 > t2) { return 1 }
                     return 0
                 }
-            },
-            {
-                dataIndex: 'oimTarget',
-                title: 'OIM Target',
-                sorter: (a, b) => {
-                    const t1 = a.oimTarget.toLowerCase() || ""
-                    const t2 = b.oimTarget.toLowerCase() || ""
-                    if (t1 < t2) { return -1 }
-                    if (t1 > t2) { return 1 }
-                    return 0
-                }
-            },
+            }
         ];
 
         const TableColumns = [
@@ -683,8 +669,8 @@ class Index extends Component {
                                             <div className="text-right mt-5">
                                                 {
                                                     category === "user" ?
-                                                        <button className="btn btn-outline-success btn-sm" onClick={() => this.preview()} disabled={!(rolesData && rolesData.length)}>Review</button> :
-                                                        <button className="btn btn-outline-success btn-sm" onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</button>
+                                                        <button className="btn btn-success btn-sm" onClick={() => this.preview()} disabled={!(rolesData && rolesData.length)}>Review</button> :
+                                                        <button className="btn btn-success btn-sm" onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</button>
                                                 }
                                             </div>
                                         </>
@@ -720,7 +706,7 @@ class Index extends Component {
                                                             type="text"
                                                             placeholder="search"
                                                             aria-describedby="inputGroupPrepend"
-                                                            // name="username"
+                                                            value={searchString || ""}
                                                             onChange={this.onSearch}
                                                         />
                                                         <InputGroup.Append>
@@ -752,8 +738,8 @@ class Index extends Component {
                                             <div className="text-right">
                                                 {
                                                     category === "user" ?
-                                                        <button className="btn btn-outline-success btn-sm" onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</button> :
-                                                        <button className="btn btn-outline-success btn-sm" onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</button>
+                                                        <button className="btn btn-success btn-sm" onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</button> :
+                                                        <button className="btn btn-success btn-sm" onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</button>
                                                 }
                                             </div>
                                         </>

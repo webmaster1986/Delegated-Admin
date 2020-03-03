@@ -129,7 +129,7 @@ class RevokeUsersTransfer extends React.Component {
       })
       this.setState({ targetKeys: nextTargetKeys, selectedData: data });
     } else {
-      this.setState({ targetKeys: [] });
+      this.setState({ targetKeys: [], selectedData: [] });
     }
   };
 
@@ -276,10 +276,6 @@ class RevokeUsersTransfer extends React.Component {
         text: 'Application',
       },
       {
-        dataField: 'oimTarget',
-        text: 'OIM Target',
-      },
-      {
         dataField: 'roleAction',
         text: 'Action',
         headerStyle: {width: 100},
@@ -309,7 +305,7 @@ class RevokeUsersTransfer extends React.Component {
         />
         <div className="text-right mt-5">
           <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
-          <button className="btn btn-outline-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length}>Submit</button>
+          <button className="btn btn-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length}>Submit</button>
         </div>
       </div>
     )
@@ -424,11 +420,7 @@ class RevokeUsersTransfer extends React.Component {
       {
         dataIndex: 'roleDescription',
         title: 'Application',
-      },
-      {
-        dataIndex: 'oimTarget',
-        title: 'OIM Target',
-      },
+      }
     ];
 
     return (
@@ -515,7 +507,7 @@ class RevokeUsersTransfer extends React.Component {
               </div>
               <br/>
               <div className="text-right">
-                <button className="btn btn-outline-success btn-sm" onClick={this.review} disabled={!(selectedData && selectedData.length)}>Review</button>
+                <button className="btn btn-success btn-sm" onClick={this.review} disabled={!(selectedData && selectedData.length)}>Review</button>
               </div>
             </div>
         }

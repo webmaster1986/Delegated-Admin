@@ -52,8 +52,7 @@ class AppsList extends Component {
         },
         {
             dataField:'appDescription',
-            text:'Description',
-            sort: true
+            text:'Description'
         },
         {
             dataField:'ownerGroup',
@@ -81,7 +80,7 @@ class AppsList extends Component {
         let searchList = []
         if (searchString) {
             searchList = applicationsList && applicationsList.filter(obj =>
-              ["appName", "appName", "ownerGroup", "appCode"].some(key => {
+              ["appName", "appCode"].some(key => {
                   return (
                     obj && obj[key] && obj[key].toLowerCase().includes((searchString && searchString.toLowerCase()) || "")
                   )

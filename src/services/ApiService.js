@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "universal-cookie"
+import message from "antd/lib/message";
 const apiEndPoint = process.env.NODE_ENV === 'production' ? 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/' : '/';
 const axiosInstance = axios.create({
     baseURL: apiEndPoint,
@@ -147,4 +148,22 @@ export class ApiService {
     async getRoleByRoleName(body) {
         return await ApiService.getData(`v1/applications/${body.appCode}/roles/${body.roleName}`);
     }
+
+    async getLoginUserName(user_id) {
+        return await ApiService.getData(`v1/users/name`);
+    }
+
+    async logout () {
+        const res = await ApiService.getData(`v1/logout`);
+        cookies.remove('USER_ROLE', { path: '/'})
+        window.history.pushState({}, document.title, "/logout");
+        window.location.reload()
+        if (!res || res.error) {
+            return message.error('something is wrong! please try again');
+        } else {
+            window.location.pathname = "/logout"
+            cookies.remove('USER_ROLE', { path: '/'})
+        }
+    }
+
 }

@@ -8,22 +8,56 @@ import {
 import badge from '../components/images/FDNY.png';
 import "./nav.css"
 import MobileMenu from "./MobileMenu";
+import message from "antd/lib/message";
+import {ApiService, getLoginUser} from "../services/ApiService";
 
 class Header extends Component {
+  _apiService = new ApiService();
+
+  state = { loginUser: "" }
+
+  async componentDidMount() {
+    this.setState({
+      isLoading: true
+    })
+    const user = getLoginUser();
+    const data =  await this._apiService.getLoginUserName(user.login)
+    if (!data || data.error) {
+      this.setState({
+        isLoading: false
+      })
+      return message.error('something is wrong! please try again');
+    } else {
+      this.setState({
+        isLoading: false,
+        loginUser: (data && data.name) || ""
+      })
+    }
+  }
+
+  onLogout = async () => {
+    await this._apiService.logout()
+  }
+
   render() {
+    const {loginUser} = this.state
     return (
       <div
         className='red-background header-nav'
       >
         <Container>
           <Navbar collapseOnSelect expand="lg">
-            <Navbar.Brand href='/'>
-              <img
-                src={badge}
-                alt='FDNY icon'
-                style={{height: '60px'}}
-              />
-              <span className='nav-text align-middle pl-2'>FDNY</span>
+            <Navbar.Brand>
+              <a href='http://www.fdny.org' target="_blank">
+                <img
+                    src={badge}
+                    alt='FDNY icon'
+                    style={{height: '60px'}}
+                />
+              </a>
+              <Link to="/">
+                <span className='nav-text align-middle pl-2'>FDNY</span>
+              </Link>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
@@ -92,8 +126,8 @@ class Header extends Component {
               </Nav>
               <MobileMenu/>
               <div className="header-nav-right">
-                <h6 className="wc-username">Welcome Bo Chen</h6>
-                <a className="logout" onClick={() => {}}>Logout</a>
+                <h6 className="wc-username">{loginUser ? `Welcome ${loginUser}` : ""}</h6>
+                <a className="logout" onClick={() => this.onLogout()}>Logout</a>
               </div>
             </Navbar.Collapse>
           </Navbar>

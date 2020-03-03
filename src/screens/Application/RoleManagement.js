@@ -162,13 +162,8 @@ class RoleManagement extends React.Component {
         const expandRow = {
             renderer: row => (
                 <div>
-                    <span>
-                        <b>Role Description:</b>{"    "}{row.roleDescription}
-                    </span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span>
-                        <b>Creation Date:</b>{"    "}{moment(row.creationDate).format("MM/DD/YYYY")}
-                    </span>
+                    <p>Role Description:{"    "}{row.roleDescription}</p>
+                    <p>Creation Date:{"    "}{moment(row.creationDate).format("MM/DD/YYYY")}</p>
                 </div>
             ),
             showExpandColumn: true,
@@ -200,7 +195,7 @@ class RoleManagement extends React.Component {
                           <Spin className='mt-50 custom-loading'/>
                       </div> :
                       <div>
-                          <p className="text-warning mt-3">Selected Application Details</p>
+                          <p className="mt-3"><b>Selected Application Details</b></p>
                           <Row>
                               <Col xs={6} sm={4} md={2}>
                                   <b>Application Name: </b>
@@ -230,7 +225,7 @@ class RoleManagement extends React.Component {
                               </Col>
                           </Row>
 
-                          <p className="text-warning">Roles</p>
+                          <p className="mt-3"><b>Roles</b></p>
                           <BootstrapTable
                             bootstrap4
                             striped

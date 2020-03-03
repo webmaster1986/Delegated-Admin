@@ -20,6 +20,7 @@ import 'antd/dist/antd.css';
 
 import AppOwners from "./screens/Application/AppOwners";
 import {getLoginUser} from "./services/ApiService";
+import LogOut from "./screens/LogOut";
 const cookies = new Cookies();
 
 class App extends Component {
@@ -57,6 +58,7 @@ class App extends Component {
             <Route path={'/grant-access'} component={GrantAccess}/>
             <Route path={'/revoke-access'} component={RevokeAccess}/>
             <Route path={'/role-manage/:id'} component={RoleManagement}/>
+            <Route path={'/logout'} component={LogOut}/>
             <Route path={'/'} component={AppsList}/>
           </Switch>
         );
@@ -65,6 +67,7 @@ class App extends Component {
       <Switch>
         <Route path={'/grant-access'} component={GrantAccess}/>
         <Route path={'/revoke-access'} component={RevokeAccess}/>
+        <Route path={'/logout'} component={LogOut}/>
         <Route path={'/'} component={AppOwners} />
       </Switch>
     );
