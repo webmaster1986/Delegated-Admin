@@ -67,7 +67,7 @@ class RevokeUsersTransfer extends React.Component {
     super(props)
     this.state = {
       targetKeys: [],
-      isReview: false,
+      // isReview: false,
       isLoading: true,
       size: 'default',
       searchRoleText: '',
@@ -154,9 +154,10 @@ class RevokeUsersTransfer extends React.Component {
 
   review = () => {
     const {selectedData} = this.state
-    const {revokeBy} = this.props
+    const {revokeBy, step} = this.props
     let reviewList = []
-    if(!this.state.isReview){
+    // if(!this.state.isReview){
+    if(step === 2){
       const {revokeList} = this.props
       reviewList = revokeList
       if(revokeBy === "user"){
@@ -177,7 +178,7 @@ class RevokeUsersTransfer extends React.Component {
     }
     this.props.onNextStep()
     this.setState({
-      isReview: !this.state.isReview,
+      // isReview: !this.state.isReview,
       reviewList
     })
   }
@@ -382,8 +383,8 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   render() {
-    const {users, isReview, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
-    const {revokeList, revokeBy} = this.props
+    const {users, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
+    const {revokeList, revokeBy, step} = this.props
     const data = revokeBy === 'user' ? roles : searchString ? searchList : users
     const selectedRevoke = revokeList && revokeList.length && revokeList.map(role => role.roleName || role.login)
 
@@ -426,7 +427,7 @@ class RevokeUsersTransfer extends React.Component {
     return (
       <div>
         {
-          isReview ?
+          step === 3 ?
             <>{this.renderReview()} </> :
             <div>
               <h6>

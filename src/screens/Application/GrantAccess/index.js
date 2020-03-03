@@ -296,6 +296,21 @@ class Index extends Component {
         }
     }
 
+    onPreviewBack = () => {
+        const {category} = this.state
+        if (category === "user") {
+            this.setState({
+                step1: true,
+                preview: false
+            })
+        } else {
+            this.setState({
+                step2: true,
+                preview: false
+            })
+        }
+    }
+
     onSubmit = async () => {
         const {usersData, roles, category, user} = this.state
 
@@ -469,6 +484,9 @@ class Index extends Component {
             userTargetKeys.splice(index, 1)
             usersData.splice(index, 1)
         }
+        this.setState({
+            usersData, rolesData, roleTargetKeys, userTargetKeys
+        })
     }
 
     handleAppChange = selectedOption => {
@@ -559,10 +577,12 @@ class Index extends Component {
         ];
 
         return(
-            <Container className={"mt-5"}>
+            <div className={"mt-3"}>
                 {
-                    (selectBy === "roles" && step2) || (selectBy === "user" && step1) ?
-                      <a className="back-btn" onClick={step1 ? this.onRoleBack : this.onUserBack}><i className="fa fa-chevron-left"/>{"  Back"}</a>
+                    (selectBy === "roles" && step2) || (selectBy === "user" && step1) || preview ?
+                      <a className="back-btn" onClick={preview ? this.onPreviewBack : step1 ? this.onRoleBack : this.onUserBack}>
+                          <i className="fa fa-chevron-left"/>{"  Back"}
+                      </a>
                       : null
                 }
                 <div className={'container-design'}>
@@ -669,7 +689,7 @@ class Index extends Component {
                                             <div className="text-right mt-5">
                                                 {
                                                     category === "user" ?
-                                                        <button className="btn btn-success btn-sm" onClick={() => this.preview()} disabled={!(rolesData && rolesData.length)}>Review</button> :
+                                                        <button className="btn btn-success btn-sm" onClick={() => this.preview()} disabled={!(rolesData && rolesData.length && usersData && usersData.length)}>Review</button> :
                                                         <button className="btn btn-success btn-sm" onClick={this.onSelectedUserChange} disabled={!(rolesData && rolesData.length)}>Select Users</button>
                                                 }
                                             </div>
@@ -739,7 +759,7 @@ class Index extends Component {
                                                 {
                                                     category === "user" ?
                                                         <button className="btn btn-success btn-sm" onClick={() => this.onSelectedRoleChange()} disabled={!(usersData && usersData.length)}>Select Roles</button> :
-                                                        <button className="btn btn-success btn-sm" onClick={() => this.preview()} disabled={!(usersData && usersData.length)}>Review</button>
+                                                        <button className="btn btn-success btn-sm" onClick={() => this.preview()} disabled={!(rolesData && rolesData.length && usersData && usersData.length)}>Review</button>
                                                 }
                                             </div>
                                         </>
@@ -762,7 +782,7 @@ class Index extends Component {
                             </div>
                     }
                 </div>
-            </Container>
+            </div>
         )
     }
 }

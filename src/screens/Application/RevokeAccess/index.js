@@ -156,6 +156,7 @@ class RevokeAccess extends Component {
             toggleUserModal={this.toggleUserModal}
             toggleModal={this.toggleModal}
             user={user}
+            step={step}
             revokeBy={revokeBy}
             revokeList={[revokeRole]}
           />
@@ -224,7 +225,7 @@ class RevokeAccess extends Component {
         sort: true,
         formatter: (cell, row) => {
           return (
-              <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, row)}>{cell}</a>
+              <a className="text-info" onClick={(e) => this.toggleUserModal(e, row)}>{cell}</a>
           )}
       },
       {
@@ -400,7 +401,7 @@ class RevokeAccess extends Component {
     event.preventDefault();
     if(!this.state.isInfoModal && info.appCode){
       const { applicationsList} = this.state
-      const app = applicationsList.length ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
+      const app = (applicationsList && applicationsList.length) ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
       info = {
         ...info,
         ...app,
@@ -423,9 +424,9 @@ class RevokeAccess extends Component {
   render() {
     const { step, revokeBy, isInfoModal, info, isUserModal } = this.state;
     return(
-      <Container className={"mt-5"}>
+      <div className={"mt-3"}>
         {
-          step > 1 && step !== 3  ?
+          step > 1 ?
             <a className="back-btn" onClick={() => this.onStepChange('back')}><i className="fa fa-chevron-left"/>{"  Back"}</a>
             : null
         }
@@ -461,7 +462,7 @@ class RevokeAccess extends Component {
               : null
           }
         </div>
-      </Container>
+      </div>
     )
   }
 }

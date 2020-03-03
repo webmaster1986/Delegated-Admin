@@ -159,6 +159,7 @@ const Review = (props) => {
         columns={props.category === "roles" ? columnsByRole : columnsByUser}
         expandRow={expandRow}
         pagination={ paginationFactory(options) }
+        wrapperClasses="table-responsive"
       />
 
       <div className="text-right mt-3">

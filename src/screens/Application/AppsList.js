@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button, Row, Col, Form, InputGroup } from 'react-bootstrap'
+import { Button, Row, Col, Form, InputGroup } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Spin from 'antd/lib/spin'
 import message from 'antd/lib/message'
@@ -102,7 +102,7 @@ class AppsList extends Component {
         };
 
         return(
-            <Container>
+            <>
                 <div className="container-design">
                     <Row>
                         <Col md={8}>
@@ -144,7 +144,7 @@ class AppsList extends Component {
                             />
                     }
                 </div>
-            </Container>
+            </>
         )
     }
 }

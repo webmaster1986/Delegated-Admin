@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Container, Breadcrumb} from "react-bootstrap";
+import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
 import { ApiService } from "../../services/ApiService";
 import message from "antd/lib/message";
 import notification from "antd/lib/notification";
@@ -208,7 +208,7 @@ class CreateApp extends React.Component {
         };
 
         return (
-            <Container>
+            <>
                 <div className={'container-design'}>
                     <Row>
                         <Col md={12}>
@@ -363,7 +363,7 @@ class CreateApp extends React.Component {
                       </div>
                     }
                 </div>
-            </Container>
+            </>
         );
     }
 }

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom'
-import { Row, Col, Container } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {Route, Switch} from 'react-router-dom'
+import {Container} from 'react-bootstrap';
 import Spin from "antd/lib/spin";
 import Cookies from "universal-cookie"
 import Header from './components/Header';
@@ -21,80 +21,76 @@ import 'antd/dist/antd.css';
 import AppOwners from "./screens/Application/AppOwners";
 import {getLoginUser} from "./services/ApiService";
 import LogOut from "./screens/LogOut";
+
 const cookies = new Cookies();
 
 class App extends Component {
     _apiService = new ApiService();
-    constructor(props){
+
+    constructor(props) {
         super(props)
         this.state = {
             isLoading: true
         }
     }
 
-  async componentDidMount() {
-      const user = getLoginUser();
-      const data = await this._apiService.getLoginUserRole(user.login)
-      if(!data || data.error){
-          this.setState({
-              isLoading: false
-          })
-      } else {
-          cookies.set('USER_ROLE', data, { path: '/' });
-          this.setState({
-              isLoading: false,
-              userRole: data,
-          })
-      }
-  }
+    async componentDidMount() {
+        const user = getLoginUser();
+        const data = await this._apiService.getLoginUserRole(user.login)
+        if (!data || data.error) {
+            this.setState({
+                isLoading: false
+            })
+        } else {
+            cookies.set('USER_ROLE', data, {path: '/'});
+            this.setState({
+                isLoading: false,
+                userRole: data,
+            })
+        }
+    }
 
-  getRoutes = () => {
-      if (this.state.userRole === 'SUPER_ADMIN' || this.state.userRole === 'SUPER_APP_OWNER' ) {
+    getRoutes = () => {
+        if (this.state.userRole === 'SUPER_ADMIN' || this.state.userRole === 'SUPER_APP_OWNER') {
+            return (
+                <Switch>
+                    <Route path={'/edit-app/:id'} component={EditApp}/>
+                    <Route path={'/create-apps'} component={CreateApp}/>
+                    {/*<Route path={'/review-apps'} component={ReviewApps}/>*/}
+                    <Route path={'/grant-access'} component={GrantAccess}/>
+                    <Route path={'/revoke-access'} component={RevokeAccess}/>
+                    <Route path={'/role-manage/:id'} component={RoleManagement}/>
+                    <Route path={'/logout'} component={LogOut}/>
+                    <Route path={'/'} component={AppsList}/>
+                </Switch>
+            );
+        }
         return (
-          <Switch>
-            <Route path={'/edit-app/:id'} component={EditApp}/>
-            <Route path={'/create-apps'} component={CreateApp}/>
-            {/*<Route path={'/review-apps'} component={ReviewApps}/>*/}
-            <Route path={'/grant-access'} component={GrantAccess}/>
-            <Route path={'/revoke-access'} component={RevokeAccess}/>
-            <Route path={'/role-manage/:id'} component={RoleManagement}/>
-            <Route path={'/logout'} component={LogOut}/>
-            <Route path={'/'} component={AppsList}/>
-          </Switch>
+            <Switch>
+                <Route path={'/grant-access'} component={GrantAccess}/>
+                <Route path={'/revoke-access'} component={RevokeAccess}/>
+                <Route path={'/logout'} component={LogOut}/>
+                <Route path={'/'} component={AppOwners}/>
+            </Switch>
         );
-      }
-    return (
-      <Switch>
-        <Route path={'/grant-access'} component={GrantAccess}/>
-        <Route path={'/revoke-access'} component={RevokeAccess}/>
-        <Route path={'/logout'} component={LogOut}/>
-        <Route path={'/'} component={AppOwners} />
-      </Switch>
-    );
-  }
+    }
 
     render() {
-        const { isLoading, userRole } = this.state
-    return (
-       <div>
-           { isLoading ? <div className="text-center mt-5-p"> <Spin className='mt-50 custom-loading'/> </div> :
-               <>
-                 <Header userRole={userRole}/>
-                 <Container>
-                    <Row>
-                      <Col lg="12">
-                         {
-                           this.getRoutes()
-                         }
-                      </Col>
-                    </Row>
-                   <Footer />
-                 </Container>
-                </>
-           }
-      </div>
-    );
-  }
+        const {isLoading, userRole} = this.state
+        return (
+            <div>
+                {isLoading ? <div className="text-center mt-5-p"><Spin className='mt-50 custom-loading'/></div> :
+                    <>
+                        <Header userRole={userRole}/>
+                        <Container>
+                            {this.getRoutes()}
+                            <Footer/>
+                        </Container>
+                    </>
+                }
+            </div>
+        );
+    }
 }
 
 export default App;

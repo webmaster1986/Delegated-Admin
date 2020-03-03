@@ -92,6 +92,9 @@ class RoleManagement extends React.Component {
         const {appObject} = this.state
         const {roleName, status} = record
         const type = status === "Active" ? "disable" : "activate"
+        this.setState({
+            isLoading: true
+        })
         const data = await this._apiService.rolesStatusActiveDisable({appCode: appObject.appCode, roleName}, type)
         if (data === "SUCCESS") {
             const roles =  await this._apiService.getRolesForApp(appObject.appCode)
@@ -176,7 +179,7 @@ class RoleManagement extends React.Component {
         };
 
         return (
-            <Container>
+            <>
                 <div className={'container-design'}>
                     <Row>
                         <Col md={12}>
@@ -195,7 +198,7 @@ class RoleManagement extends React.Component {
                           <Spin className='mt-50 custom-loading'/>
                       </div> :
                       <div>
-                          <p className="mt-3"><b>Selected Application Details</b></p>
+                          <p className="mt-3" style={{color: "#367aba"}}><b>Selected Application Details</b></p>
                           <Row>
                               <Col xs={6} sm={4} md={2}>
                                   <b>Application Name: </b>
@@ -225,7 +228,7 @@ class RoleManagement extends React.Component {
                               </Col>
                           </Row>
 
-                          <p className="mt-3"><b>Roles</b></p>
+                          <p className="mt-3" style={{color: "#367aba"}}><b>Roles</b></p>
                           <BootstrapTable
                             bootstrap4
                             striped
@@ -277,7 +280,7 @@ class RoleManagement extends React.Component {
                       </div>
                     }
                 </div>
-            </Container>
+            </>
         );
     }
 }

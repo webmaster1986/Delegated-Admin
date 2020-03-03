@@ -47,17 +47,13 @@ class Header extends Component {
       >
         <Container>
           <Navbar collapseOnSelect expand="lg">
-            <Navbar.Brand>
-              <a href='http://www.fdny.org' target="_blank">
-                <img
-                    src={badge}
-                    alt='FDNY icon'
-                    style={{height: '60px'}}
-                />
-              </a>
-              <Link to="/">
-                <span className='nav-text align-middle pl-2'>FDNY</span>
-              </Link>
+            <Navbar.Brand href='http://www.fdny.org' target="_blank">
+              <img
+                src={badge}
+                alt='FDNY icon'
+                style={{height: '60px'}}
+              />
+              <span className='nav-text align-middle pl-2'>FDNY</span>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
