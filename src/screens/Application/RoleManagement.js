@@ -35,10 +35,10 @@ class RoleManagement extends React.Component {
             isLoading: true
         })
         const appDetails =  await this._apiService.getAppDetailByAppCode(appCode)
-        const roles =  await this._apiService.getRolesForApp(appCode)
+        const rolesForApp =  await this._apiService.getRolesForApp(appCode)
         const roleTarget = await this._apiService.getAppRoleTargets()
 
-        if (!appDetails || appDetails.error || !roles || roles.error || !roleTarget || roleTarget.error) {
+        if (!appDetails || appDetails.error || !rolesForApp || rolesForApp.error || !roleTarget || roleTarget.error) {
             this.setState({
                 isLoading: false
             })
@@ -46,9 +46,9 @@ class RoleManagement extends React.Component {
         } else {
             this.setState({
                 isLoading: false,
-                appObject: appDetails || {},
-                rolesList: (roles || []).map((role, index) => ({...role, id: index})) || [],
-                oimTargetList: roleTarget || []
+                appObject: (appDetails && appDetails.application) || {},
+                rolesList: (rolesForApp && rolesForApp.roles || []).map((role, index) => ({...role, id: index})) || [],
+                oimTargetList: (roleTarget && roleTarget.resultCollection) || []
             })
         }
     }
@@ -99,9 +99,14 @@ class RoleManagement extends React.Component {
             isLoading: true
         })
         const data = await this._apiService.rolesStatusActiveDisable({appCode: appObject.appCode, roleName}, type)
-        if (data === "SUCCESS") {
-            const roles =  await this._apiService.getRolesForApp(appObject.appCode)
-            if (!roles || roles.error) {
+        if (!data || data.error) {
+            this.setState({
+                isLoading: false
+            })
+            return message.error('something is wrong! please try again');
+        } else {
+            const rolesForApp =  await this._apiService.getRolesForApp(appObject.appCode)
+            if (!rolesForApp || rolesForApp.error) {
                 this.setState({
                     isLoading: false
                 })
@@ -109,7 +114,7 @@ class RoleManagement extends React.Component {
             } else {
                 this.setState({
                     isLoading: false,
-                    rolesList: (roles || []).map((role, index) => ({...role, id: index})) || []
+                    rolesList: (rolesForApp && rolesForApp.roles || []).map((role, index) => ({...role, id: index})) || []
                 })
             }
         }

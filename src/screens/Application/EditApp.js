@@ -33,9 +33,9 @@ class EditApp extends React.Component {
             isLoading: true
         })
         const appDetails =  await this._apiService.getAppDetailByAppCode(appCode)
-        const roles =  await this._apiService.getRolesForApp(appCode)
+        const appRoles =  await this._apiService.getRolesForApp(appCode)
 
-        if (!appDetails || appDetails.error || !roles || roles.error) {
+        if (!appDetails || appDetails.error || !appRoles || appRoles.error) {
             this.setState({
                 isLoading: false
             })
@@ -43,8 +43,8 @@ class EditApp extends React.Component {
         } else {
             this.setState({
                 isLoading: false,
-                appObject: appDetails || {},
-                rolesList: (roles || []).map((role, index) => ({...role, id: index})) || []
+                appObject: (appDetails && appDetails.application) || {},
+                rolesList: (appRoles && appRoles.roles || []).map((role, index) => ({...role, id: index})) || []
             })
         }
     }

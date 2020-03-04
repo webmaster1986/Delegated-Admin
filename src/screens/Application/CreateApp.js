@@ -46,8 +46,8 @@ class CreateApp extends React.Component {
         } else {
             this.setState({
                 isLoading: false,
-                ownerGroupList: data || [],
-                oimTargetList: roleTarget || []
+                ownerGroupList: (data && data.resultCollection) || [],
+                oimTargetList: (roleTarget && roleTarget.resultCollection) || []
             })
         }
     }

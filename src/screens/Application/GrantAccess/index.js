@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
 import queryString from "query-string";
 import Spin from "antd/lib/spin";
+import _ from "lodash"
+import Select from 'react-select';
 import { Table, Transfer, Tag } from 'antd/lib'
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
@@ -9,7 +11,6 @@ import {ApiService, getLoginUser} from "../../../services/ApiService";
 import Review from "./Review";
 import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
-import Select from 'react-select';
 
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
@@ -21,7 +22,7 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
               onItemSelect,
               selectedKeys: listSelectedKeys,
               disabled: listDisabled,
-          }) => {
+        }) => {
             const columns = direction === 'left' ? leftColumns : rightColumns;
 
             const rowSelection = {
@@ -363,18 +364,18 @@ class Index extends Component {
     }
 
     getDataForUser = async () => {
-        let users = await this._apiService.getAllUsers()
-        if (!users || users.error) {
-            users = []
+        let data = await this._apiService.getAllUsers()
+        if (!data || data.error) {
+            data = []
             message.error('something is wrong! please try again');
         }
-        const usersData = (users || []).map((f, i) => ({
+        const users = (data && data.users || []).map((f, i) => ({
             id: i, key: i, ...f
         }))
         this.setState({
             isLoading: false,
-            users: usersData,
-            allUsers: [...users],
+            users,
+            allUsers: [...data.users],
         })
     }
 
@@ -382,21 +383,21 @@ class Index extends Component {
         const {user} = this.state
 
         let applicationsList = await this._apiService.getOwnerApplications(user.login)
-        let roles =  await this._apiService.getOwnerRoles(user.login)
+        let ownerRoles =  await this._apiService.getOwnerRoles(user.login)
 
         if (!applicationsList || applicationsList.error) {
             applicationsList = []
             message.error('something is wrong! please try again');
         }
-        if (!roles || roles.error) {
-            roles = []
+        if (!ownerRoles || ownerRoles.error) {
+            ownerRoles = []
             message.error('something is wrong! please try again');
         }
 
         this.setState({
             isLoading: false,
-            applicationsList,
-            allRoles: roles
+            applicationsList: (applicationsList && applicationsList.applications) || [],
+            allRoles: (ownerRoles && ownerRoles.roles) || []
         }, () => this.getRoles())
     }
 
@@ -475,17 +476,23 @@ class Index extends Component {
         }))
     }
 
-    onRemove = (index) => {
+    onRemove = (id) => {
         const {roleTargetKeys, userTargetKeys, category, usersData, rolesData} = this.state
+        const users = _.cloneDeep(usersData)
         if (category === "roles") {
-            roleTargetKeys.splice(index, 1)
+            const index = rolesData.findIndex(f => f.id === id)
             rolesData.splice(index, 1)
+            roleTargetKeys.splice(index, 1)
         } else {
+            const index = users.findIndex(f => f.id === id)
+            console.log("=======is called======>", index)
+            users.splice(index, 1)
             userTargetKeys.splice(index, 1)
-            usersData.splice(index, 1)
         }
+        // console.log("====================on Delete================>", users)
         this.setState({
-            usersData, rolesData
+            usersData: users,
+            rolesData, userTargetKeys, roleTargetKeys
         })
     }
 
@@ -507,8 +514,8 @@ class Index extends Component {
                 dataIndex: 'roleName',
                 title: <div>Title</div>,
                 sorter: (a, b) => {
-                    const t1 = a.roleName.toLowerCase() || ""
-                    const t2 = b.roleName.toLowerCase() || ""
+                    const t1 = (a && a.roleName && a.roleName.toLowerCase()) || ""
+                    const t2 = (b && b.roleName && b.roleName.toLowerCase()) || ""
                     if (t1 < t2) { return -1 }
                     if (t1 > t2) { return 1 }
                     return 0
@@ -516,11 +523,11 @@ class Index extends Component {
                 render: (record, data) => <div className="link-text" onClick={(e) => this.toggleModal(e, data)}><u>{record}</u></div>
             },
             {
-                dataIndex: 'roleDescription',
+                dataIndex: 'appCode',
                 title: 'Application',
                 sorter: (a, b) => {
-                    const t1 = a.roleDescription.toLowerCase() || ""
-                    const t2 = b.roleDescription.toLowerCase() || ""
+                    const t1 = a.appCode.toLowerCase() || ""
+                    const t2 = b.appCode.toLowerCase() || ""
                     if (t1 < t2) { return -1 }
                     if (t1 > t2) { return 1 }
                     return 0
@@ -530,11 +537,11 @@ class Index extends Component {
 
         const TableColumns = [
             {
-                dataIndex: 'login',
+                dataIndex: 'userLogin',
                 title: 'Login',
                 sorter: (a, b) => {
-                    const t1 = a.login.toLowerCase() || ""
-                    const t2 = b.login.toLowerCase() || ""
+                    const t1 = (a && a.userLogin && a.userLogin.toLowerCase()) || ""
+                    const t2 = (b && b.userLogin && b.userLogin.toLowerCase()) || ""
                     if (t1 < t2) { return -1 }
                     if (t1 > t2) { return 1 }
                     return 0
@@ -542,17 +549,17 @@ class Index extends Component {
                 render: (record, data) => <div className="link-text" onClick={(e) => this.toggleUserModal(e, data)}><u>{record}</u></div>
             },
             {
-                dataIndex: 'name',
+                dataIndex: 'displayName',
                 title: 'Name',
                 sorter: (a, b) => {
-                    const t1 = a.name.toLowerCase() || ""
-                    const t2 = b.name.toLowerCase() || ""
+                    const t1 = (a && a.displayName && a.displayName.toLowerCase()) || ""
+                    const t2 = (b && b.displayName && b.displayName.toLowerCase()) || ""
                     if (t1 < t2) { return -1 }
                     if (t1 > t2) { return 1 }
                     return 0
                 }
             },
-            {
+            /*{
                 dataIndex: 'bureau',
                 title: 'Bureau',
                 sorter: (a, b) => {
@@ -562,20 +569,20 @@ class Index extends Component {
                     if (t1 > t2) { return 1 }
                     return 0
                 }
-            },
+            },*/
             {
                 dataIndex: 'email',
                 title: 'Email',
                 sorter: (a, b) => {
-                    const t1 = a.email.toLowerCase() || ""
-                    const t2 = b.email.toLowerCase() || ""
+                    const t1 = (a && a.email && a.email.toLowerCase()) || ""
+                    const t2 = (b && b.email && b.email.toLowerCase()) || ""
                     if (t1 < t2) { return -1 }
                     if (t1 > t2) { return 1 }
                     return 0
                 }
             }
         ];
-
+        // console.log("====================usersData================>", usersData)
         return(
             <div className={"mt-3"}>
                 {
@@ -617,17 +624,32 @@ class Index extends Component {
                                         <>
                                             {
                                                 selectBy === "user" ?
-                                                  <Row>
-                                                      <Col>
-                                                          <div className="mb-1">
-                                                              <b>Selected Users:</b>
-                                                          </div>
-                                                          {
-                                                              (usersData && usersData.length) ?
-                                                                usersData.map((user, i) => <Tag key={i.toString() + i} closable onClose={() => this.onRemove(i)}>{user.name || user.login}</Tag>) : null
-                                                          }
-                                                      </Col>
-                                                  </Row> : null
+                                                    <Row>
+                                                        <Col>
+                                                            <div className="mb-1">
+                                                                <b>Selected Users:</b>
+                                                            </div>
+                                                            {
+                                                                (usersData && usersData.length) ?
+                                                                    usersData.map((user, i) => {
+                                                                        return (
+                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} >{user.displayName || user.userLogin}&nbsp;&nbsp;
+                                                                                <i onClick={() => this.onRemove(user.id)} className="fa fa-close"/>
+                                                                            </button>
+                                                                            /*<Tag key={i.toString() + i} closable onClose={() => this.onRemove(user.id)}>{user.displayName || user.userLogin}</Tag>*/
+                                                                        )
+                                                                    }) : null
+                                                            }
+                                                        </Col>
+                                                        {/*<Col>
+                                                            <div className="mb-1">
+                                                               <b>Selected Users:</b>
+                                                            </div>
+                                                            {
+                                                                usersData.map((user, i) => <Tag key={i.toString()} closable onClose={() => this.onRemove(user.id)}>{user.displayName || user.userLogin}</Tag>)
+                                                            }
+                                                        </Col>*/}
+                                                    </Row> : null
                                             }
                                             <Row className={'mb-3 mt-3'}>
                                                 <Col>
@@ -635,16 +657,16 @@ class Index extends Component {
                                                         APPLICATIONS:
                                                     </Form.Label>
                                                     <Select
-                                                      isClearable
-                                                      isSearchable
-                                                      isMulti
-                                                      closeMenuOnSelect={false}
-                                                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
-                                                      value={selectedApp}
-                                                      onChange={(value) => this.handleAppChange({name: "selectedApp", data: value})}
-                                                      options={applicationsList && applicationsList.map(app =>
-                                                        ({ value: app.appCode, label: app.appCode }))
-                                                      }
+                                                        isClearable
+                                                        isSearchable
+                                                        isMulti
+                                                        closeMenuOnSelect={false}
+                                                        placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
+                                                        value={selectedApp}
+                                                        onChange={(value) => this.handleAppChange({name: "selectedApp", data: value})}
+                                                        options={applicationsList && applicationsList.map(app =>
+                                                            ({ value: app.appCode, label: app.appCode }))
+                                                        }
                                                     />
                                                 </Col>
                                             </Row>
@@ -654,16 +676,16 @@ class Index extends Component {
                                                         ROLES:
                                                     </Form.Label>
                                                     <Select
-                                                      isClearable
-                                                      isSearchable
-                                                      isMulti
-                                                      closeMenuOnSelect={false}
-                                                      placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
-                                                      value={searchedRoles}
-                                                      onChange={(value) => this.handleAppChange({name: "searchedRoles", data: value})}
-                                                      options={roles && roles.map(app =>
-                                                        ({ value: app.roleName, label: app.roleName }))
-                                                      }
+                                                        isClearable
+                                                        isSearchable
+                                                        isMulti
+                                                        closeMenuOnSelect={false}
+                                                        placeholder={<span><i className="fa fa-search" />&nbsp;search</span>}
+                                                        value={searchedRoles}
+                                                        onChange={(value) => this.handleAppChange({name: "searchedRoles", data: value})}
+                                                        options={roles && roles.map(app =>
+                                                            ({ value: app.roleName, label: app.roleName }))
+                                                        }
                                                     />
                                                 </Col>
                                             </Row>
@@ -701,17 +723,23 @@ class Index extends Component {
                                         <>
                                             {
                                                 selectBy === "roles" ?
-                                                  <Row>
-                                                      <Col>
-                                                          <div className="mb-1">
-                                                              <b>Selected Roles:</b>
-                                                          </div>
-                                                          {
-                                                              (rolesData && rolesData.length) ?
-                                                                rolesData.map((role, i) => <Tag key={i.toString() + i} closable onClose={() => this.onRemove(i)}>{role.roleName}</Tag>) : null
-                                                          }
-                                                      </Col>
-                                                  </Row> : null
+                                                    <Row>
+                                                        <Col>
+                                                            <div className="mb-1">
+                                                                <b>Selected Roles:</b>
+                                                            </div>
+                                                            {
+                                                                (rolesData && rolesData.length) ?
+                                                                    rolesData.map((role, i) => {
+                                                                        return (
+                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i}>{role.roleName}&nbsp;&nbsp;
+                                                                                <i onClick={() => this.onRemove(role.id)} className="fa fa-close"/>
+                                                                            </button>
+                                                                        )
+                                                                    }) : null
+                                                            }
+                                                        </Col>
+                                                    </Row> : null
                                             }
                                             <Row className={'mb-3 mt-2'}>
                                                 <Col>

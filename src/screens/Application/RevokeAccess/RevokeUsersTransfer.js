@@ -86,7 +86,7 @@ class RevokeUsersTransfer extends React.Component {
     const allRoles = []
     if(revokeBy === 'user'){
       for (const user of revokeList) {
-        const roles =  await this._apiService.getRolesForUser(user.login)
+        const roles = await this._apiService.getRolesForUser(user.userLogin)
         if (!roles || roles.error) {
           return message.error('something is wrong! please try again');
         } else {
@@ -98,7 +98,7 @@ class RevokeUsersTransfer extends React.Component {
       }
     }else {
       for (const role of revokeList) {
-        const users =  await this._apiService.getUsersByRoles(role)
+        const users = await this._apiService.getUsersByRoles(role)
         if (!users || users.error) {
           return message.error('something is wrong! please try again');
         } else {
@@ -234,7 +234,7 @@ class RevokeUsersTransfer extends React.Component {
   renderCols = (rootRecord, type) => {
     const usersCol = [
       {
-        dataField: 'login',
+        dataField: 'userLogin',
         text: 'Login',
         formatter: (cell, row) => {
           return (
@@ -242,13 +242,13 @@ class RevokeUsersTransfer extends React.Component {
           )}
       },
       {
-        dataField: 'name',
+        dataField: 'displayName',
         text: 'Name',
       },
-      {
+      /*{
         dataField: 'bureau',
         text: 'Bureau',
-      },
+      },*/
       {
         dataField: 'email',
         text: 'Email',
@@ -340,7 +340,7 @@ class RevokeUsersTransfer extends React.Component {
       const totalUsers = []
       reviewList.forEach((role) => {
         role.users.forEach(u => {
-          const isExists = totalUsers.find(user => user.login === u.login)
+          const isExists = totalUsers.find(user => user.userLogin === u.userLogin)
           if(!isExists){
             totalUsers.push(u)
           }
@@ -348,7 +348,7 @@ class RevokeUsersTransfer extends React.Component {
       })
       reviewList.forEach((role) => {
         role.users.forEach(u => {
-          const findIndex = totalUsers.findIndex(user => user.login === u.login)
+          const findIndex = totalUsers.findIndex(user => user.userLogin === u.userLogin)
           if(findIndex !== -1){
             const newRole = {
               roleName: role.roleName,
@@ -367,7 +367,7 @@ class RevokeUsersTransfer extends React.Component {
     }
     const successResult = []
     for (const revoke of userRoles) {
-      const result =  await this._apiService.putUsersRoles(revoke.login, revoke.roles || [])
+      const result =  await this._apiService.putUsersRoles(revoke.userLogin, revoke.roles || [])
       if (!result || result.error) {
         return message.error('something is wrong! please try again');
       }else {
@@ -386,7 +386,7 @@ class RevokeUsersTransfer extends React.Component {
     const {users, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
     const {revokeList, revokeBy, step} = this.props
     const data = revokeBy === 'user' ? roles : searchString ? searchList : users
-    const selectedRevoke = revokeList && revokeList.length && revokeList.map(role => role.roleName || role.login)
+    const selectedRevoke = revokeList && revokeList.length && revokeList.map(role => role.roleName || role.userLogin)
 
     const userColumns = [
       {
@@ -494,7 +494,7 @@ class RevokeUsersTransfer extends React.Component {
                         )
                       })
                     }else {
-                      return ["login", "name", "bureau", "email"].some(key => {
+                      return ["userLogin", "displayName", "email"].some(key => {
                         return (
                           item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
                         )

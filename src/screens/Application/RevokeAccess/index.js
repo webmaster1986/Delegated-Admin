@@ -80,7 +80,7 @@ class RevokeAccess extends Component {
     let users = []
     if (searchedText) {
       users = allUsers.filter(obj =>
-        ["login", "name", "bureau", 'email'].some(key => {
+        ["userLogin", "displayName", 'email'].some(key => {
           return (
             obj && obj[key] && obj[key].toLowerCase().includes(searchedText.toLowerCase())
           )
@@ -101,18 +101,18 @@ class RevokeAccess extends Component {
   }
 
   getDataForUser = async () => {
-    let users = await this._apiService.getAllUsers()
-    if (!users || users.error) {
-      users = []
+    let data = await this._apiService.getAllUsers()
+    if (!data || data.error) {
+      data = []
       message.error('something is wrong! please try again');
     }
-    const usersData = (users || []).map((f, i) => ({
+    const users = (data && data.users || []).map((f, i) => ({
       id: i, key: i, ...f
     }))
     this.setState({
       isLoading: false,
-      users: usersData,
-      allUsers: [...users],
+      users,
+      allUsers: [...data.users],
     })
   }
 
@@ -120,21 +120,21 @@ class RevokeAccess extends Component {
     const {user} = this.state
 
     let applicationsList = await this._apiService.getOwnerApplications(user.login)
-    let roles =  await this._apiService.getOwnerRoles(user.login)
+    let ownerRoles =  await this._apiService.getOwnerRoles(user.login)
 
     if (!applicationsList || applicationsList.error) {
       applicationsList = []
       message.error('something is wrong! please try again');
     }
-    if (!roles || roles.error) {
-      roles = []
+    if (!ownerRoles || ownerRoles.error) {
+      ownerRoles = []
       message.error('something is wrong! please try again');
     }
 
     this.setState({
       isLoading: false,
-      applicationsList,
-      allRoles: roles
+      applicationsList: (applicationsList && applicationsList.applications) || [],
+      allRoles: (ownerRoles && ownerRoles.roles) || []
     }, () => this.getRoles())
   }
 
@@ -220,7 +220,7 @@ class RevokeAccess extends Component {
 
     const usersCol = [
       {
-        dataField: 'login',
+        dataField: 'userLogin',
         text: 'Login',
         sort: true,
         formatter: (cell, row) => {
@@ -229,15 +229,15 @@ class RevokeAccess extends Component {
           )}
       },
       {
-        dataField: 'name',
+        dataField: 'displayName',
         text: 'Name',
         sort: true
       },
-      {
+      /*{
         dataField: 'bureau',
         text: 'Bureau',
         sort: true
-      },
+      },*/
       {
         dataField: 'id',
         text: 'Action',
@@ -260,7 +260,7 @@ class RevokeAccess extends Component {
           )}
       },
       {
-        dataField: 'roleDescription',
+        dataField: 'appCode',
         text: 'Application',
         sort: true
       },

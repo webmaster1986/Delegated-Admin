@@ -12,16 +12,16 @@ const Review = (props) => {
   const columnsByUser = [
     {
       text: 'User Login',
-      dataField: 'login',
+      dataField: 'userLogin',
       formatter: (cell, row) => {
         return (
           <div className="link-text"><u onClick={(e) => props.toggleUserModal(e, row)}>{cell}</u></div>
         )
       }
     },
-    {text: 'User Name', dataField: 'name'},
+    {text: 'User Name', dataField: 'displayName'},
     {text: 'Email', dataField: 'email'},
-    {text: 'Bureau', dataField: 'bureau'},
+    /* {text: 'Bureau', dataField: 'bureau'}, */
     {
       text: 'Action',
       dataField: 'id',
@@ -64,23 +64,23 @@ const Review = (props) => {
       [
         {
           text: 'Login',
-          dataField: 'login',
+          dataField: 'userLogin',
           formatter: (cell, row) => {
             return (
               <div className="link-text"><u onClick={(e) => props.toggleUserModal(e, row)}>{cell}</u></div>
             )
           }
         },
-        {text: 'Name', dataField: 'name'},
+        {text: 'Name', dataField: 'displayName'},
         {text: 'Email', dataField: 'email'},
-        {text: 'Bureau', dataField: 'bureau'},
+        /* {text: 'Bureau', dataField: 'bureau'}, */
         {
           text: 'Action',
           dataField: 'id',
           headerStyle: {width: 100},
           formatter: (cell, row) => {
             return (
-              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.roleName, row.login)}/>
+              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.roleName, row.userLogin)}/>
             )
           }
         }
@@ -109,7 +109,7 @@ const Review = (props) => {
           headerStyle: {width: 100},
           formatter: (cell, row) => {
             return (
-              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.login, row.roleName)}/>
+              <Icon className="text-danger" style={{fontSize: 20}} type="delete" onClick={() => props.onTagRemove(rootRecord.userLogin, row.roleName)}/>
             )
           }
         }
