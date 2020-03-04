@@ -44,7 +44,7 @@ class EditApp extends React.Component {
             this.setState({
                 isLoading: false,
                 appObject: (appDetails && appDetails.application) || {},
-                rolesList: (appRoles && appRoles.roles || []).map((role, index) => ({...role, id: index})) || []
+                rolesList: ((appRoles && appRoles.roles) || []).map((role, index) => ({...role, id: index})) || []
             })
         }
     }
@@ -183,7 +183,7 @@ class EditApp extends React.Component {
         return (
             <Container className={'container-design'}>
                 <div className="1px solid black">
-                    <p className="heading-text-color mt-3">Enter details of the application to be onboarded</p>
+                    <p className="heading-text-color mt-3"><b>Enter details of the application to be onboarded</b></p>
 
                     <Form>
                         <Form.Group as={Row}>
@@ -235,7 +235,7 @@ class EditApp extends React.Component {
                         </Form.Group>
                     </Form>
 
-                    <p className="heading-text-color">Roles</p>
+                    <p className="heading-text-color"><b>Roles</b></p>
 
                     <BootstrapTable
                       bootstrap4

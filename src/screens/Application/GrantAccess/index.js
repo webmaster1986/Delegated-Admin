@@ -4,7 +4,7 @@ import queryString from "query-string";
 import Spin from "antd/lib/spin";
 import _ from "lodash"
 import Select from 'react-select';
-import { Table, Transfer, Tag } from 'antd/lib'
+import { Table, Transfer } from 'antd/lib'
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
@@ -369,7 +369,7 @@ class Index extends Component {
             data = []
             message.error('something is wrong! please try again');
         }
-        const users = (data && data.users || []).map((f, i) => ({
+        const users = ((data && data.users) || []).map((f, i) => ({
             id: i, key: i, ...f
         }))
         this.setState({
@@ -633,8 +633,8 @@ class Index extends Component {
                                                                 (usersData && usersData.length) ?
                                                                     usersData.map((user, i) => {
                                                                         return (
-                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} >{user.displayName || user.userLogin}&nbsp;&nbsp;
-                                                                                <i onClick={() => this.onRemove(user.id)} className="fa fa-close"/>
+                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} style={{cursor: "default"}}>{user.displayName || user.userLogin}&nbsp;&nbsp;
+                                                                                <i onClick={() => this.onRemove(user.id)} className="fa fa-close cursor-pointer"/>
                                                                             </button>
                                                                             /*<Tag key={i.toString() + i} closable onClose={() => this.onRemove(user.id)}>{user.displayName || user.userLogin}</Tag>*/
                                                                         )
@@ -732,8 +732,8 @@ class Index extends Component {
                                                                 (rolesData && rolesData.length) ?
                                                                     rolesData.map((role, i) => {
                                                                         return (
-                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i}>{role.roleName}&nbsp;&nbsp;
-                                                                                <i onClick={() => this.onRemove(role.id)} className="fa fa-close"/>
+                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} style={{cursor: "default"}}>{role.roleName}&nbsp;&nbsp;
+                                                                                <i onClick={() => this.onRemove(role.id)} className="fa fa-close cursor-pointer"/>
                                                                             </button>
                                                                         )
                                                                     }) : null

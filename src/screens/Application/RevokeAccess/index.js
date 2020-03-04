@@ -106,7 +106,7 @@ class RevokeAccess extends Component {
       data = []
       message.error('something is wrong! please try again');
     }
-    const users = (data && data.users || []).map((f, i) => ({
+    const users = ((data && data.users) || []).map((f, i) => ({
       id: i, key: i, ...f
     }))
     this.setState({

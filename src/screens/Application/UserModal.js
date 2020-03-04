@@ -33,7 +33,7 @@ class UserModal extends React.Component {
         message.error('something is wrong! please try again');
       }
       that.setState({
-        user: result1,
+        user: (result1 && result1.user) || {},
         roles: result2,
         isLoading: false
       })

@@ -238,12 +238,13 @@ class RevokeUsersTransfer extends React.Component {
         text: 'Login',
         formatter: (cell, row) => {
           return (
-              <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, row)}>{cell}</a>
+              <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, row)}>{row.userLogin || row.login}</a>
           )}
       },
       {
         dataField: 'displayName',
         text: 'Name',
+        formatter: (cell, row) => <div>{row.displayName || row.name}</div>
       },
       /*{
         dataField: 'bureau',
@@ -273,7 +274,7 @@ class RevokeUsersTransfer extends React.Component {
           )}
       },
       {
-        dataField: 'roleDescription',
+        dataField: 'appCode',
         text: 'Application',
       },
       {
@@ -419,7 +420,7 @@ class RevokeUsersTransfer extends React.Component {
         )
       },
       {
-        dataIndex: 'roleDescription',
+        dataIndex: 'appCode',
         title: 'Application',
       }
     ];

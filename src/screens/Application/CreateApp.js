@@ -1,6 +1,7 @@
 import React from "react";
 import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
 import { ApiService } from "../../services/ApiService";
+import {Icon} from 'antd';
 import message from "antd/lib/message";
 import notification from "antd/lib/notification";
 import Spin from "antd/lib/spin";
@@ -81,6 +82,28 @@ class CreateApp extends React.Component {
                 ...this.state.appObject,
                 [name]: value,
                 ...object
+            }
+        }, async () => {
+            if (name === 'appCode') {
+                let object = {}
+                if (value.length < 3) {
+                    object.appCodeError = "Application Code should have 3 - 5 characters!"
+                } else {
+                    object.appCodeError = ""
+                }
+
+                if (!object.appCodeError) {
+                    const appDetails =  await this._apiService.getAllApplications(value)
+                    if (!appDetails || appDetails.error) {
+                        object.appCodeError = "Application Code is not valid!"
+                        object.appObject = { ...this.state.appObject, appCode: "" }
+                    }
+                    if (appDetails && appDetails.application) {
+                        object.appCodeError = "Application Code is already in use!"
+                        object.appObject = { ...this.state.appObject }
+                    }
+                }
+                this.setState({...object})
             }
         })
     }
@@ -237,16 +260,30 @@ class CreateApp extends React.Component {
                                       Application Code <span className="text-danger">*</span>
                                   </Form.Label>
                                   <Col sm={10} md={8}>
-                                      <Form.Control
-                                        type="text"
-                                        minLength={2}
-                                        maxLength={5}
-                                        placeholder="3 to 5 character code"
-                                        name={'appCode'}
-                                        value={appCode || ""}
-                                        onChange={this.onChange}
-                                        onBlur={this.onBlur}
-                                      />
+                                      <Row>
+                                          <Col sm={11} md={11}>
+                                              <Form.Control
+                                                  type="text"
+                                                  minLength={2}
+                                                  maxLength={5}
+                                                  placeholder="3 to 5 character code"
+                                                  name={'appCode'}
+                                                  value={appCode || ""}
+                                                  onChange={this.onChange}
+                                                  // onBlur={this.onBlur}
+                                              />
+                                          </Col>
+                                          {
+                                              appCode &&
+                                                  <Col sm={1} md={1}>
+                                                      {
+                                                          appCodeError ?
+                                                              <Icon className="text-danger m-1" style={{fontSize: 25}} type="close-circle"/> :
+                                                              <Icon className="text-success m-1" style={{fontSize: 25}} type="check-circle"/>
+                                                      }
+                                                  </Col>
+                                          }
+                                      </Row>
                                       {appCodeError ? <span className="color-red">{appCodeError}</span> : null}
                                   </Col>
                               </Form.Group>

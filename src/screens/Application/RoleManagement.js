@@ -47,7 +47,7 @@ class RoleManagement extends React.Component {
             this.setState({
                 isLoading: false,
                 appObject: (appDetails && appDetails.application) || {},
-                rolesList: (rolesForApp && rolesForApp.roles || []).map((role, index) => ({...role, id: index})) || [],
+                rolesList: ((rolesForApp && rolesForApp.roles) || []).map((role, index) => ({...role, id: index})) || [],
                 oimTargetList: (roleTarget && roleTarget.resultCollection) || []
             })
         }
@@ -114,7 +114,7 @@ class RoleManagement extends React.Component {
             } else {
                 this.setState({
                     isLoading: false,
-                    rolesList: (rolesForApp && rolesForApp.roles || []).map((role, index) => ({...role, id: index})) || []
+                    rolesList: ((rolesForApp && rolesForApp.roles) || []).map((role, index) => ({...role, id: index})) || []
                 })
             }
         }
