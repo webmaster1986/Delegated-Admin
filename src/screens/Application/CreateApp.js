@@ -139,7 +139,14 @@ class CreateApp extends React.Component {
         const { rolesList, appObject } = this.state
         const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {}
 
-        const payload = {application: {appName, appCode, appDescription, ownerGroup: ownerGroup || selectedOwnerGroup}, roles: rolesList}
+        const payload = {
+            application: {appCode, appName, appDescription, ownerGroup: ownerGroup || selectedOwnerGroup},
+            roles: rolesList && rolesList.map(f => ({
+                roleName: f.roleName,
+                roleDescription: f.roleDescription,
+                oimTarget: f.oimTarget
+            }))
+        }
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
             openNotificationWithIcon('error', "Something went Wrong!")

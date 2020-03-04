@@ -67,7 +67,7 @@ class RoleManagement extends React.Component {
         let { list, rolesObject, oimTargetList, appObject, rolesList } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
             // list.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: list.length})
-            const body = [{roleName: rolesObject.roleName, roleDescription: rolesObject.roleDescription, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
+            const body = [{roleName: rolesObject.roleName, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
             console.log({body})
             this.setState({
                 isLoading: true
@@ -93,12 +93,12 @@ class RoleManagement extends React.Component {
 
     onChangeStatus = async (record) => {
         const {appObject} = this.state
-        const {roleName, status} = record
+        const {roleName, status, oimTarget} = record
         const type = status === "Active" ? "disable" : "activate"
         this.setState({
             isLoading: true
         })
-        const data = await this._apiService.rolesStatusActiveDisable({appCode: appObject.appCode, roleName}, type)
+        const data = await this._apiService.rolesStatusActiveDisable({oimTarget, roleName}, type)
         if (!data || data.error) {
             this.setState({
                 isLoading: false

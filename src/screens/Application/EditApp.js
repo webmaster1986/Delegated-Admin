@@ -76,7 +76,8 @@ class EditApp extends React.Component {
             this.setState({
                 isLoading: true
             })
-            const data = await this._apiService.addRole({ ...rolesObject }, appObject.appCode)
+            const body = [{roleName: rolesObject.roleName, oimTarget: rolesObject.oimTarget}]
+            const data = await this._apiService.addRole(body, appObject.appCode)
             if (!data || data.error) {
                 this.setState({
                     isLoading: false

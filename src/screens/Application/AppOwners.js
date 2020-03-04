@@ -48,7 +48,7 @@ class AppOwners extends Component {
     } else {
       this.setState({
         isLoading: false,
-        applicationsList: (data && data.map((f, i) => ({ ...f, id: i}))) || []
+        applicationsList: (data && data.applications && data.applications.map((f, i) => ({ ...f, id: i}))) || []
       });
     }
   }

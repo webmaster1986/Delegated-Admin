@@ -98,7 +98,7 @@ export class ApiService {
     }
 
     async rolesStatusActiveDisable(body, status) {
-        return await ApiService.postMethod(`v1/applications/${body.appCode}/roles/${body.roleName}/${status}`, body);
+        return await ApiService.putMethod(`v1/applications/${body.appCode}/roles/${body.roleName}/${status}`, body);
     }
 
     async getRolesForUser(id) {

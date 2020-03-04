@@ -485,11 +485,9 @@ class Index extends Component {
             roleTargetKeys.splice(index, 1)
         } else {
             const index = users.findIndex(f => f.id === id)
-            console.log("=======is called======>", index)
             users.splice(index, 1)
             userTargetKeys.splice(index, 1)
         }
-        // console.log("====================on Delete================>", users)
         this.setState({
             usersData: users,
             rolesData, userTargetKeys, roleTargetKeys
@@ -582,7 +580,7 @@ class Index extends Component {
                 }
             }
         ];
-        // console.log("====================usersData================>", usersData)
+        
         return(
             <div className={"mt-3"}>
                 {
