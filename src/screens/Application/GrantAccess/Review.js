@@ -44,7 +44,7 @@ const Review = (props) => {
         )
       }
     },
-    {text: 'App Code', dataField: 'appCode'},
+    {text: 'App Code', dataField: 'appCode', headerStyle: {width: "20%"}},
     /* {text: 'Role Description', dataField: 'roleDescription'}, */
     /* {text: 'OIM Target', dataField: 'oimTarget'}, */
     {
@@ -94,6 +94,7 @@ const Review = (props) => {
         {
           text: 'App Code',
           dataField: 'appCode',
+          headerStyle: {width: "20%"},
           formatter: (cell, row) => {
             return (
               <div className="link-text"><u onClick={(e) => props.toggleModal(e, row)}>{cell}</u></div>

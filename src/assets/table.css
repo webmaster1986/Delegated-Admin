@@ -7,3 +7,13 @@
     padding: 5px !important;
     vertical-align: unset !important;
 }
+
+.ant-transfer-customize-list .ant-transfer-list {
+    width: 40% !important;
+}
+
+@media only screen and (max-width: 480px) {
+    .ant-transfer-customize-list .ant-transfer-list{
+        width: auto !important;
+    }
+}

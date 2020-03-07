@@ -398,7 +398,7 @@ class RevokeAccess extends Component {
   }
 
   toggleModal = (event, info) => {
-    event.preventDefault();
+    event.stopPropagation();
     if(!this.state.isInfoModal && info.appCode){
       const { applicationsList} = this.state
       const app = (applicationsList && applicationsList.length) ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
@@ -414,7 +414,7 @@ class RevokeAccess extends Component {
   }
 
   toggleUserModal = (event, info) => {
-    event.preventDefault();
+    event.stopPropagation();
     this.setState(prevState => ({
       info: info || {},
       isUserModal: !prevState.isUserModal,

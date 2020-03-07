@@ -138,7 +138,7 @@ class RoleManagement extends React.Component {
     render() {
         const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
-        const { roleName, roleDescription } = rolesObject || {};
+        const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const rolesListColumn = [
             {
                 dataField:'roleName',
@@ -267,7 +267,7 @@ class RoleManagement extends React.Component {
                                                 onChange={this.onChange}
                                             />
                                         </Col>
-                                        <Col className="pt-2" md={3}>
+                                        <Col className="pt-2" md={5}>
                                             <Form.Control
                                                 type="text"
                                                 placeholder="Role Description"
@@ -276,7 +276,7 @@ class RoleManagement extends React.Component {
                                                 onChange={this.onChange}
                                             />
                                         </Col>
-                                        <Col className="pt-2" md={3}>
+                                        <Col className="pt-2" md={2}>
                                             <Select
                                                 isClearable
                                                 isSearchable
@@ -286,8 +286,8 @@ class RoleManagement extends React.Component {
                                                 options={oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))}
                                             />
                                         </Col>
-                                        <Col md={3} className={'pt-2'}>
-                                            <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
+                                        <Col md={2} className={'pt-2'}>
+                                            <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget}>Add Role</Button>
                                         </Col>
                                     </Row>
                                 </Col>

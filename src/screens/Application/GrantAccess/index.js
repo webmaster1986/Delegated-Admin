@@ -186,7 +186,7 @@ class Index extends Component {
         let searchList = []
         if (searchString) {
             searchList = users && users.filter(obj =>
-                ["login", "name", "bureau", "email"].some(key => {
+                ["userLogin", "displayName", "name", "bureau", "email"].some(key => {
                     return (
                         obj && obj[key] && obj[key].toLowerCase().includes(searchString.toLowerCase())
                     )
@@ -453,7 +453,7 @@ class Index extends Component {
     }
 
     toggleModal = (event, info) => {
-        event.preventDefault();
+        event.stopPropagation();
         if(!this.state.isInfoModal && info.appCode){
             const { applicationsList} = this.state
             const app = applicationsList.length ? applicationsList.find(app => app.appCode.toLowerCase() === info.appCode.toLowerCase()) : {}
@@ -469,7 +469,7 @@ class Index extends Component {
     }
 
     toggleUserModal = (event, info) => {
-        event.preventDefault();
+        event.stopPropagation();
         this.setState(prevState => ({
             info: info || {},
             isUserModal: !prevState.isUserModal,
@@ -692,7 +692,7 @@ class Index extends Component {
                                                 <TableTransfer
                                                     dataSource={roleData}
                                                     targetKeys={roleTargetKeys}
-                                                    showSearch
+                                                    showSearch={false}
                                                     onChange={this.onRoleTableChange}
                                                     filterOption={(inputValue, item) => {
                                                         return ["roleName", "roleDescription"].some(key => {
@@ -769,19 +769,11 @@ class Index extends Component {
                                                     showSearch={false}
                                                     onChange={this.onUserTableChange}
                                                     filterOption={(inputValue, item) => {
-                                                        if (selectBy === "roles") {
-                                                            return ["roleName", "appCode"].some(key => {
-                                                                return (
-                                                                    item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
-                                                                )
-                                                            })
-                                                        } else {
-                                                            return ["userLogin", "displayName", "email"].some(key => {
-                                                                return (
-                                                                    item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
-                                                                )
-                                                            })
-                                                        }
+                                                        return ["userLogin", "displayName", "bureau", "email"].some(key => {
+                                                            return (
+                                                                item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                                                            )
+                                                        })
                                                     }}
                                                     leftColumns={TableColumns}
                                                     rightColumns={TableColumns}
