@@ -93,9 +93,10 @@ class Index extends Component {
         const parsed = queryString.parse(location.search);
         this.setState({
             selectedApp: parsed && parsed.app ? [{ value: parsed.app, label: parsed.app }] : [],
-            selectBy: parsed.by || ''
+            selectBy: parsed.by || 'roles'
         },() => {
-            if(parsed.by){
+            const {selectBy} = this.state
+            if (selectBy) {
                 this.onNext()
             }
         })

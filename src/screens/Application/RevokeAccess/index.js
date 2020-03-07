@@ -39,9 +39,10 @@ class RevokeAccess extends Component {
     const parsed = queryString.parse(location.search);
     this.setState({
       selectedApp: parsed && parsed.app ? [{ value: parsed.app, label: parsed.app }] : [],
-      revokeBy: parsed.by || ''
+      revokeBy: parsed.by || 'roles'
     },() => {
-      if(parsed.by){
+      const {revokeBy} = this.state
+      if(revokeBy){
         this.onStepChange()
       }
     })

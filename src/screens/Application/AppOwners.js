@@ -74,22 +74,26 @@ class AppOwners extends Component {
     {
       dataField: "appCode",
       text: "Application Code",
-      sort: true
+      sort: true,
+      headerStyle: {width: "15%"}
     },
     {
       dataField: "appName",
       text: "Application Name",
-      sort: true
+      sort: true,
+      headerStyle: {width: "15%"},
     },
     {
       dataField: "appDescription",
       text: "Description",
-      sort: true
+      sort: true,
+      headerStyle: {width: "35%"},
     },
     {
       dataField: "ownerGroup",
       text: "Owner Group",
-      sort: true
+      sort: true,
+      headerStyle: {width: "15%"},
     },
     {
       dataField: "id",
@@ -178,6 +182,7 @@ class AppOwners extends Component {
                 data={apps || []}
                 columns={this.appOwnersColumn}
                 headerClasses="styled-header"
+                wrapperClasses="table-responsive"
                 pagination={paginationFactory(options)}
               />
             )}

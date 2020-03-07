@@ -68,9 +68,25 @@ class RoleManagement extends React.Component {
     onAddRole = async () => {
         let { list, rolesObject, oimTargetList, appObject, rolesList } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
+
+            let isDuplicate = false
+            let body = []
+            const allRoles = (rolesList && rolesList.map((item) => item.roleName.toLowerCase())) || []
+            if (allRoles && allRoles.indexOf(rolesObject.roleName.toLowerCase()) !== -1) {
+                const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === rolesObject.roleName.toLowerCase())) || []
+                data && data.forEach(g => {
+                    if ((g.oimTarget) === (rolesObject.oimTarget)) {
+                        isDuplicate = true
+                    }
+                })
+            }
+            if (isDuplicate) {
+                return message.warn('Combination of Role Name & OIM Target must be unique');
+            } else {
+                body = [{roleName: rolesObject.roleName, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
+            }
+
             // list.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: list.length})
-            const body = [{roleName: rolesObject.roleName, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
-            console.log({body})
             this.setState({
                 isLoading: true
             })

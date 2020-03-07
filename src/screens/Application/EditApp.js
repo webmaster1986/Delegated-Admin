@@ -17,7 +17,8 @@ class EditApp extends React.Component {
             rolesObject: {},
             appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: ''},
             selectedOption: null,
-            selectedOwnerGroupOption: null
+            selectedOwnerGroupOption: null,
+            isSave: false
         }
     }
 
@@ -72,7 +73,21 @@ class EditApp extends React.Component {
     onAddRole = async () => {
         let { rolesList, rolesObject, appObject } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
-            rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: rolesList.length})
+            let isDuplicate = false
+            const allRoles = (rolesList && rolesList.map((item) => item.roleName.toLowerCase())) || []
+            if (allRoles && allRoles.indexOf(rolesObject.roleName.toLowerCase()) !== -1) {
+                const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === rolesObject.roleName.toLowerCase())) || []
+                data && data.forEach(g => {
+                    if ((g.oimTarget) === (rolesObject.oimTarget)) {
+                        isDuplicate = true
+                    }
+                })
+            }
+            if (isDuplicate) {
+                return message.warn('Combination of Role Name & OIM Target must be unique');
+            } else {
+                rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: rolesList.length})
+            }
             this.setState({
                 isLoading: true
             })
@@ -96,6 +111,7 @@ class EditApp extends React.Component {
     onOnBoardApplication = async () => {
         const { rolesList, appObject } = this.state
         const payload = {...appObject, roles: rolesList}
+        this.setState({isSave: true})
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
             this.setState({
@@ -105,6 +121,7 @@ class EditApp extends React.Component {
         } else {
             this.setState({
                 isLoading: false,
+                isSave: false,
                 applicationsList: data || []
             })
         }
@@ -133,7 +150,7 @@ class EditApp extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, selectedOption, selectedOwnerGroupOption } = this.state;
+        const { rolesObject, appObject, rolesList, selectedOption, selectedOwnerGroupOption, isSave } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription } = rolesObject || {};
 
@@ -153,17 +170,20 @@ class EditApp extends React.Component {
             {
                 dataField:'roleName',
                 text:'Role Name',
-                sort: true
+                sort: true,
+                headerStyle: {width: "20%"},
             },
             {
                 dataField:'roleDescription',
                 text:'Role Description',
-                sort: true
+                sort: true,
+                headerStyle: {width: "40%"},
             },
             {
                 dataField:'oimTarget',
                 text:'Oim Target',
-                sort: true
+                sort: true,
+                headerStyle: {width: "15%"},
             },
             {
                 dataField:'id',
@@ -254,10 +274,10 @@ class EditApp extends React.Component {
                                 <Col className="pt-2" md={3}>
                                     <Form.Control type="text" placeholder="Role Name" name={'roleName'} value={roleName || ""} onChange={this.onRoleChange}/>
                                 </Col>
-                                <Col className="pt-2" md={3}>
+                                <Col className="pt-2" md={5}>
                                     <Form.Control type="text" placeholder="Role Description" name={'roleDescription'} value={roleDescription || ""} onChange={this.onRoleChange}/>
                                 </Col>
-                                <Col className="pt-2" md={3}>
+                                <Col className="pt-2" md={2}>
                                     <Select
                                       isClearable
                                       isSearchable
@@ -267,7 +287,7 @@ class EditApp extends React.Component {
                                       options={oimOptions || []}
                                     />
                                 </Col>
-                                <Col md={3} className={'pt-2'}>
+                                <Col md={2} className={'pt-2'}>
                                     <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
                                 </Col>
                             </Form.Group>
@@ -275,7 +295,7 @@ class EditApp extends React.Component {
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Col>
-                            <Button type="submit" variant={'success'} onClick={this.onOnBoardApplication}>Submit</Button>
+                            <Button type="submit" variant={'success'} onClick={this.onOnBoardApplication} disabled={isSave}>Submit</Button>
                         </Col>
                     </Form.Group>
                 </div>

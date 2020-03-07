@@ -114,7 +114,7 @@ export class ApiService {
     }
 
     async getLoginUserRole(user_id) {
-        return await ApiService.getData(`v1/users/types/${user_id} `);
+        return await ApiService.getData(`v1/users/types/${cookies.get('role')} `);
     }
 
     async addRoleToApplication(appId, body) {

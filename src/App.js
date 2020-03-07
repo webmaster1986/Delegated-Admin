@@ -50,7 +50,7 @@ class App extends Component {
     }
 
     getRoutes = () => {
-        if (this.state.userRole === 'SUPER_ADMIN' || this.state.userRole === 'SUPER_APP_OWNER') {
+        if (this.state.userRole === 'SUPER_ADMIN') {
             return (
                 <Switch>
                     <Route path={'/edit-app/:id'} component={EditApp}/>

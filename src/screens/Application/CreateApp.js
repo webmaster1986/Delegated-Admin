@@ -165,9 +165,11 @@ class CreateApp extends React.Component {
         this.setState({ isLoading: true})
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
-            openNotificationWithIcon('error', "Something went Wrong!")
+            message.error('something is wrong! please try again');
+            // openNotificationWithIcon('error', "Something went Wrong!")
         } else {
-            openNotificationWithIcon('success','Application Onboarding Successfully!');
+            // openNotificationWithIcon('success','Application Onboarding Successfully!');
+            message.success('Application Onboarding Successfully!');
             this.props.history.push("/")
         }
     }
@@ -214,9 +216,9 @@ class CreateApp extends React.Component {
 
     render() {
         const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption } = this.state;
-        const { appName, appCode, appDescription, ownerGroup } = appObject || {};
+        const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
-        const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !ownerGroup || !rolesList.length;
+        const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !(ownerGroup || selectedOwnerGroup) || !rolesList.length;
         const rolesListColumn = [
             {
                 dataField:'roleName',

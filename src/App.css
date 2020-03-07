@@ -210,7 +210,7 @@ code {
 
 .footer {
   position: fixed;
-  z-index: 3;
+  /*z-index: 3;*/
   right: 0;
   padding: 10px 0;
   bottom: 0;
