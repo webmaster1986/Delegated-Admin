@@ -2,9 +2,10 @@ import React from "react";
 import {Modal} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
-import {ApiService} from "../../services/ApiService";
+import { Row, Col } from 'react-bootstrap';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import {ApiService} from "../../services/ApiService";
 
 class UserModal extends React.Component {
   _apiService = new ApiService();
@@ -21,7 +22,6 @@ class UserModal extends React.Component {
       this._apiService.getUserDetails(user.login),
       this._apiService.getRolesForUser(user.login)
     ]).then((results) => {
-      console.log(results);
       let result1 = results[0]
       let result2 = results[1]
       if (!result1 || result1.error) {
@@ -41,16 +41,25 @@ class UserModal extends React.Component {
   }
 
   render(){
-    const {user, isLoading, roles} = this.state
+    let {user, isLoading, roles} = this.state
     const options = {
       hidePageListOnlyOnePage: true,
       hideSizePerPage: true
     };
+    if(roles.length > 5) options.sizePerPage = 5;
 
+    const displayFields = [
+      { label: 'Display Name', key: 'displayName' },
+      { label: 'Email', key: 'email' },
+      { label: 'First Name', key: 'firstName' },
+      { label: 'Last Name', key: 'lastName' },
+      { label: 'User Login', key: 'userLogin' }
+    ];
     return (
       <Modal
         title="User Info"
         visible={true}
+        width={800}
         onOk={this.props.toggleModal}
         onCancel={this.props.toggleModal}
       >
@@ -58,14 +67,14 @@ class UserModal extends React.Component {
           {
             isLoading ? <div className={'text-center'}><Spin className='mt-50 custom-loading'/></div> :
               <>
-                {
-                  user && Object.keys(user).map((key, i) =>
-                    <div key={i.toString() + i}>
-                      <b>{key.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase()}:&nbsp;&nbsp;</b>
-                      <span>{user[key]}</span>
-                    </div>
-                  )
-                }
+                <Row>
+                  {displayFields.map((field, i) =>
+                    <Col sm={12} md={6} key={i.toString() + i}>
+                      <b>{field.label}:&nbsp;&nbsp;</b>
+                      <span>{user[field.key] || ""}</span>
+                    </Col>
+                  )}
+                </Row>
                 <br/>
                 <BootstrapTable
                   bootstrap4
