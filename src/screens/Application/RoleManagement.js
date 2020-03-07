@@ -20,6 +20,7 @@ class RoleManagement extends React.Component {
             oimTargetList: [],
             rolesObject: {},
             appObject: {},
+            statusButtonDisabled: false,
             selectedOption: null
         }
     }
@@ -35,8 +36,8 @@ class RoleManagement extends React.Component {
         this.setState({
             isLoading: true
         })
-        const appDetails =  await this._apiService.getAppDetailByAppCode(appCode)
-        const rolesForApp =  await this._apiService.getRolesForApp(appCode)
+        const appDetails = await this._apiService.getAppDetailByAppCode(appCode)
+        const rolesForApp = await this._apiService.getRolesForApp(appCode)
         const roleTarget = await this._apiService.getAppRoleTargets()
 
         if (!appDetails || appDetails.error || !rolesForApp || rolesForApp.error || !roleTarget || roleTarget.error) {
@@ -97,24 +98,27 @@ class RoleManagement extends React.Component {
         const {roleName, status, oimTarget} = record
         const type = status === "Active" ? "disable" : "activate"
         this.setState({
-            isLoading: true
+            statusButtonDisabled: true
         })
-        const data = await this._apiService.rolesStatusActiveDisable({oimTarget, roleName}, type)
+        const data = await this._apiService.rolesStatusActiveDisable({oimTarget, roleName}, appObject.appCode, type)
         if (!data || data.error) {
             this.setState({
-                isLoading: false
+                isLoading: false,
+                statusButtonDisabled: false
             })
             return message.error('something is wrong! please try again');
         } else {
             const rolesForApp =  await this._apiService.getRolesForApp(appObject.appCode)
             if (!rolesForApp || rolesForApp.error) {
                 this.setState({
-                    isLoading: false
+                    isLoading: false,
+                    statusButtonDisabled: false
                 })
                 return message.error('something is wrong! please try again');
             } else {
                 this.setState({
                     isLoading: false,
+                    statusButtonDisabled: false,
                     rolesList: ((rolesForApp && rolesForApp.roles) || []).map((role, index) => ({...role, id: index})) || []
                 })
             }
@@ -132,7 +136,7 @@ class RoleManagement extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption } = this.state;
+        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription } = rolesObject || {};
         const rolesListColumn = [
@@ -161,7 +165,7 @@ class RoleManagement extends React.Component {
                         <div className="text-center">
                             {
                                 buttonName ?
-                                    <Button variant={row.status === 'Disabled' ? 'primary' : 'danger'} size={'sm'} onClick={() => this.onChangeStatus(row)}>
+                                    <Button variant={row.status === 'Disabled' ? 'primary' : 'danger'} size={'sm'} onClick={() => this.onChangeStatus(row)} disabled={statusButtonDisabled}>
                                         {buttonName}
                                     </Button> : null
                             }
@@ -205,93 +209,93 @@ class RoleManagement extends React.Component {
                         <Breadcrumb.Item active>Role Management</Breadcrumb.Item>
                     </Breadcrumb>
                     { isLoading ?
-                      <div className="text-center mt-5-p">
-                          <Spin className='mt-50 custom-loading'/>
-                      </div> :
-                      <div>
-                          <p className="mt-3 heading-text-color"><b>Selected Application Details</b></p>
-                          <Row>
-                              <Col xs={6} sm={4} md={2}>
-                                  <b>Application Name: </b>
-                              </Col>
-                              <Col xs={6} sm={4} md={3}>
-                                  <p>{appName}</p>
-                              </Col>
-                              <Col xs={6} sm={4} md={2} className={'marginTop-sm-1'}>
-                                  <b>App Owner Group:</b>
-                              </Col>
-                              <Col xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                  <p>{ownerGroup}</p>
-                              </Col>
-                          </Row>
-                          <Row>
-                              <Col xs={6} sm={4} md={2}>
-                                  <b>Application Code:</b>
-                              </Col>
-                              <Col xs={6} sm={4} md={3}>
-                                  <p>{appCode}</p>
-                              </Col>
-                              <Col xs={6} sm={4} md={2} className={'marginTop-sm-1'}>
-                                  <b>Application Description:</b>
-                              </Col>
-                              <Col xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
-                                  <p>{appDescription}</p>
-                              </Col>
-                          </Row>
+                        <div className="text-center mt-5-p">
+                            <Spin className='mt-50 custom-loading'/>
+                        </div> :
+                        <div>
+                            <p className="mt-3 heading-text-color"><b>Selected Application Details</b></p>
+                            <Row>
+                                <Col xs={6} sm={4} md={2}>
+                                    <b>Application Name: </b>
+                                </Col>
+                                <Col xs={6} sm={4} md={3}>
+                                    <p>{appName}</p>
+                                </Col>
+                                <Col xs={6} sm={4} md={2} className={'marginTop-sm-1'}>
+                                    <b>App Owner Group:</b>
+                                </Col>
+                                <Col xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                    <p>{ownerGroup}</p>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={6} sm={4} md={2}>
+                                    <b>Application Code:</b>
+                                </Col>
+                                <Col xs={6} sm={4} md={3}>
+                                    <p>{appCode}</p>
+                                </Col>
+                                <Col xs={6} sm={4} md={2} className={'marginTop-sm-1'}>
+                                    <b>Application Description:</b>
+                                </Col>
+                                <Col xs={6} sm={4} md={3} className={'marginTop-sm-1'}>
+                                    <p>{appDescription}</p>
+                                </Col>
+                            </Row>
 
-                          <p className="mt-3 heading-text-color"><b>Roles</b></p>
-                          <BootstrapTable
-                            bootstrap4
-                            striped
-                            keyField='id'
-                            data={rolesList || []}
-                            columns={ rolesListColumn }
-                            headerClasses="styled-header"
-                            expandRow={expandRow}
-                            pagination={ paginationFactory(options) }
-                            defaultSorted={ [{dataField: 'roleName', order: 'asc'}] }
-                          />
-                          <Row>
-                              <Col sm={12} md={12}>
-                                  <Row>
-                                      <Col className="pt-2" md={3}>
-                                          <Form.Control
-                                            type="text"
-                                            placeholder="Role Name"
-                                            name={'roleName'}
-                                            value={roleName || ""}
-                                            onChange={this.onChange}
-                                          />
-                                      </Col>
-                                      <Col className="pt-2" md={3}>
-                                          <Form.Control
-                                            type="text"
-                                            placeholder="Role Description"
-                                            name={'roleDescription'}
-                                            value={roleDescription || ""}
-                                            onChange={this.onChange}
-                                          />
-                                      </Col>
-                                      <Col className="pt-2" md={3}>
-                                          <Select
-                                            isClearable
-                                            isSearchable
-                                            placeholder="OIM Target"
-                                            value={selectedOption}
-                                            onChange={this.handleChange}
-                                            options={oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))}
-                                          />
-                                      </Col>
-                                      <Col md={3} className={'pt-2'}>
-                                          <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
-                                      </Col>
-                                  </Row>
-                              </Col>
-                          </Row>
-                      </div>
-                    }
-                </div>
-            </>
+                            <p className="mt-3 heading-text-color"><b>Roles</b></p>
+                            <BootstrapTable
+                                bootstrap4
+                                striped
+                                keyField='id'
+                                data={rolesList || []}
+                                columns={ rolesListColumn }
+                                headerClasses="styled-header"
+                                expandRow={expandRow}
+                                pagination={ paginationFactory(options) }
+                                defaultSorted={ [{dataField: 'roleName', order: 'asc'}] }
+                            />
+                            <Row>
+                                <Col sm={12} md={12}>
+                                    <Row>
+                                        <Col className="pt-2" md={3}>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Role Name"
+                                                name={'roleName'}
+                                                value={roleName || ""}
+                                                onChange={this.onChange}
+                                            />
+                                        </Col>
+                                        <Col className="pt-2" md={3}>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Role Description"
+                                                name={'roleDescription'}
+                                                value={roleDescription || ""}
+                                                onChange={this.onChange}
+                                            />
+                                        </Col>
+                                        <Col className="pt-2" md={3}>
+                                            <Select
+                                                isClearable
+                                                isSearchable
+                                                placeholder="OIM Target"
+                                                value={selectedOption}
+                                                onChange={this.handleChange}
+                                                options={oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))}
+                                            />
+                                        </Col>
+                                        <Col md={3} className={'pt-2'}>
+                                            <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </div>
+                        }
+                    </div>
+                </>
         );
     }
 }

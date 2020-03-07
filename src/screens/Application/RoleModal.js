@@ -5,6 +5,7 @@ import Spin from "antd/lib/spin";
 import {ApiService} from "../../services/ApiService";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import {Col, Row} from "react-bootstrap";
 
 class RoleModal extends React.Component {
   _apiService = new ApiService();
@@ -18,23 +19,16 @@ class RoleModal extends React.Component {
     const that = this
     const {role} = this.props
     Promise.all([
-      this._apiService.getRoleByRoleName(role),
       this._apiService.getUsersByRoles(role)
     ]).then((results) => {
       console.log(results);
       let result1 = results[0]
-      let result2 = results[1]
       if (!result1 || result1.error) {
         result1 = {}
         message.error('something is wrong! please try again');
       }
-      if (!result2 || result2.error) {
-        result2 = []
-        message.error('something is wrong! please try again');
-      }
       that.setState({
-        role: result1,
-        users: result2,
+        users: result1,
         isLoading: false
       })
     });
@@ -47,11 +41,19 @@ class RoleModal extends React.Component {
       hidePageListOnlyOnePage: true,
       hideSizePerPage: true
     };
-
+    const displayFields = [
+      { label: 'Application Name', key: 'appName' },
+      { label: 'Application Code', key: 'appCode' },
+      { label: 'Application description', key: 'appDescription' },
+      { label: 'Application Owner Group', key: 'ownerGroup' },
+      { label: 'Role Name', key: 'roleName' },
+      { label: 'Role description', key: 'roleDescription' }
+    ];
     return (
       <Modal
         title="Role Info"
         visible={true}
+        width={800}
         onOk={this.props.toggleModal}
         onCancel={this.props.toggleModal}
       >
@@ -59,38 +61,14 @@ class RoleModal extends React.Component {
           {
             isLoading ? <div className={'text-center'}><Spin className='mt-50 custom-loading'/></div> :
               <div>
-                <div>
-                  <b>Application Name:&nbsp;&nbsp;</b>
-                  <span>{role.appName || ""}</span>
-                </div>
-                <div>
-                  <b>Application Code:&nbsp;&nbsp;</b>
-                  <span>{role.appCode || ""}</span>
-                </div>
-                <div>
-                  <b>Application description:&nbsp;&nbsp;</b>
-                  <span>{role.appDescription || ""}</span>
-                </div>
-                <div>
-                  <b>Application Owner Group:&nbsp;&nbsp;</b>
-                  <span>{role.ownerGroup || ""}</span>
-                </div>
-                <div>
-                  <b>Role Name:&nbsp;&nbsp;</b>
-                  <span>{role.roleName || ""}</span>
-                </div>
-                <div>
-                  <b>Role description:&nbsp;&nbsp;</b>
-                  <span>{role.roleDescription || ""}</span>
-                </div>
-                <div>
-                  <b>OIM Target:&nbsp;&nbsp;</b>
-                  <span>{role.oimTarget || ""}</span>
-                </div>
-                <div>
-                  <b>Role Status:&nbsp;&nbsp;</b>
-                  <span>{role.status || "" }</span>
-                </div>
+                <Row>
+                  {displayFields.map((field, i) =>
+                      <Col sm={12} md={6} key={i.toString() + i}>
+                        <b>{field.label}:&nbsp;&nbsp;</b>
+                        <span>{role[field.key] || ""}</span>
+                      </Col>
+                  )}
+                </Row>
                 <br/>
                 <BootstrapTable
                   bootstrap4

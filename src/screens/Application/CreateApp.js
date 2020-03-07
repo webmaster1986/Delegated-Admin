@@ -126,7 +126,23 @@ class CreateApp extends React.Component {
     onAddRole = () => {
         let { rolesList, rolesObject, oimTargetList } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
-            rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: rolesList.length})
+
+            const allRoles = rolesList && rolesList.map((item) => item.roleName) || []
+            let isDuplicate = false
+            if (allRoles && allRoles.indexOf(rolesObject.roleName) !== -1) {
+                const data = rolesList.filter(f => f.roleName === rolesObject.roleName) || []
+                data && data.forEach(g => {
+                    if ((g.oimTarget) === (rolesObject.oimTarget)) {
+                        isDuplicate = true
+                    }
+                })
+            }
+            if (isDuplicate) {
+                return message.warn('Combination of Role Name & OIM Target must be unique');
+            } else {
+                rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: rolesList.length})
+            }
+
             this.setState({
                 rolesList,
                 rolesObject: {},
@@ -147,6 +163,7 @@ class CreateApp extends React.Component {
                 oimTarget: f.oimTarget
             }))
         }
+        this.setState({ isLoading: true})
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
             openNotificationWithIcon('error', "Something went Wrong!")
@@ -205,14 +222,17 @@ class CreateApp extends React.Component {
             {
                 dataField:'roleName',
                 text:'Role Name',
+                headerStyle: {width: "20%"},
             },
             {
                 dataField:'roleDescription',
-                text:'Role Description'
+                text:'Role Description',
+                headerStyle: {width: "40%"},
             },
             {
                 dataField:'oimTarget',
-                text:'Oim Target'
+                text:'OIM Target',
+                headerStyle: {width: "20%"},
             },
             {
                 dataField:'id',
@@ -268,7 +288,7 @@ class CreateApp extends React.Component {
                                   </Form.Label>
                                   <Col sm={10} md={8}>
                                       <Row>
-                                          <Col sm={11} md={11}>
+                                          <Col sm={appCode ? 11 : 12} md={appCode ? 11 : 12}>
                                               <Form.Control
                                                   type="text"
                                                   minLength={2}
@@ -358,12 +378,12 @@ class CreateApp extends React.Component {
                                           <Form.Control type="text" placeholder="Role Name" name={'roleName'}
                                                         value={roleName || ""} onChange={this.onRoleChange}/>
                                       </Col>
-                                      <Col className="pt-2" md={3}>
+                                      <Col className="pt-2" md={5}>
                                           <Form.Control type="text" placeholder="Role Description"
                                                         name={'roleDescription'} value={roleDescription || ""}
                                                         onChange={this.onRoleChange}/>
                                       </Col>
-                                      <Col className="pt-2" md={3}>
+                                      <Col className="pt-2" md={2}>
                                           <Select
                                             isClearable
                                             isSearchable
@@ -373,7 +393,7 @@ class CreateApp extends React.Component {
                                             options={(oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))) || []}
                                           />
                                       </Col>
-                                      <Col md={3} className={'pt-2'}>
+                                      <Col md={2} className={'pt-2'}>
                                           <Button
                                             type="submit"
                                             onClick={this.onAddRole}
@@ -387,15 +407,12 @@ class CreateApp extends React.Component {
                           </Form.Group>
                           <Form.Group as={Row}>
                               <Col>
-                                  <Button variant={'danger'} onClick={() => this.props.history.push('/')}>Cancel</Button>&nbsp;&nbsp;
-                                  <Button
-                                    type="submit"
-                                    variant={'success'}
-                                    onClick={this.onOnBoardApplication}
-                                    disabled={disabled}
-                                  >
-                                      Submit
-                                  </Button>
+                                  <button type="button" className="btn btn-danger btn-md" onClick={() => this.props.history.push('/')}>Cancel</button>&nbsp;&nbsp;
+                                  {
+                                      disabled ?
+                                          <button type="button" className="btn btn-secondary btn-md" disabled style={{cursor: "default"}}>Submit</button> :
+                                          <button type="button" className="btn btn-success btn-md" onClick={this.onOnBoardApplication}>Submit</button>
+                                  }
                               </Col>
                           </Form.Group>
                       </div>

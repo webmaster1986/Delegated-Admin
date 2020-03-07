@@ -30,7 +30,7 @@ class Header extends Component {
     } else {
       this.setState({
         isLoading: false,
-        loginUser: (data && data.name) || ""
+        loginUser: (data && data.result) || ""
       })
     }
   }

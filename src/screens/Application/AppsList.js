@@ -43,21 +43,25 @@ class AppsList extends Component {
         {
             dataField:'appCode',
             text:'Application Code',
-            sort: true
+            sort: true,
+            headerStyle: {width: "15%"},
         },
         {
             dataField:'appName',
             text:'Application Name',
-            sort: true
+            sort: true,
+            headerStyle: {width: "15%"},
         },
         {
             dataField:'appDescription',
-            text:'Description'
+            text:'Description',
+            headerStyle: {width: "35%"},
         },
         {
             dataField:'ownerGroup',
             text:'Owner Group',
-            sort: true
+            sort: true,
+            headerStyle: {width: "15%"},
         },
         {
             dataField:'id',

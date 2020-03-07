@@ -256,7 +256,7 @@ class RevokeAccess extends Component {
         sort: true,
         formatter: (cell, row) => {
           return (
-              <a className="text-info" onClick={(e) => this.props.toggleModal(e, row)}>{cell}</a>
+              <a className="text-info" onClick={(e) => this.toggleModal(e, row)}>{cell}</a>
           )}
       },
       {

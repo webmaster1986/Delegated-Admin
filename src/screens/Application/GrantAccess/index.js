@@ -510,7 +510,7 @@ class Index extends Component {
         const roleTableColumns = [
             {
                 dataIndex: 'roleName',
-                title: <div>Title</div>,
+                title: <div>Role Name</div>,
                 sorter: (a, b) => {
                     const t1 = (a && a.roleName && a.roleName.toLowerCase()) || ""
                     const t2 = (b && b.roleName && b.roleName.toLowerCase()) || ""
