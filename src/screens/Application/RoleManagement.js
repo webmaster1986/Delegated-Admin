@@ -21,6 +21,8 @@ class RoleManagement extends React.Component {
             rolesObject: {},
             appObject: {},
             statusButtonDisabled: false,
+            isSave: false,
+            isSaveStatus: false,
             selectedOption: null
         }
     }
@@ -88,12 +90,13 @@ class RoleManagement extends React.Component {
 
             // list.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: list.length})
             this.setState({
-                isLoading: true
+                isSave: true
             })
             const data = await this._apiService.addRoleToApplication(appObject.appCode, body)
             if (!data || data.error) {
                 this.setState({
-                    isLoading: false
+                    isLoading: false,
+                    isSave: false
                 })
                 return message.error('something is wrong! please try again');
             } else {
@@ -103,7 +106,8 @@ class RoleManagement extends React.Component {
                     list,
                     rolesList: (roles || []).map((role, index) => ({...role, id: index})) || [],
                     rolesObject: {},
-                    selectedOption: null
+                    selectedOption: null,
+                    isSave: false
                 })
             }
         }
@@ -152,7 +156,7 @@ class RoleManagement extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled } = this.state;
+        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled, isSave } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const rolesListColumn = [
@@ -303,7 +307,10 @@ class RoleManagement extends React.Component {
                                             />
                                         </Col>
                                         <Col md={2} className={'pt-2'}>
-                                            <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget}>Add Role</Button>
+                                            <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget || isSave}>
+                                                { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
+                                                {' '}Add Role
+                                            </Button>
                                         </Col>
                                     </Row>
                                 </Col>

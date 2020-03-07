@@ -82,6 +82,7 @@ class Index extends Component {
             isLoading: false,
             isUserModal: false,
             isInfoModal: false,
+            isSave: false,
             selectBy: "",
             category: "",
             user: getLoginUser()
@@ -315,7 +316,7 @@ class Index extends Component {
 
     onSubmit = async () => {
         const {usersData, roles, category, user} = this.state
-
+        this.setState({ isSave: true })
         if (category === "roles") {
             const payload = roles && roles.map(g => ({
                 roleName: g.roleName,
@@ -325,7 +326,8 @@ class Index extends Component {
             const res = await this._apiService.putUsersRoles(user.login, payload)
             if (!res || res.error) {
                 this.setState({
-                    isLoading: false
+                    isLoading: false,
+                    isSave: false
                 })
                 return message.error('something is wrong! please try again');
             } else {
@@ -344,6 +346,10 @@ class Index extends Component {
                 }))
                 const res = await this._apiService.putUsersRoles(user.login, payload)
                 if (!res || res.error) {
+                    this.setState({
+                        isLoading: false,
+                        isSave: false
+                    })
                     return message.error('something is wrong! please try again');
                 } else {
                     result.push(res)
@@ -798,6 +804,7 @@ class Index extends Component {
                                         <Review
                                             {...this.props}
                                             category={category}
+                                            isSave={this.state.isSave}
                                             data={category === "user" ? usersData : rolesData}
                                             onTagRemove={this.onTagRemove}
                                             onUserRemove={this.onUserRemove}

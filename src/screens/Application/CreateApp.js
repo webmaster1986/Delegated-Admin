@@ -28,7 +28,8 @@ class CreateApp extends React.Component {
             appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: '', selectedOwnerGroup: ''},
             appCodeError: '',
             selectedOption: null,
-            selectedOwnerGroupOption: null
+            selectedOwnerGroupOption: null,
+            isSave: false
         }
     }
 
@@ -162,10 +163,13 @@ class CreateApp extends React.Component {
                 oimTarget: f.oimTarget
             }))
         }
-        this.setState({ isLoading: true})
+        this.setState({
+            isSave: true
+        })
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
             message.error('something is wrong! please try again');
+            this.setState({ isSave: false })
             // openNotificationWithIcon('error', "Something went Wrong!")
         } else {
             // openNotificationWithIcon('success','Application Onboarding Successfully!');
@@ -215,7 +219,7 @@ class CreateApp extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption } = this.state;
+        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption, isSave } = this.state;
         const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !(ownerGroup || selectedOwnerGroup) || !rolesList.length;
@@ -411,8 +415,11 @@ class CreateApp extends React.Component {
                                   <button type="button" className="btn btn-danger btn-md" onClick={() => this.props.history.push('/')}>Cancel</button>&nbsp;&nbsp;
                                   {
                                       disabled ?
-                                          <button type="button" className="btn btn-secondary btn-md" disabled style={{cursor: "default"}}>Submit</button> :
-                                          <button type="button" className="btn btn-success btn-md" onClick={this.onOnBoardApplication}>Submit</button>
+                                          <button type="button" className="btn btn-secondary btn-md text-center" disabled style={{cursor: "default"}}>Submit</button> :
+                                          <button type="button" className="btn btn-success btn-md" onClick={this.onOnBoardApplication} disabled={isSave}>
+                                              { isSave ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
+                                              {' '}Submit
+                                          </button>
                                   }
                               </Col>
                           </Form.Group>

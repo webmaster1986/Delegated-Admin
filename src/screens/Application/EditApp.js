@@ -18,7 +18,8 @@ class EditApp extends React.Component {
             appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: ''},
             selectedOption: null,
             selectedOwnerGroupOption: null,
-            isSave: false
+            isSave: false,
+            isAddRole: false
         }
     }
 
@@ -89,20 +90,22 @@ class EditApp extends React.Component {
                 rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: rolesList.length})
             }
             this.setState({
-                isLoading: true
+                isAddRole: true
             })
             const body = [{roleName: rolesObject.roleName, oimTarget: rolesObject.oimTarget}]
             const data = await this._apiService.addRole(body, appObject.appCode)
             if (!data || data.error) {
                 this.setState({
-                    isLoading: false
+                    isLoading: false,
+                    isAddRole: false
                 })
                 return message.error('something is wrong! please try again');
             } else {
                 this.setState({
                     rolesList,
                     rolesObject: {},
-                    selectedOption: null
+                    selectedOption: null,
+                    isAddRole: false
                 })
             }
         }
@@ -115,7 +118,8 @@ class EditApp extends React.Component {
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
             this.setState({
-                isLoading: false
+                isLoading: false,
+                isSave: false
             })
             return message.error('something is wrong! please try again');
         } else {
@@ -150,7 +154,7 @@ class EditApp extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, selectedOption, selectedOwnerGroupOption, isSave } = this.state;
+        const { rolesObject, appObject, rolesList, selectedOption, selectedOwnerGroupOption, isSave, isAddRole } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription } = rolesObject || {};
 
@@ -288,14 +292,20 @@ class EditApp extends React.Component {
                                     />
                                 </Col>
                                 <Col md={2} className={'pt-2'}>
-                                    <Button type="submit" onClick={this.onAddRole}>Add Role</Button>
+                                    <Button type="submit" onClick={this.onAddRole} disabled={isAddRole}>
+                                        { (isAddRole) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
+                                        {' '}Add Role
+                                    </Button>
                                 </Col>
                             </Form.Group>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Col>
-                            <Button type="submit" variant={'success'} onClick={this.onOnBoardApplication} disabled={isSave}>Submit</Button>
+                            <Button type="submit" variant={'success'} onClick={this.onOnBoardApplication} disabled={isSave}>
+                                { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
+                                {' '}Submit
+                            </Button>
                         </Col>
                     </Form.Group>
                 </div>

@@ -69,6 +69,7 @@ class RevokeUsersTransfer extends React.Component {
       targetKeys: [],
       // isReview: false,
       isLoading: true,
+      isSave: false,
       size: 'default',
       searchRoleText: '',
       reviewList: [],
@@ -293,7 +294,7 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   renderReview = () => {
-    const {reviewList} = this.state
+    const {reviewList, isSave} = this.state
     const {revokeBy} = this.props
     return (
       <div>
@@ -309,7 +310,10 @@ class RevokeUsersTransfer extends React.Component {
         />
         <div className="text-right mt-5">
           <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
-          <button className="btn btn-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length}>Submit</button>
+          <button className="btn btn-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length || isSave}>
+            { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
+            {' '}Submit
+          </button>
         </div>
       </div>
     )
@@ -338,12 +342,12 @@ class RevokeUsersTransfer extends React.Component {
     const {reviewList} = this.state
     const {revokeBy} = this.props
     let userRoles = [...reviewList]
-
+    this.setState({ isSave: true })
     if(revokeBy === "roles"){
       const totalUsers = []
       reviewList.forEach((role) => {
         role.users.forEach(u => {
-          const isExists = totalUsers.find(user => user.userLogin === u.userLogin)
+          const isExists = totalUsers.find(user => user.login === u.login)
           if(!isExists){
             totalUsers.push(u)
           }
@@ -351,7 +355,7 @@ class RevokeUsersTransfer extends React.Component {
       })
       reviewList.forEach((role) => {
         role.users.forEach(u => {
-          const findIndex = totalUsers.findIndex(user => user.userLogin === u.userLogin)
+          const findIndex = totalUsers.findIndex(user => user.login === u.login)
           if(findIndex !== -1){
             const newRole = {
               roleName: role.roleName,
@@ -370,10 +374,11 @@ class RevokeUsersTransfer extends React.Component {
     }
     const successResult = []
     for (const revoke of userRoles) {
-      const result =  await this._apiService.putUsersRoles(revoke.userLogin, revoke.roles || [])
+      const result =  await this._apiService.putUsersRoles(revoke.login, revoke.roles || [])
       if (!result || result.error) {
+        this.setState({ isSave: false })
         return message.error('something is wrong! please try again');
-      }else {
+      } else {
         successResult.push(revoke)
       }
       if(successResult.length === userRoles.length){
