@@ -145,7 +145,9 @@ const Review = (props) => {
       )
     },
     showExpandColumn: true,
-    expandByColumnOnly: true
+    expandByColumnOnly: true,
+    expandColumnRenderer: ({ expanded }) =>  <Icon className="cursor-pointer" type={expanded ? 'up' : 'down'} theme="outlined"/>,
+    expandHeaderColumnRenderer: ({ isAnyExpands }) =>  <Icon className="cursor-pointer" type={isAnyExpands ? 'up' : 'down'} theme="outlined"/>
   };
 
   return (

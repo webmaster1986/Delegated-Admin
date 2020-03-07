@@ -3,6 +3,7 @@ import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
+import {Icon} from "antd";
 import {ApiService} from "../../services/ApiService";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -160,7 +161,7 @@ class RoleManagement extends React.Component {
                         <div className="text-center">
                             {
                                 buttonName ?
-                                    <Button variant={'primary'} size={'sm'} onClick={() => this.onChangeStatus(row)}>
+                                    <Button variant={row.status === 'Disabled' ? 'primary' : 'danger'} size={'sm'} onClick={() => this.onChangeStatus(row)}>
                                         {buttonName}
                                     </Button> : null
                             }
@@ -173,12 +174,14 @@ class RoleManagement extends React.Component {
         const expandRow = {
             renderer: row => (
                 <div>
-                    <p>Role Description:{"    "}{row.roleDescription}</p>
-                    <p>Creation Date:{"    "}{moment(row.creationDate).format("MM/DD/YYYY")}</p>
+                    <p className="m-0">Role Description:{"    "}{row.roleDescription}</p>
+                    <p className="m-0">Creation Date:{"    "}{moment(row.creationDate).format("MM/DD/YYYY")}</p>
                 </div>
             ),
             showExpandColumn: true,
-            expandByColumnOnly: true
+            expandByColumnOnly: true,
+            expandColumnRenderer: ({ expanded }) =>  <Icon className="cursor-pointer" type={expanded ? 'up' : 'down'} theme="outlined"/>,
+            expandHeaderColumnRenderer: ({ isAnyExpands }) =>  <Icon className="cursor-pointer" type={isAnyExpands ? 'up' : 'down'} theme="outlined"/>
         };
 
         const options = {
