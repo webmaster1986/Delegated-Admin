@@ -223,13 +223,13 @@ class Index extends Component {
     onTagRemove = (rootId, subId) => {
         const {usersData, rolesData, category} = this.state
         if (category === "user") {
-            const findIndex = usersData.findIndex(user => user.login === rootId)
+            const findIndex = usersData.findIndex(user => user.userLogin === rootId)
             const findSubIndex = usersData[findIndex].roles.findIndex(role => role.roleName === subId)
             if(findIndex === -1 || findSubIndex === -1) return
             usersData[findIndex].roles.splice(findSubIndex, 1)
         } else {
             const findIndex = rolesData.findIndex(role => role.roleName === rootId)
-            const findSubIndex = rolesData[findIndex].users.findIndex(role => role.login === subId)
+            const findSubIndex = rolesData[findIndex].users.findIndex(role => role.userLogin === subId)
             if(findIndex === -1 || findSubIndex === -1) return
             rolesData[findIndex].users.splice(findSubIndex, 1)
         }
@@ -557,18 +557,18 @@ class Index extends Component {
                     return 0
                 }
             },
-            /*{
+            {
                 dataIndex: 'bureau',
                 title: 'Bureau',
                 sorter: (a, b) => {
-                    const t1 = a.bureau.toLowerCase() || ""
-                    const t2 = b.bureau.toLowerCase() || ""
+                    const t1 = (a && a.bureau && a.bureau.toLowerCase()) || ""
+                    const t2 = (b && b.bureau && b.bureau.toLowerCase()) || ""
                     if (t1 < t2) { return -1 }
                     if (t1 > t2) { return 1 }
                     return 0
                 }
-            },*/
-            {
+            },
+            /*{
                 dataIndex: 'email',
                 title: 'Email',
                 sorter: (a, b) => {
@@ -578,7 +578,7 @@ class Index extends Component {
                     if (t1 > t2) { return 1 }
                     return 0
                 }
-            }
+            }*/
         ];
         
         return(
@@ -766,14 +766,22 @@ class Index extends Component {
                                                 <TableTransfer
                                                     dataSource={data}
                                                     targetKeys={userTargetKeys}
-                                                    showSearch
+                                                    showSearch={false}
                                                     onChange={this.onUserTableChange}
                                                     filterOption={(inputValue, item) => {
-                                                        return ["login", "name", "bureau", "email"].some(key => {
-                                                            return (
-                                                              item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
-                                                            )
-                                                        })
+                                                        if (selectBy === "roles") {
+                                                            return ["roleName", "appCode"].some(key => {
+                                                                return (
+                                                                    item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                                                                )
+                                                            })
+                                                        } else {
+                                                            return ["userLogin", "displayName", "email"].some(key => {
+                                                                return (
+                                                                    item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                                                                )
+                                                            })
+                                                        }
                                                     }}
                                                     leftColumns={TableColumns}
                                                     rightColumns={TableColumns}

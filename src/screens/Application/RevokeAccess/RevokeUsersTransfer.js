@@ -248,14 +248,14 @@ class RevokeUsersTransfer extends React.Component {
         text: 'Name',
         formatter: (cell, row) => <div>{row.displayName || row.name}</div>
       },
-      /*{
+      {
         dataField: 'bureau',
         text: 'Bureau',
-      },*/
-      {
+      },
+      /*{
         dataField: 'email',
         text: 'Email',
-      },
+      },*/
       {
         dataField: 'loginAction',
         text: 'Action',
@@ -407,10 +407,10 @@ class RevokeUsersTransfer extends React.Component {
         dataIndex: 'bureau',
         title: 'Bureau',
       },
-      {
+      /*{
         dataIndex: 'email',
         title: 'Email',
-      }
+      }*/
     ];
 
     const roleColumns = [
@@ -487,7 +487,7 @@ class RevokeUsersTransfer extends React.Component {
                 <TableTransfer
                   dataSource={data}
                   targetKeys={targetKeys}
-                  showSearch
+                  showSearch={false}
                   onChange={this.onChange}
                   filterOption={(inputValue, item) => {
                     if(revokeBy === "user"){

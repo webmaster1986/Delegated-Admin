@@ -67,7 +67,7 @@ class CreateApp extends React.Component {
         const { appObject } = this.state
         const { name, value } = event.target
         let object = {}
-        if(name === 'appCode'){
+        if(name === 'appCode' && !appObject.selectedOwnerGroup){
             object = {
                 ownerGroup: `${value}_OWNER`
             }
@@ -125,12 +125,11 @@ class CreateApp extends React.Component {
 
     onAddRole = () => {
         let { rolesList, rolesObject, oimTargetList } = this.state
-        if(rolesObject && Object.keys(rolesObject).length > 0){
-
-            const allRoles = rolesList && rolesList.map((item) => item.roleName) || []
+        if (rolesObject && Object.keys(rolesObject).length > 0) {
             let isDuplicate = false
-            if (allRoles && allRoles.indexOf(rolesObject.roleName) !== -1) {
-                const data = rolesList.filter(f => f.roleName === rolesObject.roleName) || []
+            const allRoles = (rolesList && rolesList.map((item) => item.roleName.toLowerCase())) || []
+            if (allRoles && allRoles.indexOf(rolesObject.roleName.toLowerCase()) !== -1) {
+                const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === rolesObject.roleName.toLowerCase())) || []
                 data && data.forEach(g => {
                     if ((g.oimTarget) === (rolesObject.oimTarget)) {
                         isDuplicate = true
@@ -216,7 +215,7 @@ class CreateApp extends React.Component {
     render() {
         const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
-        const { roleName, roleDescription } = rolesObject || {};
+        const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !ownerGroup || !rolesList.length;
         const rolesListColumn = [
             {
@@ -397,7 +396,7 @@ class CreateApp extends React.Component {
                                           <Button
                                             type="submit"
                                             onClick={this.onAddRole}
-                                            disabled={!roleName || !roleDescription}
+                                            disabled={!roleName || !oimTarget}
                                           >
                                               Add Role
                                           </Button>

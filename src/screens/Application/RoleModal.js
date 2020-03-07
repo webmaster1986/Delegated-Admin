@@ -41,6 +41,8 @@ class RoleModal extends React.Component {
       hidePageListOnlyOnePage: true,
       hideSizePerPage: true
     };
+    if(users.length > 5) options.sizePerPage = 5;
+
     const displayFields = [
       { label: 'Application Name', key: 'appName' },
       { label: 'Application Code', key: 'appCode' },

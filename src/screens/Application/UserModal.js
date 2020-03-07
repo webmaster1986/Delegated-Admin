@@ -41,7 +41,7 @@ class UserModal extends React.Component {
   }
 
   render(){
-    let {user, isLoading, roles} = this.state
+    const {user, isLoading, roles} = this.state
     const options = {
       hidePageListOnlyOnePage: true,
       hideSizePerPage: true

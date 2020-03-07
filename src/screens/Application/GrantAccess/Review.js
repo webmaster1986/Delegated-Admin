@@ -20,8 +20,8 @@ const Review = (props) => {
       }
     },
     {text: 'User Name', dataField: 'displayName'},
-    {text: 'Email', dataField: 'email'},
-    /* {text: 'Bureau', dataField: 'bureau'}, */
+    /* {text: 'Email', dataField: 'email'}, */
+    {text: 'Bureau', dataField: 'bureau'},
     {
       text: 'Action',
       dataField: 'id',
@@ -72,8 +72,8 @@ const Review = (props) => {
           }
         },
         {text: 'Name', dataField: 'displayName'},
-        {text: 'Email', dataField: 'email'},
-        /* {text: 'Bureau', dataField: 'bureau'}, */
+        /* {text: 'Email', dataField: 'email'}, */
+        {text: 'Bureau', dataField: 'bureau'},
         {
           text: 'Action',
           dataField: 'id',
