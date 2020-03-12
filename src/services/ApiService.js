@@ -1,7 +1,26 @@
 import axios from "axios";
 import Cookies from "universal-cookie"
 import message from "antd/lib/message";
-const apiEndPoint = process.env.NODE_ENV === 'production' ? 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/' : '/';
+
+const getHost = () => {
+    const domain = process.env.REACT_APP_ENV;
+    let apiEndPoint = ''
+    if (domain === 'dev') {
+        apiEndPoint = "http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/";
+    } else if (domain === 'tst') {
+        apiEndPoint = 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/';
+    } else if (domain === 'stg') {
+        apiEndPoint = 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/';
+    } else  if (domain === 'prod') {
+        apiEndPoint = 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/';
+    }else {
+        apiEndPoint = "http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/";
+    }
+    return apiEndPoint
+};
+
+const apiEndPoint = process.env.NODE_ENV === 'production' ? getHost() : '/';
+
 const axiosInstance = axios.create({
     baseURL: apiEndPoint,
 });
