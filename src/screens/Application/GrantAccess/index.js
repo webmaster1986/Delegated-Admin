@@ -333,7 +333,7 @@ class Index extends Component {
             } else {
                 message.success('Grant Access Submitted Successfully');
                 setTimeout(() => {
-                    this.props.history.push('/app-owner')
+                    this.props.history.push('/')
                 },500)
             }
         } else {
@@ -358,7 +358,7 @@ class Index extends Component {
             if (result && usersData && (result.length === usersData.length)) {
                 message.success('Grant Access Submitted Successfully');
                 setTimeout(() => {
-                    this.props.history.push('/app-owner')
+                    this.props.history.push('/')
                 },500)
             }
         }

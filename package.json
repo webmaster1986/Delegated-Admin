@@ -51,10 +51,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "cross-env REACT_APP_ENV=dev react-scripts build",
-    "tst": "cross-env REACT_APP_ENV=tst react-scripts build",
-    "prod": "cross-env REACT_APP_ENV=prod react-scripts build",
-    "stg": "cross-env REACT_APP_ENV=stg react-scripts build"
+    "build-dev": "cross-env REACT_APP_ENV=dev react-scripts build",
+    "build-tst": "cross-env REACT_APP_ENV=tst react-scripts build",
+    "build-prod": "cross-env REACT_APP_ENV=prod react-scripts build",
+    "build-stg": "cross-env REACT_APP_ENV=stg react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"
