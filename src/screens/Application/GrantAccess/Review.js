@@ -166,7 +166,7 @@ const Review = (props) => {
       />
 
       <div className="text-right mt-3">
-        <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/')}>Cancel</button>
+        <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/app-owner')}>Cancel</button>
         &nbsp;&nbsp;
         <button className="btn btn-success btn-sm" onClick={() => props.onSubmit()} disabled={props && props.isSave}>
           { (props && props.isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }

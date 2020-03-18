@@ -1,19 +1,19 @@
 import React from "react";
-import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
+import {Row, Col, Form, Button, Breadcrumb, InputGroup} from "react-bootstrap";
 import { ApiService } from "../../services/ApiService";
 import {Icon} from 'antd';
 import message from "antd/lib/message";
-import notification from "antd/lib/notification";
+// import notification from "antd/lib/notification";
 import Spin from "antd/lib/spin";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
 
-const openNotificationWithIcon = (type, message) => {
+/*const openNotificationWithIcon = (type, message) => {
     notification[type]({
         message,
     });
-};
+};*/
 
 class CreateApp extends React.Component {
     _apiService = new ApiService();
@@ -125,14 +125,17 @@ class CreateApp extends React.Component {
     }
 
     onAddRole = () => {
-        let { rolesList, rolesObject, oimTargetList } = this.state
+        let { rolesList, rolesObject, appObject } = this.state
+        if (!appObject.appCode) {
+            return message.warn('Add Application code first')
+        }
         if (rolesObject && Object.keys(rolesObject).length > 0) {
             let isDuplicate = false
             const allRoles = (rolesList && rolesList.map((item) => item.roleName.toLowerCase())) || []
-            if (allRoles && allRoles.indexOf(rolesObject.roleName.toLowerCase()) !== -1) {
-                const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === rolesObject.roleName.toLowerCase())) || []
+            if (allRoles && allRoles.indexOf(`${appObject.appCode}_${rolesObject.roleName}`.toLowerCase()) !== -1) {
+                const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === `${appObject.appCode}_${rolesObject.roleName}`.toLowerCase())) || []
                 data && data.forEach(g => {
-                    if ((g.oimTarget) === (rolesObject.oimTarget)) {
+                    if (rolesObject.oimTarget && rolesObject.oimTarget.indexOf(g.oimTarget) !== -1) {
                         isDuplicate = true
                     }
                 })
@@ -140,14 +143,16 @@ class CreateApp extends React.Component {
             if (isDuplicate) {
                 return message.warn('Combination of Role Name & OIM Target must be unique');
             } else {
-                rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: rolesList.length})
+                rolesObject.oimTarget.forEach(item => {
+                    rolesList.push({...rolesObject, roleName: `${appObject.appCode}_${rolesObject.roleName}`, oimTarget: item, id: rolesList.length})
+                })
             }
 
             this.setState({
                 rolesList,
                 rolesObject: {},
                 selectedOption: null
-            })
+            }, () => document.getElementById("roleName").focus())
         }
     }
 
@@ -156,11 +161,16 @@ class CreateApp extends React.Component {
         const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {}
 
         const payload = {
-            application: {appCode, appName, appDescription, ownerGroup: ownerGroup || selectedOwnerGroup},
+            application: {
+                appCode: appCode,
+                appName: appName.toUpperCase(),
+                appDescription: appDescription.toUpperCase(),
+                ownerGroup: ownerGroup.toUpperCase() || selectedOwnerGroup.toUpperCase()
+            },
             roles: rolesList && rolesList.map(f => ({
-                roleName: f.roleName,
+                roleName: f.roleName.toUpperCase(),
                 roleDescription: f.roleDescription,
-                oimTarget: f.oimTarget
+                oimTarget: f.oimTarget.toUpperCase()
             }))
         }
         this.setState({
@@ -209,11 +219,12 @@ class CreateApp extends React.Component {
     }
 
     handleChange = selectedOption => {
+        const data = (selectedOption && selectedOption.map(item => item.value)) || []
         this.setState({
             selectedOption,
             rolesObject: {
                 ...this.state.rolesObject,
-                "oimTarget": (selectedOption && selectedOption.value) || ""
+                "oimTarget": data || []
             }
         });
     }
@@ -380,8 +391,13 @@ class CreateApp extends React.Component {
                               <Col sm={12} md={12}>
                                   <Form.Group as={Row}>
                                       <Col className="pt-2" md={3}>
-                                          <Form.Control type="text" placeholder="Role Name" name={'roleName'}
-                                                        value={roleName || ""} onChange={this.onRoleChange}/>
+                                          <InputGroup className="mb-3">
+                                              <InputGroup.Prepend>
+                                                  <InputGroup.Text id="basic-addon1">{appCode}</InputGroup.Text>
+                                              </InputGroup.Prepend>
+                                              <Form.Control type="text" placeholder="Role Name" name={'roleName'}
+                                                  id={"roleName"} value={roleName || ""} onChange={this.onRoleChange}/>
+                                          </InputGroup>
                                       </Col>
                                       <Col className="pt-2" md={5}>
                                           <Form.Control type="text" placeholder="Role Description"
@@ -390,6 +406,7 @@ class CreateApp extends React.Component {
                                       </Col>
                                       <Col className="pt-2" md={2}>
                                           <Select
+                                            isMulti
                                             isClearable
                                             isSearchable
                                             placeholder="OIM Target"

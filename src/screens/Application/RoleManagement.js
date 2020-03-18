@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
+import {Row, Col, Form, Button, Breadcrumb, InputGroup} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
@@ -39,10 +39,9 @@ class RoleManagement extends React.Component {
             isLoading: true
         })
         const appDetails = await this._apiService.getAppDetailByAppCode(appCode)
-        const rolesForApp = await this._apiService.getRolesForApp(appCode)
         const roleTarget = await this._apiService.getAppRoleTargets()
 
-        if (!appDetails || appDetails.error || !rolesForApp || rolesForApp.error || !roleTarget || roleTarget.error) {
+        if (!appDetails || appDetails.error || !roleTarget || roleTarget.error) {
             this.setState({
                 isLoading: false
             })
@@ -51,8 +50,27 @@ class RoleManagement extends React.Component {
             this.setState({
                 isLoading: false,
                 appObject: (appDetails && appDetails.application) || {},
-                rolesList: ((rolesForApp && rolesForApp.roles) || []).map((role, index) => ({...role, id: index})) || [],
                 oimTargetList: (roleTarget && roleTarget.resultCollection) || []
+            }, () => this.getRoles())
+        }
+    }
+
+    getRoles = async () => {
+        const {appObject} = this.state
+        this.setState({
+            isLoading: true
+        })
+        const rolesForApp = await this._apiService.getRolesForApp(appObject && appObject.appCode)
+
+        if (!rolesForApp || rolesForApp.error) {
+            this.setState({
+                isLoading: false
+            })
+            return message.error('something is wrong! please try again');
+        } else {
+            this.setState({
+                isLoading: false,
+                rolesList: ((rolesForApp && rolesForApp.roles) || []).map((role, index) => ({...role, id: index})) || [],
             })
         }
     }
@@ -68,7 +86,7 @@ class RoleManagement extends React.Component {
     }
 
     onAddRole = async () => {
-        let { list, rolesObject, oimTargetList, appObject, rolesList } = this.state
+        let { list, rolesObject, appObject, rolesList } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
 
             let isDuplicate = false
@@ -77,7 +95,7 @@ class RoleManagement extends React.Component {
             if (allRoles && allRoles.indexOf(rolesObject.roleName.toLowerCase()) !== -1) {
                 const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === rolesObject.roleName.toLowerCase())) || []
                 data && data.forEach(g => {
-                    if ((g.oimTarget) === (rolesObject.oimTarget)) {
+                    if (rolesObject.oimTarget && rolesObject.oimTarget.indexOf(g.oimTarget) !== -1) {
                         isDuplicate = true
                     }
                 })
@@ -85,7 +103,12 @@ class RoleManagement extends React.Component {
             if (isDuplicate) {
                 return message.warn('Combination of Role Name & OIM Target must be unique');
             } else {
-                body = [{roleName: rolesObject.roleName, oimTarget: rolesObject.oimTarget || oimTargetList[0]}]
+                rolesObject.oimTarget.forEach(item => {
+                    body.push({
+                        roleName: `${appObject.appCode}_${rolesObject.roleName}`.toUpperCase(),
+                        oimTarget: item,
+                    })
+                })
             }
 
             // list.push({...rolesObject, oimTarget: rolesObject.oimTarget || oimTargetList[0], id: list.length})
@@ -100,15 +123,13 @@ class RoleManagement extends React.Component {
                 })
                 return message.error('something is wrong! please try again');
             } else {
-                const roles = [...rolesList, ...body]
                 this.setState({
                     isLoading: false,
                     list,
-                    rolesList: (roles || []).map((role, index) => ({...role, id: index})) || [],
                     rolesObject: {},
                     selectedOption: null,
                     isSave: false
-                })
+                }, () => this.getRoles())
             }
         }
     }
@@ -146,11 +167,12 @@ class RoleManagement extends React.Component {
     }
 
     handleChange = selectedOption => {
+        const data = (selectedOption && selectedOption.map(item => item.value)) || []
         this.setState({
             selectedOption,
             rolesObject: {
                 ...this.state.rolesObject,
-                "oimTarget": (selectedOption && selectedOption.value) || ""
+                "oimTarget": data || []
             }
         });
     }
@@ -180,7 +202,10 @@ class RoleManagement extends React.Component {
                 text: 'Action',
                 headerStyle: {width: 100},
                 formatter: (cell, row) => {
-                    const buttonName = row.status === 'Active' ? 'Disable' : row.status === 'Disabled' ? 'Activate' : ''
+                    const buttonName = row.roleName === 'APPCODE_OWNER' ? '' :
+                      row.status === 'Active' ? 'Disable' : row.status === 'Disabled' ? 'Activate' :
+                        row.status === 'Failed' ? 'Retry' : ''
+
                     return (
                         <div className="text-center">
                             {
@@ -279,13 +304,18 @@ class RoleManagement extends React.Component {
                                 <Col sm={12} md={12}>
                                     <Row>
                                         <Col className="pt-2" md={3}>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder="Role Name"
-                                                name={'roleName'}
-                                                value={roleName || ""}
-                                                onChange={this.onChange}
-                                            />
+                                            <InputGroup className="mb-3">
+                                                <InputGroup.Prepend>
+                                                    <InputGroup.Text id="basic-addon1">{appCode}</InputGroup.Text>
+                                                </InputGroup.Prepend>
+                                                <Form.Control
+                                                  type="text"
+                                                  placeholder="Role Name"
+                                                  name={'roleName'}
+                                                  value={roleName || ""}
+                                                  onChange={this.onChange}
+                                                />
+                                            </InputGroup>
                                         </Col>
                                         <Col className="pt-2" md={5}>
                                             <Form.Control
@@ -298,6 +328,7 @@ class RoleManagement extends React.Component {
                                         </Col>
                                         <Col className="pt-2" md={2}>
                                             <Select
+                                                isMulti
                                                 isClearable
                                                 isSearchable
                                                 placeholder="OIM Target"

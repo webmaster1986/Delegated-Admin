@@ -339,7 +339,7 @@ class RevokeAccess extends Component {
                     onChange={this.onSearch}
                   />
                   <InputGroup.Append>
-                    <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>clear</Button>
+                    <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>Clear</Button>
                   </InputGroup.Append>
                 </InputGroup>
               </Col>

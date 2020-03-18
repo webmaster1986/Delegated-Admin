@@ -333,32 +333,29 @@ class Index extends Component {
             } else {
                 message.success('Grant Access Submitted Successfully');
                 setTimeout(() => {
-                    this.props.history.push('/')
+                    this.props.history.push('/app-owner')
                 },500)
             }
         } else {
-            const result = []
-            for (const num of usersData) {
-                const payload = num.roles && num.roles.map(g => ({
-                    roleName: g.roleName,
-                    roleDescription: g.roleDescription,
-                    oimTarget: g.oimTarget
-                }))
-                const res = await this._apiService.putUsersRoles(user.login, payload)
-                if (!res || res.error) {
-                    this.setState({
-                        isLoading: false,
-                        isSave: false
-                    })
-                    return message.error('something is wrong! please try again');
-                } else {
-                    result.push(res)
-                }
-            }
-            if (result && usersData && (result.length === usersData.length)) {
+            // const result = []
+            const payload = []
+            usersData.forEach(user => {
+                payload.push({
+                    userLogin: user.userLogin,
+                    roleNames: user.roles.map(f => f.roleName)
+                })
+            })
+            const res = await this._apiService.putUsersRoles(user.login, payload)
+            if (!res || res.error) {
+                this.setState({
+                    isLoading: false,
+                    isSave: false
+                })
+                return message.error('something is wrong! please try again');
+            } else {
                 message.success('Grant Access Submitted Successfully');
                 setTimeout(() => {
-                    this.props.history.push('/')
+                    this.props.history.push('/app-owner')
                 },500)
             }
         }
@@ -587,7 +584,7 @@ class Index extends Component {
                 }
             }*/
         ];
-        
+
         return(
             <div className={"mt-3"}>
                 {
@@ -763,7 +760,7 @@ class Index extends Component {
                                                             onChange={this.onSearch}
                                                         />
                                                         <InputGroup.Append>
-                                                            <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>clear</Button>
+                                                            <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>Clear</Button>
                                                         </InputGroup.Append>
                                                     </InputGroup>
                                                 </Col>

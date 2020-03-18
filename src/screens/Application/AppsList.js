@@ -66,14 +66,12 @@ class AppsList extends Component {
         {
             dataField:'id',
             text:'Action',
-            headerStyle: {width: 100},
+            headerStyle: {width: 60},
             formatter: (cell, row) => {
                 return (
-                    <div className="text-center">
-                        <Link to={`/role-manage/${row.appCode}`}>
-                            <Button variant={'primary'} size={'sm'}>Edit</Button>
-                        </Link>
-                    </div>
+                  <Link to={`/role-manage/${row.appCode}`}>
+                      <Button variant={'primary'} size={'sm'}>Edit</Button>
+                  </Link>
             )},
         }
     ];
@@ -130,8 +128,12 @@ class AppsList extends Component {
                           type="text"
                           placeholder="Search with application code or name"
                           name="searchString"
+                          value={searchString || ""}
                           onChange={this.onSearch}
                         />
+                        <InputGroup.Append>
+                            <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>Clear</Button>
+                        </InputGroup.Append>
                     </InputGroup>
                     <br/>
                     {

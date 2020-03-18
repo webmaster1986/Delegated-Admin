@@ -19,8 +19,8 @@ class UserModal extends React.Component {
     const {user} = this.props
     const that = this
     Promise.all([
-      this._apiService.getUserDetails(user.login),
-      this._apiService.getRolesForUser(user.login)
+      this._apiService.getUserDetails(user.userLogin),
+      this._apiService.getRolesForUser(user.userLogin)
     ]).then((results) => {
       let result1 = results[0]
       let result2 = results[1]

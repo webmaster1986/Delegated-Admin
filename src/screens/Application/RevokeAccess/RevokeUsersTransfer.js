@@ -2,7 +2,7 @@ import React from "react"
 import {Col, Form, InputGroup, Row, Button} from "react-bootstrap";
 import {Icon, Table, Transfer} from "antd";
 import difference from "lodash/difference";
-import {ApiService} from "../../../services/ApiService";
+import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -73,7 +73,8 @@ class RevokeUsersTransfer extends React.Component {
       size: 'default',
       searchRoleText: '',
       reviewList: [],
-      rolesData: []
+      rolesData: [],
+      user: getLoginUser()
     }
   }
 
@@ -309,7 +310,7 @@ class RevokeUsersTransfer extends React.Component {
           pagination={ paginationFactory(options) }
         />
         <div className="text-right mt-5">
-          <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/')}>Cancel</button>&nbsp;&nbsp;
+          <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
           <button className="btn btn-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length || isSave}>
             { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
             {' '}Submit
@@ -339,7 +340,7 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   onReviewSubmit = async () => {
-    const {reviewList} = this.state
+    const {reviewList, user} = this.state
     const {revokeBy} = this.props
     let userRoles = [...reviewList]
     this.setState({ isSave: true })
@@ -372,21 +373,22 @@ class RevokeUsersTransfer extends React.Component {
       })
       userRoles = totalUsers
     }
-    const successResult = []
-    for (const revoke of userRoles) {
-      const result =  await this._apiService.putUsersRoles(revoke.login, revoke.roles || [])
-      if (!result || result.error) {
-        this.setState({ isSave: false })
-        return message.error('something is wrong! please try again');
-      } else {
-        successResult.push(revoke)
-      }
-      if(successResult.length === userRoles.length){
-        message.success('Revoke access submitted successfully.');
-        setTimeout(() => {
-          this.props.history.push('/')
-        },500)
-      }
+    const payload = []
+    userRoles.forEach(user => {
+      payload.push({
+        userLogin: user.userLogin,
+        roleNames: user.roles.map(f => f.roleName)
+      })
+    })
+    const res = await this._apiService.putUsersRoles(user.login, payload)
+    if (!res || res.error) {
+      this.setState({ isSave: false })
+      return message.error('something is wrong! please try again');
+    } else {
+      message.success('Revoke access submitted successfully.');
+      setTimeout(() => {
+        this.props.history.push('/app-owner')
+      },500)
     }
   }
 
