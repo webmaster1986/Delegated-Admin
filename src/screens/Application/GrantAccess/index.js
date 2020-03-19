@@ -317,46 +317,77 @@ class Index extends Component {
     onSubmit = async () => {
         const {usersData, roles, category, user} = this.state
         this.setState({ isSave: true })
+        let payload = []
         if (category === "roles") {
-            const payload = roles && roles.map(g => ({
-                roleName: g.roleName,
-                roleDescription: g.roleDescription,
-                oimTarget: g.oimTarget
-            }))
-            const res = await this._apiService.putUsersRoles(user.login, payload)
-            if (!res || res.error) {
-                this.setState({
-                    isLoading: false,
-                    isSave: false
+            const totalUsers = []
+            roles.forEach((role) => {
+                role.users.forEach(u => {
+                    const isExists = totalUsers.find(user => user.userLogin === u.userLogin)
+                    const newRole = {
+                        roleName: role.roleName,
+                        roleDescription: role.roleDescription,
+                        oimTarget: role.oimTarget
+                    }
+                    if(!isExists){
+                        u = {
+                            ...u,
+                            roles: [newRole]
+                        }
+                        totalUsers.push(u)
+                    } else {
+                        const index = totalUsers.findIndex(user => user.userLogin === u.userLogin)
+                        totalUsers[index] = {
+                            ...totalUsers[index],
+                            roles: [...totalUsers[index].roles, newRole]
+                        }
+                    }
                 })
-                return message.error('something is wrong! please try again');
-            } else {
-                message.success('Grant Access Submitted Successfully');
-                setTimeout(() => {
-                    this.props.history.push('/app-owner')
-                },500)
-            }
+            })
+
+            totalUsers.forEach(user => {
+                payload.push({
+                    userLogin: user.userLogin,
+                    roleNames: user.roles.map(f => f.roleName)
+                })
+            })
         } else {
-            // const result = []
-            const payload = []
             usersData.forEach(user => {
                 payload.push({
                     userLogin: user.userLogin,
                     roleNames: user.roles.map(f => f.roleName)
                 })
             })
-            const res = await this._apiService.putUsersRoles(user.login, payload)
-            if (!res || res.error) {
-                this.setState({
-                    isLoading: false,
-                    isSave: false
-                })
-                return message.error('something is wrong! please try again');
+        }
+        const res = await this._apiService.putUsersRoles(user.login, payload)
+        if (!res || res.error) {
+            this.setState({
+                isLoading: false,
+                isSave: false
+            })
+            return message.error('something is wrong! please try again');
+        } else {
+            res.manageAccessResponse.forEach(alr => {
+                if (alr.successSet && alr.successSet.length) {
+                    message.success(`
+                        RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
+                            ${(alr.successSet[0] && alr.successSet[0].oimTarget) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTarget)}` : ""} has been successfully updated`);
+                } else {
+                    message.error(`
+                        RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
+                            ${(alr.failedSet[0] && alr.failedSet[0].oimTarget) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTarget)}` : ""} has been fail to update`);
+                }
+            })
+            // message.success('Grant Access Submitted Successfully');
+            let isError = false
+            if (res.manageAccessResponse) {
+                isError = Object.keys(res.manageAccessResponse).some((key) => res.manageAccessResponse[key].failedSet && res.manageAccessResponse[key].failedSet.length)
+            }
+            if(isError) {
+                return this.setState({ isSave: false })
             } else {
-                message.success('Grant Access Submitted Successfully');
                 setTimeout(() => {
                     this.props.history.push('/app-owner')
-                },500)
+                },1000)
             }
         }
     }

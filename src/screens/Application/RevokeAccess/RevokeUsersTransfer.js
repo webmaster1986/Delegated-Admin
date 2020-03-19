@@ -376,19 +376,37 @@ class RevokeUsersTransfer extends React.Component {
     const payload = []
     userRoles.forEach(user => {
       payload.push({
-        userLogin: user.userLogin,
+        userLogin: user.userLogin || user.login,
         roleNames: user.roles.map(f => f.roleName)
       })
     })
-    const res = await this._apiService.putUsersRoles(user.login, payload)
+    const res = await this._apiService.putUsersRevokeRoles(user.login, payload)
     if (!res || res.error) {
       this.setState({ isSave: false })
       return message.error('something is wrong! please try again');
     } else {
-      message.success('Revoke access submitted successfully.');
-      setTimeout(() => {
-        this.props.history.push('/app-owner')
-      },500)
+      res.manageAccessResponse.forEach(alr => {
+        if (alr.successSet && alr.successSet.length) {
+          message.success(`
+            RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
+              ${(alr.successSet[0] && alr.successSet[0].oimTarget) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTarget)}` : ""} has been successfully updated`);
+        } else {
+          message.error(`
+            RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
+              ${(alr.failedSet[0] && alr.failedSet[0].oimTarget) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTarget)}` : ""} has been fail to update`);
+        }
+      })
+      let isError = false
+      if (res.manageAccessResponse) {
+        isError = Object.keys(res.manageAccessResponse).some((key) => res.manageAccessResponse[key].failedSet && res.manageAccessResponse[key].failedSet.length)
+      }
+      if(isError) {
+        return this.setState({ isSave: false })
+      } else {
+        setTimeout(() => {
+          this.props.history.push('/app-owner')
+        },1000)
+      }
     }
   }
 
