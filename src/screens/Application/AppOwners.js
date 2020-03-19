@@ -37,19 +37,26 @@ class AppOwners extends Component {
   async componentDidMount() {
     this.setState({
       isLoading: true
-    });
+    })
 
-    const data = await this._apiService.getAllApplications();
-    if (!data || data.error) {
+    const userRole = await this._apiService.getLoginUserRole()
+    if (!userRole || userRole.error) {
       this.setState({
         isLoading: false
-      });
-      return message.error("something is wrong! please try again");
+      })
     } else {
-      this.setState({
-        isLoading: false,
-        applicationsList: (data && data.applications && data.applications.map((f, i) => ({ ...f, id: i}))) || []
-      });
+      const data = userRole === "APP_OWNERS" ? await this._apiService.getAllApplicationsByOwner() : await this._apiService.getAllApplications()
+      if (!data || data.error) {
+        this.setState({
+          isLoading: false
+        })
+        return message.error('something is wrong! please try again');
+      } else {
+        this.setState({
+          isLoading: false,
+          applicationsList: (data && data.applications && data.applications.map((f, i) => ({ ...f, id: i}))) || []
+        })
+      }
     }
   }
 

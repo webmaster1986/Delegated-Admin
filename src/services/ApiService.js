@@ -93,9 +93,37 @@ export class ApiService {
         return resData || response.data;
     }
 
+    static async deleteMethod(url, data, headers, cancelToken) {
+        const config = {
+            headers: {
+                ...(headers || {})
+            }
+        };
+        if (cancelToken && cancelToken.token) {
+            config.cancelToken = cancelToken.token;
+        }
+        let resData = '';
+        const response = await axios({
+            method: 'DELETE',
+            url: url,
+            data
+        }).catch(thrown => {
+            if (thrown.toString() === 'Cancel') {
+                resData = 'cancel';
+            } else {
+                resData = {error: 'something went wrong'};
+            }
+        })
+        return resData || response.data;
+    }
+
     async getAllApplications(appId) {
         return await ApiService.getData(`v1/applications/${appId || ""}`);
         //return await ApiService.getData(`applications.json`);
+    }
+
+    async getAllApplicationsByOwner(appId) {
+        return await ApiService.getData(`v1/owner-applications/${appId || ""}`);
     }
 
     async applicationOnBoarding(body) {
@@ -109,6 +137,11 @@ export class ApiService {
 
     async getRolesForApp(appCode) {
         return await ApiService.getData(`v1/applications/${appCode}/roles`);
+        // return appRoles
+    }
+
+    async getRolesForAppByOwner(appCode) {
+        return await ApiService.getData(`v1/applications/${appCode}/owner-roles`);
         // return appRoles
     }
 
@@ -162,6 +195,10 @@ export class ApiService {
 
     async putUsersRoles(userId, body) {
         return await ApiService.putMethod(`v1/users/${userId}/roles `, body);
+    }
+
+    async putUsersRevokeRoles(userId, body) {
+        return await ApiService.deleteMethod(`v1/users/${userId}/roles `, body);
     }
 
     async getRoleByRoleName(body) {
