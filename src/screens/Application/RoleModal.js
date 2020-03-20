@@ -18,20 +18,15 @@ class RoleModal extends React.Component {
   async componentDidMount() {
     const that = this
     const {role} = this.props
-    Promise.all([
-      this._apiService.getUsersByRoles(role)
-    ]).then((results) => {
-      console.log(results);
-      let result1 = results[0]
-      if (!result1 || result1.error) {
-        result1 = {}
-        message.error('something is wrong! please try again');
-      }
-      that.setState({
-        users: result1,
-        isLoading: false
-      })
-    });
+    const data = await this._apiService.getUsersByRoles(role)
+    let result1 = (data && data.users) || []
+    if (!result1 || result1.error) {
+      message.error('something is wrong! please try again');
+    }
+    that.setState({
+      users: result1 || [],
+      isLoading: false
+    })
   }
 
   render(){

@@ -29,12 +29,11 @@ class UserModal extends React.Component {
         message.error('something is wrong! please try again');
       }
       if (!result2 || result2.error) {
-        result2 = []
         message.error('something is wrong! please try again');
       }
       that.setState({
         user: (result1 && result1.user) || {},
-        roles: result2,
+        roles: (result2 && result2.userRoles) || [],
         isLoading: false
       })
     });

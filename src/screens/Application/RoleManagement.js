@@ -202,9 +202,22 @@ class RoleManagement extends React.Component {
                 text: 'Action',
                 headerStyle: {width: 100},
                 formatter: (cell, row) => {
-                    const buttonName = row.roleName === 'APPCODE_OWNER' ? '' :
-                      row.status === 'Active' ? 'Disable' : row.status === 'Disabled' ? 'Activate' :
-                        row.status === 'Failed' ? 'Retry' : ''
+                    // const buttonName = row.roleName === 'APPCODE_OWNER' ? '' :
+                    //   row.status === 'Active' ? 'Disable' : row.status === 'Disabled' ? 'Activate' :
+                    //     row.status === 'Failed' ? 'Retry' : ''
+                    let buttonName = '';
+
+                    if (row.roleName === `${appCode}_OWNER`) {
+                        buttonName = ''
+                    } else if (row.status === 'Active') {
+                        buttonName = 'Disable'
+                    } else if (row.status === 'Disabled') {
+                        buttonName = 'Activate'
+                    } else if (row.status === 'Failed') {
+                        buttonName = 'Retry'
+                    } else {
+                        buttonName = ''
+                    }
 
                     return (
                         <div className="text-center">

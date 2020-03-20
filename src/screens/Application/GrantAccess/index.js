@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Row, Col, Form, InputGroup, Button} from 'react-bootstrap'
 import queryString from "query-string";
+import Cookies from "universal-cookie"
 import Spin from "antd/lib/spin";
 import _ from "lodash"
 import Select from 'react-select';
@@ -11,7 +12,19 @@ import {ApiService, getLoginUser} from "../../../services/ApiService";
 import Review from "./Review";
 import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
+import { ROLES } from "../../../constants/constants"
 
+const cookies = new Cookies();
+const role = cookies.get('USER_ROLE');
+
+export const isLoggedIn = (key) => {
+    const state = {
+        SUPER_ADMIN: ROLES.SUPER_ADMIN === role,
+        SUPER_APP_OWNER: ROLES.SUPER_APP_OWNER === role,
+        APP_OWNER: ROLES.APP_OWNER === role,
+    };
+    return state[key] || false;
+}
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
     <Transfer {...restProps} showSelectAll={false}>
@@ -417,8 +430,19 @@ class Index extends Component {
     getDataForRole = async () => {
         const {user} = this.state
 
-        let applicationsList = await this._apiService.getOwnerApplications(user.login)
-        let ownerRoles =  await this._apiService.getOwnerRoles(user.login)
+        let applicationsList = '';
+        let ownerRoles = '';
+
+        if (isLoggedIn('SUPER_ADMIN')) {
+            applicationsList = await this._apiService.getApplications(user.login)
+            ownerRoles = await this._apiService.getSuperAdminRoles(user.login)
+        } else if(isLoggedIn('SUPER_APP_OWNER')) {
+            applicationsList = await this._apiService.getApplications(user.login)
+            ownerRoles = await this._apiService.getSuperOwnerRoles(user.login)
+        } else {
+            applicationsList = await this._apiService.getOwnerApplications(user.login);
+            ownerRoles = await this._apiService.getOwnerRoles(user.login);
+        }
 
         if (!applicationsList || applicationsList.error) {
             applicationsList = []

@@ -20,6 +20,7 @@ import 'antd/dist/antd.css';
 
 import AppOwners from "./screens/Application/AppOwners";
 import {getLoginUser} from "./services/ApiService";
+import { ROLES } from "./constants/constants"
 
 const cookies = new Cookies();
 
@@ -50,7 +51,7 @@ class App extends Component {
     }
 
     getRoutes = () => {
-        if (this.state.userRole === 'SUPER_ADMIN') {
+        if (this.state.userRole === ROLES.SUPER_ADMIN) {
             return (
                 <Switch>
                     <Route path={'/edit-app/:id'} component={EditApp}/>

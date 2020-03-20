@@ -13,6 +13,7 @@ import {ApiService} from "../../services/ApiService";
 import Select from 'react-select';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import { ROLES } from "../../constants/constants"
 
 class AppOwners extends Component {
   _apiService = new ApiService();
@@ -45,7 +46,7 @@ class AppOwners extends Component {
         isLoading: false
       })
     } else {
-      const data = userRole === "APP_OWNERS" ? await this._apiService.getAllApplicationsByOwner() : await this._apiService.getAllApplications()
+      const data = userRole === ROLES.APP_OWNER ? await this._apiService.getOwnerApplications() : await this._apiService.getAllApplications()
       if (!data || data.error) {
         this.setState({
           isLoading: false

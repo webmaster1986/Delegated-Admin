@@ -24,9 +24,11 @@ class CreateApp extends React.Component {
             rolesList: [],
             ownerGroupList: [],
             oimTargetList: [],
-            rolesObject: {},
+            rolesObject: {roleName: ""},
             appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: '', selectedOwnerGroup: ''},
             appCodeError: '',
+            duplicateRoleName: '',
+            appCode: '',
             selectedOption: null,
             selectedOwnerGroupOption: null,
             isSave: false
@@ -55,19 +57,30 @@ class CreateApp extends React.Component {
     }
 
     onRoleChange = (event) => {
-        const { name, value } = event.target
+        let { name, value } = event.target;
+        const object = {}
+        if (name === 'roleName') {
+            value = this.removeAppCode(value)
+            object.duplicateRoleName = value.toUpperCase()
+            value = this.appendAppCode(value, this.state.appObject.appCode).toUpperCase()
+        }
+
         this.setState({
             rolesObject: {
                 ...this.state.rolesObject,
                 [name]: value
-            }
+            },
+            ...object
         })
     }
 
     onChange = (event) => {
-        const { appObject } = this.state
-        const { name, value } = event.target
+        const { appObject, duplicateRoleName, rolesList } = this.state
+        const { name } = event.target
+        const value = ['appName', 'appCode'].includes(name) ? event.target.value.toUpperCase() : event.target.value
+
         let object = {}
+        let obj = {}
         if(name === 'appCode' && !appObject.selectedOwnerGroup){
             object = {
                 ownerGroup: `${value}_OWNER`
@@ -78,12 +91,27 @@ class CreateApp extends React.Component {
             ownerGroup: value ? "" : `${appObject.appCode}_OWNER`,
           }
         }
+        if(name === 'appCode'){
+            obj = {
+                rolesObject: {
+                    roleName: `${value}${duplicateRoleName ? duplicateRoleName : `_${duplicateRoleName}`}`
+                }
+            }
+
+            if(rolesList && rolesList.length){
+                (rolesList || []).forEach(role => {
+                    const index = role.roleName.indexOf("_")
+                    role.roleName = `${value}${role.roleName.substr(index)}`
+                })
+            }
+        }
         this.setState({
             appObject: {
                 ...this.state.appObject,
                 [name]: value,
                 ...object
-            }
+            },
+            ...obj
         }, async () => {
             if (name === 'appCode') {
                 let object = {}
@@ -131,9 +159,9 @@ class CreateApp extends React.Component {
         }
         if (rolesObject && Object.keys(rolesObject).length > 0) {
             let isDuplicate = false
-            const allRoles = (rolesList && rolesList.map((item) => item.roleName.toLowerCase())) || []
-            if (allRoles && allRoles.indexOf(`${appObject.appCode}_${rolesObject.roleName}`.toLowerCase()) !== -1) {
-                const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === `${appObject.appCode}_${rolesObject.roleName}`.toLowerCase())) || []
+            const allRoles = (rolesList && rolesList.map((item) => item.roleName)) || []
+            if (allRoles && allRoles.indexOf(rolesObject.roleName) !== -1) {
+                const data = (rolesList && rolesList.filter(f => f.roleName === rolesObject.roleName)) || []
                 data && data.forEach(g => {
                     if (rolesObject.oimTarget && rolesObject.oimTarget.indexOf(g.oimTarget) !== -1) {
                         isDuplicate = true
@@ -144,13 +172,16 @@ class CreateApp extends React.Component {
                 return message.warn('Combination of Role Name & OIM Target must be unique');
             } else {
                 rolesObject.oimTarget.forEach(item => {
-                    rolesList.push({...rolesObject, roleName: `${appObject.appCode}_${rolesObject.roleName}`, oimTarget: item, id: rolesList.length})
+                    rolesList.push({...rolesObject, roleName: rolesObject.roleName, oimTarget: item, id: rolesList.length})
                 })
             }
 
             this.setState({
                 rolesList,
-                rolesObject: {},
+                rolesObject: {
+                    roleName: `${appObject.appCode}_`
+                },
+                duplicateRoleName: "",
                 selectedOption: null
             }, () => document.getElementById("roleName").focus())
         }
@@ -163,14 +194,14 @@ class CreateApp extends React.Component {
         const payload = {
             application: {
                 appCode: appCode,
-                appName: appName.toUpperCase(),
-                appDescription: appDescription.toUpperCase(),
-                ownerGroup: ownerGroup.toUpperCase() || selectedOwnerGroup.toUpperCase()
+                appName: appName,
+                appDescription: appDescription,
+                ownerGroup: ownerGroup || selectedOwnerGroup
             },
             roles: rolesList && rolesList.map(f => ({
-                roleName: f.roleName.toUpperCase(),
+                roleName: f.roleName,
                 roleDescription: f.roleDescription,
-                oimTarget: f.oimTarget.toUpperCase()
+                oimTarget: f.oimTarget
             }))
         }
         this.setState({
@@ -219,7 +250,7 @@ class CreateApp extends React.Component {
     }
 
     handleChange = selectedOption => {
-        const data = (selectedOption && selectedOption.map(item => item.value)) || []
+        const data = (selectedOption && selectedOption.map(item => item.value.toUpperCase())) || []
         this.setState({
             selectedOption,
             rolesObject: {
@@ -227,6 +258,15 @@ class CreateApp extends React.Component {
                 "oimTarget": data || []
             }
         });
+    }
+
+    removeAppCode = (role) => {
+        return role.indexOf('_') > -1 ? role.substr(role.indexOf('_')) : "";
+    };
+
+    appendAppCode = (role, appCode) => {
+        const value = `${appCode}${role}`
+        return value.indexOf("_") > -1 ? value : `${appCode}_${role}`
     }
 
     render() {
@@ -391,13 +431,14 @@ class CreateApp extends React.Component {
                               <Col sm={12} md={12}>
                                   <Form.Group as={Row}>
                                       <Col className="pt-2" md={3}>
-                                          <InputGroup className="mb-3">
-                                              <InputGroup.Prepend>
-                                                  <InputGroup.Text id="basic-addon1">{appCode}</InputGroup.Text>
-                                              </InputGroup.Prepend>
-                                              <Form.Control type="text" placeholder="Role Name" name={'roleName'}
-                                                  id={"roleName"} value={roleName || ""} onChange={this.onRoleChange}/>
-                                          </InputGroup>
+                                          <Form.Control
+                                              type="text"
+                                              placeholder="Role Name"
+                                              name={'roleName'}
+                                              id={"roleName"}
+                                              value={roleName || ""}
+                                              onChange={this.onRoleChange}
+                                          />
                                       </Col>
                                       <Col className="pt-2" md={5}>
                                           <Form.Control type="text" placeholder="Role Description"

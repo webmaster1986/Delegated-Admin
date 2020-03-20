@@ -119,7 +119,6 @@ export class ApiService {
 
     async getAllApplications(appId) {
         return await ApiService.getData(`v1/applications/${appId || ""}`);
-        //return await ApiService.getData(`applications.json`);
     }
 
     async getAllApplicationsByOwner(appId) {
@@ -177,8 +176,20 @@ export class ApiService {
         return await ApiService.getData(`v1//users/${userId}/owner-applications `);
     }
 
+    async getApplications(userId) {
+        return await ApiService.getData(`v1//users/${userId}/applications`);
+    }
+
     async getOwnerRoles(userId) {
         return await ApiService.getData(`v1/users/${userId}/owner-roles `);
+    }
+
+    async getSuperOwnerRoles(userId) {
+        return await ApiService.getData(`v1/users/${userId}/app-owner-roles`);
+    }
+
+    async getSuperAdminRoles(userId) {
+        return await ApiService.getData(`v1/users/${userId}/roles`);
     }
 
     async getUserDetails(userId) {
