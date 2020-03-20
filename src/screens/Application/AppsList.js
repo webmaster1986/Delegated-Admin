@@ -69,7 +69,7 @@ class AppsList extends Component {
             headerStyle: {width: 60},
             formatter: (cell, row) => {
                 return (
-                  <Link to={`/role-manage/${row.appCode}`}>
+                  <Link to={`/DelegatedAdmin/role-manage/${row.appCode}`}>
                       <Button variant={'primary'} size={'sm'}>Edit</Button>
                   </Link>
             )},
@@ -114,7 +114,7 @@ class AppsList extends Component {
                         </Col>
                         <Col md={4}>
                             <div className="text-right marginTop-sm-1">
-                                <Link to={'/create-apps'}> <Button variant="primary">OnBoard New Application </Button> </Link>
+                                <Link to={'/DelegatedAdmin/create-apps'}> <Button variant="primary">OnBoard New Application </Button> </Link>
                             </div>
                         </Col>
                     </Row>

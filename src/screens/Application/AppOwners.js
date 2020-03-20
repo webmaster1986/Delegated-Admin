@@ -70,7 +70,7 @@ class AppOwners extends Component {
   CustomOption = (props, appCode) => {
     const {data} = props;
     return (
-      <Link to={`/${data && data.value}?by=roles&app=${appCode}`}>
+      <Link to={`/DelegatedAdmin/${data && data.value}?by=roles&app=${appCode}`}>
         <div className={"text-left p-2 custom-dropdown"}>
           {data && data.label}
         </div>

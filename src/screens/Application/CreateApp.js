@@ -215,7 +215,7 @@ class CreateApp extends React.Component {
         } else {
             // openNotificationWithIcon('success','Application Onboarding Successfully!');
             message.success('Application Onboarding Successfully!');
-            this.props.history.push("/")
+            this.props.history.push("/DelegatedAdmin/")
         }
     }
 
@@ -319,7 +319,7 @@ class CreateApp extends React.Component {
                     </Row>
                     <hr/>
                     <Breadcrumb>
-                        <Breadcrumb.Item href="/">Applications</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/DelegatedAdmin/">Applications</Breadcrumb.Item>
                         <Breadcrumb.Item active>Onboard New Application</Breadcrumb.Item>
                     </Breadcrumb>
                     { isLoading ? <div className="text-center"> <Spin className='mt-50 custom-loading'/></div> :

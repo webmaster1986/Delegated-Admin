@@ -310,7 +310,7 @@ class RevokeUsersTransfer extends React.Component {
           pagination={ paginationFactory(options) }
         />
         <div className="text-right mt-5">
-          <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('/app-owner')}>Cancel</button>&nbsp;&nbsp;
+          <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('DelegatedAdmin/app-owner')}>Cancel</button>&nbsp;&nbsp;
           <button className="btn btn-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length || isSave}>
             { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
             {' '}Submit
@@ -404,7 +404,7 @@ class RevokeUsersTransfer extends React.Component {
         return this.setState({ isSave: false })
       } else {
         setTimeout(() => {
-          this.props.history.push('/app-owner')
+          this.props.history.push('DelegatedAdmin/app-owner')
         },1000)
       }
     }

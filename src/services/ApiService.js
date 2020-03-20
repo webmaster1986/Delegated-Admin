@@ -4,8 +4,8 @@ import message from "antd/lib/message";
 
 const getHost = () => {
     const domain = process.env.REACT_APP_ENV;
-    let apiEndPoint = ''
-    if (domain === 'dev') {
+    let apiEndPoint = '/DelegatedAdmin/api'
+    /*if (domain === 'dev') {
         apiEndPoint = "http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/";
     } else if (domain === 'tst') {
         apiEndPoint = 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/';
@@ -15,7 +15,7 @@ const getHost = () => {
         apiEndPoint = 'http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/';
     }else {
         apiEndPoint = "http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/";
-    }
+    }*/
     return apiEndPoint
 };
 
@@ -165,7 +165,7 @@ export class ApiService {
     }
 
     async getLoginUserRole(user_id) {
-        return await ApiService.getData(`v1/users/types/${cookies.get('role')} `);
+        return await ApiService.getData(`v1/users/types`);
     }
 
     async addRoleToApplication(appId, body) {
@@ -173,23 +173,23 @@ export class ApiService {
     }
 
     async getOwnerApplications(userId) {
-        return await ApiService.getData(`v1//users/${userId}/owner-applications `);
+        return await ApiService.getData(`v1/users/owner-applications `);
     }
 
     async getApplications(userId) {
-        return await ApiService.getData(`v1//users/${userId}/applications`);
+        return await ApiService.getData(`v1/users/applications`);
     }
 
     async getOwnerRoles(userId) {
-        return await ApiService.getData(`v1/users/${userId}/owner-roles `);
+        return await ApiService.getData(`v1/users/owner-roles `);
     }
 
     async getSuperOwnerRoles(userId) {
-        return await ApiService.getData(`v1/users/${userId}/app-owner-roles`);
+        return await ApiService.getData(`v1/users/app-owner-roles`);
     }
 
     async getSuperAdminRoles(userId) {
-        return await ApiService.getData(`v1/users/${userId}/roles`);
+        return await ApiService.getData(`v1/users/roles`);
     }
 
     async getUserDetails(userId) {
@@ -205,11 +205,11 @@ export class ApiService {
     }
 
     async putUsersRoles(userId, body) {
-        return await ApiService.putMethod(`v1/users/${userId}/roles `, body);
+        return await ApiService.putMethod(`v1/users/roles `, body);
     }
 
     async putUsersRevokeRoles(userId, body) {
-        return await ApiService.deleteMethod(`v1/users/${userId}/roles `, body);
+        return await ApiService.deleteMethod(`v1/users/roles `, body);
     }
 
     async getRoleByRoleName(body) {
@@ -221,7 +221,7 @@ export class ApiService {
     }
 
     async logout () {
-        const res = await ApiService.getData(`v1/logout`);
+        const res = await ApiService.postMethod(`v1/logout`);
         if (!res || res.error) {
             return message.error('something is wrong! please try again');
         } else {

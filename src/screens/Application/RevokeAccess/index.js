@@ -383,7 +383,7 @@ class RevokeAccess extends Component {
     this.setState(prevState => {
       if(prevState.step+1 === 1){
         const selectedApp = (prevState.selectedApp && prevState.selectedApp.length) ? prevState.selectedApp[0] : ""
-        this.props.history.push(`/revoke-access?by=${prevState.revokeBy}&app=${(selectedApp && selectedApp[0] && selectedApp[0].value) || ""}`)
+        this.props.history.push(`/DelegatedAdmin/revoke-access?by=${prevState.revokeBy}&app=${(selectedApp && selectedApp[0] && selectedApp[0].value) || ""}`)
       }
       return {
         step: action === "back" ? prevState.step - 1 : prevState.step + 1

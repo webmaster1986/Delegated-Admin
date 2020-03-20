@@ -2,6 +2,7 @@
   "name": "fdnyreactframework",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/DelegatedAdmin/",
   "engines": {
     "node": "10.13.0"
   },

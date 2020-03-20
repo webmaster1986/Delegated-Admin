@@ -54,21 +54,21 @@ class App extends Component {
         if (this.state.userRole === ROLES.SUPER_ADMIN) {
             return (
                 <Switch>
-                    <Route path={'/edit-app/:id'} component={EditApp}/>
-                    <Route path={'/create-apps'} component={CreateApp}/>
+                    <Route path={'/DelegatedAdmin/edit-app/:id'} component={EditApp}/>
+                    <Route path={'/DelegatedAdmin/create-apps'} component={CreateApp}/>
                     {/*<Route path={'/review-apps'} component={ReviewApps}/>*/}
-                    <Route path={'/grant-access'} component={GrantAccess}/>
-                    <Route path={'/revoke-access'} component={RevokeAccess}/>
-                    <Route path={'/role-manage/:id'} component={RoleManagement}/>
-                    <Route path={'/'} component={AppsList}/>
+                    <Route path={'/DelegatedAdmin/grant-access'} component={GrantAccess}/>
+                    <Route path={'/DelegatedAdmin/revoke-access'} component={RevokeAccess}/>
+                    <Route path={'/DelegatedAdmin/role-manage/:id'} component={RoleManagement}/>
+                    <Route path={'/DelegatedAdmin/'} component={AppsList}/>
                 </Switch>
             );
         }
         return (
             <Switch>
-                <Route path={'/grant-access'} component={GrantAccess}/>
-                <Route path={'/revoke-access'} component={RevokeAccess}/>
-                <Route path={'/'} component={AppOwners}/>
+                <Route path={'/DelegatedAdmin/grant-access'} component={GrantAccess}/>
+                <Route path={'/DelegatedAdmin/revoke-access'} component={RevokeAccess}/>
+                <Route path={'/DelegatedAdmin/'} component={AppOwners}/>
             </Switch>
         );
     }

@@ -263,7 +263,7 @@ class RoleManagement extends React.Component {
                     </Row>
                     <hr/>
                     <Breadcrumb>
-                        <Breadcrumb.Item href="/">Applications</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/DelegatedAdmin/">Applications</Breadcrumb.Item>
                         <Breadcrumb.Item active>Role Management</Breadcrumb.Item>
                     </Breadcrumb>
                     { isLoading ?

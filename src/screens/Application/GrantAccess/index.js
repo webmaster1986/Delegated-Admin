@@ -399,7 +399,7 @@ class Index extends Component {
                 return this.setState({ isSave: false })
             } else {
                 setTimeout(() => {
-                    this.props.history.push('/app-owner')
+                    this.props.history.push('/DelegatedAdmin/app-owner')
                 },1000)
             }
         }
@@ -462,7 +462,7 @@ class Index extends Component {
 
     onNext = () => {
         const {selectBy, selectedApp} = this.state
-        this.props.history.push(`/grant-access?by=${selectBy}&app=${(selectedApp && selectedApp[0] && selectedApp[0].value) || ""}`)
+        this.props.history.push(`/DelegatedAdmin/grant-access?by=${selectBy}&app=${(selectedApp && selectedApp[0] && selectedApp[0].value) || ""}`)
         this.setState({
             step: false,
             category: selectBy,

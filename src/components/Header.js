@@ -62,7 +62,7 @@ class Header extends Component {
                   <li>
                     <Nav.Item>
                       <Link
-                        to="/"
+                        to="/DelegatedAdmin/"
                         className={'nav-link color-white'}
                       >
                         Applications
@@ -80,7 +80,7 @@ class Header extends Component {
                         <ul className="nav-submenu">
                           <li>
                             <a
-                              href={"/grant-access?by=user"}
+                              href={"/DelegatedAdmin/grant-access?by=user"}
                               className={'nav-link color-white'}
                             >
                               By User
@@ -88,7 +88,7 @@ class Header extends Component {
                           </li>
                           <li>
                             <a
-                              href={"/grant-access?by=roles"}
+                              href={"/DelegatedAdmin/grant-access?by=roles"}
                               className={'nav-link color-white'}
                             >
                               By Role
@@ -100,7 +100,7 @@ class Header extends Component {
                         <ul className="nav-submenu">
                           <li>
                             <a
-                              href={"/revoke-access?by=user"}
+                              href={"/DelegatedAdmin/revoke-access?by=user"}
                               className={'nav-link color-white'}
                             >
                               By User
@@ -108,7 +108,7 @@ class Header extends Component {
                           </li>
                           <li>
                             <a
-                              href={"/revoke-access?by=roles"}
+                              href={"/DelegatedAdmin/revoke-access?by=roles"}
                               className={'nav-link color-white'}
                             >
                               By Role
