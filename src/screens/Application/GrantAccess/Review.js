@@ -44,6 +44,20 @@ const Review = (props) => {
         )
       }
     },
+    {
+      text: 'OIM targets',
+      dataField: 'oimTarget',
+      headerStyle: {width: "30%"},
+      formatter: (record) => {
+        return (
+          (record || []).map((role, i) => (
+            <span className="static-tag" key={i.toString()}>
+              {role}
+            </span>
+          ))
+        )
+      }
+    },
     {text: 'App Code', dataField: 'appCode', headerStyle: {width: "20%"}},
     /* {text: 'Role Description', dataField: 'roleDescription'}, */
     /* {text: 'OIM Target', dataField: 'oimTarget'}, */
@@ -102,6 +116,20 @@ const Review = (props) => {
           }
         },
         {text: 'Role Name', dataField: 'roleName'},
+        {
+          text: 'OIM targets',
+          dataField: 'oimTarget',
+          headerStyle: {width: "30%"},
+          formatter: (record) => {
+            return (
+                (record || []).map((role, i) => (
+                    <span className="static-tag" key={i.toString()}>
+              {role}
+            </span>
+                ))
+            )
+          }
+        },
         /* {text: 'Role Description', dataField: 'roleDescription'}, */
         /* {text: 'OIM Target', dataField: 'oimTarget'}, */
         {

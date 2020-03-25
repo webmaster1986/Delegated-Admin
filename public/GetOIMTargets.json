@@ -1,0 +1,7 @@
+{
+    "operation": "Retrieve Target Applications",
+    "resultCollection": [
+        "IDCS",
+        "OID"
+    ]
+}

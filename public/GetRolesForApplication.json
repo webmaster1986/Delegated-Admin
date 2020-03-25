@@ -1,0 +1,46 @@
+{
+    "identifier": "APPL8",
+    "operation": "Get Roles for Application",
+    "roles": [
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": "OID",
+            "roleDescription": "Owner group for application APPL8",
+            "roleName": "APP4_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": "IDCS",
+            "roleDescription": "ROLE1",
+            "roleName": "APPL8_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": "OID",
+            "roleDescription": "ROLE1",
+            "roleName": "APPL8_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": "OID",
+            "roleDescription": "ROLE2",
+            "roleName": "APPL8_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": "IDCS",
+            "roleDescription": "ROLE3",
+            "roleName": "APPL8_ROLE3",
+            "status": "Active"
+        }
+    ]
+}

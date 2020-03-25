@@ -70,7 +70,7 @@ class RoleManagement extends React.Component {
         } else {
             this.setState({
                 isLoading: false,
-                rolesList: ((rolesForApp && rolesForApp.roles) || []).map((role, index) => ({...role, id: index})) || [],
+                rolesList: ((rolesForApp && rolesForApp.userRoles) || []).map((role, index) => ({...role, id: index})) || [],
             })
         }
     }
@@ -160,7 +160,7 @@ class RoleManagement extends React.Component {
                 this.setState({
                     isLoading: false,
                     statusButtonDisabled: false,
-                    rolesList: ((rolesForApp && rolesForApp.roles) || []).map((role, index) => ({...role, id: index})) || []
+                    rolesList: ((rolesForApp && rolesForApp.userRoles) || []).map((role, index) => ({...role, id: index})) || []
                 })
             }
         }

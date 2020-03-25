@@ -1,0 +1,58 @@
+{
+    "operation": "Retrieve Users For Role",
+    "users": [
+        {
+            "displayName": "PETER LUCKSAVAGE",
+            "email": "no-dash@fdny.nyc.gov",
+            "firstName": "PETER",
+            "lastName": "LUCKSAVAGE",
+            "oimTargets": [
+                "OID"
+            ],
+            "userLogin": "0000044"
+        },
+        {
+            "displayName": "FullNme",
+            "email": "testnm@fdny.nyc.gov",
+            "firstName": "FiNme",
+            "lastName": "LstName",
+            "middleName": "MNam",
+            "oimTargets": [
+                "OID"
+            ],
+            "userLogin": "002257"
+        },
+        {
+            "displayName": "TUSHAR  JAGADALE",
+            "email": "Tushar.Jagadale@fdny.nyc.gov",
+            "firstName": "TUSHAR ",
+            "lastName": "JAGADALE",
+            "oimTargets": [
+                "OID",
+				"IDCS"
+            ],
+            "userLogin": "N001053"
+        },
+        {
+            "displayName": "MANOHAR  PARELLY",
+            "email": "Manohar.Parelly@fdny.nyc.gov",
+            "firstName": "MANOHAR ",
+            "lastName": "PARELLY",
+            "oimTargets": [
+                "OID",
+				"IDCS"
+            ],
+            "userLogin": "N001054"
+        },
+        {
+            "displayName": "DEEPA  GEORGE",
+            "email": "Deepa.George@fdny.nyc.gov",
+            "firstName": "DEEPA ",
+            "lastName": "GEORGE",
+            "oimTargets": [
+                "OID"
+            ],
+            "userLogin": "N001055"
+        }
+    ]
+}

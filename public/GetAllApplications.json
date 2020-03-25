@@ -1,0 +1,77 @@
+{
+    "applications": [
+        {
+            "appCode": "APL10",
+            "appDescription": "Description for the application",
+            "appName": "Application10",
+            "ownerGroup": "APL10_OWNER"
+        },
+        {
+            "appCode": "APL11",
+            "appDescription": "DESCRIPTION OF APPLICATION 11 IS ENTERED HERE. THIS A A VERY LONG DESCRIPTION ADDED TO SEE IF LONG DESCRIPTIONS WILL BE DISPLAYED PROPERLY IN THE PAGE. THIS IS A TEST.",
+            "appName": "APPLICATION 11",
+            "ownerGroup": "APL11_OWNER"
+        },
+        {
+            "appCode": "APP1",
+            "appDescription": "Description",
+            "appName": "Application 1",
+            "ownerGroup": "APP1_OWNER"
+        },
+        {
+            "appCode": "APP2",
+            "appDescription": "Description",
+            "appName": "Application 2",
+            "ownerGroup": "APP2_OWNER"
+        },
+        {
+            "appCode": "APP3",
+            "appDescription": "Description",
+            "appName": "Application 3",
+            "ownerGroup": "APP3_OWNER"
+        },
+        {
+            "appCode": "APP4",
+            "appDescription": "Description for App 4",
+            "appName": "Application 4",
+            "ownerGroup": "APP4_OWNER"
+        },
+        {
+            "appCode": "APPL4",
+            "appDescription": "Description for App 4",
+            "appName": "Application 4",
+            "ownerGroup": "APPL4_OWNER"
+        },
+        {
+            "appCode": "APPL5",
+            "appDescription": "Application 5 description",
+            "appName": "Application 5",
+            "ownerGroup": "APPL5_OWNER"
+        },
+        {
+            "appCode": "APPL6",
+            "appDescription": "Description for Appl 6",
+            "appName": "Application 6",
+            "ownerGroup": "APPL6_OWNER"
+        },
+        {
+            "appCode": "APPL7",
+            "appDescription": "Appl7 descriptiom",
+            "appName": "Application 7",
+            "ownerGroup": "APP4_OWNER"
+        },
+        {
+            "appCode": "APPL8",
+            "appDescription": "DESCRIPTION",
+            "appName": "APPLICATION 8",
+            "ownerGroup": "APP4_OWNER"
+        },
+        {
+            "appCode": "APPL9",
+            "appDescription": "Description",
+            "appName": "Application 9",
+            "ownerGroup": "APPL9_OWNER"
+        }
+    ],
+    "operation": "Retrieve All Applications"
+}

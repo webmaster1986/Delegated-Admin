@@ -1,6 +1,6 @@
 import React from "react"
 import {Col, Form, InputGroup, Row, Button} from "react-bootstrap";
-import {Icon, Table, Transfer} from "antd";
+import {Icon, Popconfirm, Table, Transfer} from "antd";
 import difference from "lodash/difference";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
@@ -92,7 +92,7 @@ class RevokeUsersTransfer extends React.Component {
         if (!roles || roles.error) {
           return message.error('something is wrong! please try again');
         } else {
-          const data = (roles || []).map((role, i) => ({
+          const data = (roles.userRoles || []).map((role, i) => ({
             id: i, key: i, ...role
           }))
           allRoles.push(...data)
@@ -278,6 +278,20 @@ class RevokeUsersTransfer extends React.Component {
           )}
       },
       {
+        text: 'OIM targets',
+        dataField: 'oimTarget',
+        headerStyle: {width: "30%"},
+        formatter: (record) => {
+          return (
+            (record || []).map((role, i) => (
+              <span className="static-tag" key={i.toString()}>
+                {role}
+              </span>
+            ))
+          )
+        }
+      },
+      {
         dataField: 'appCode',
         text: 'Application',
       },
@@ -410,6 +424,17 @@ class RevokeUsersTransfer extends React.Component {
     }
   }
 
+  onRemoveTarget = (index, childIndex, length) => {
+    if(length === 1){
+      return message.error("At least one target should be selected");
+    }
+    const { selectedData } = this.state
+    selectedData[index].oimTarget.splice(childIndex, 1)
+    this.setState({
+      selectedData
+    })
+  }
+
   render() {
     const {users, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
     const {revokeList, revokeBy, step} = this.props
@@ -438,13 +463,42 @@ class RevokeUsersTransfer extends React.Component {
       }*/
     ];
 
-    const roleColumns = [
+    const roleColumns = (flag) => [
       {
         dataIndex: 'roleName',
         title: 'Role',
         render: (record, data) => (
           <a className="text-info" onClick={(e) => this.props.toggleModal(e, data)}>{record}</a>
         )
+      },
+      {
+        dataIndex: 'oimTarget',
+        title: <div>OIM targets</div>,
+        render: (record, data, index) => {
+          return(
+            (record || []).map((role, i) => (
+              <span className="static-tag">
+                {role}
+                <Popconfirm
+                  title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
+                  disabled={!flag || record.length === 1}
+                  okText={'Yes'}
+                  cancelText={'No'}
+                  onConfirm={() => this.onRemoveTarget(index, i, record.length)}
+                >
+                  { flag ?
+                    <Icon
+                      type="close"
+                      className="tag-close-icon"
+                      onClick={record.length === 1 ? () => this.onRemoveTarget(index, i, record.length) : () => {}}
+                    /> :
+                    null
+                  }
+                </Popconfirm>
+              </span>
+            ))
+          )
+        }
       },
       {
         dataIndex: 'appCode',
@@ -529,8 +583,8 @@ class RevokeUsersTransfer extends React.Component {
                       })
                     }
                   }}
-                  leftColumns={revokeBy === 'user' ? roleColumns : userColumns}
-                  rightColumns={revokeBy === 'user' ? roleColumns : userColumns}
+                  leftColumns={revokeBy === 'user' ? roleColumns(false) : userColumns}
+                  rightColumns={revokeBy === 'user' ? roleColumns(true) : userColumns}
                   operations={['Select', 'Remove']}
                 />
               </div>

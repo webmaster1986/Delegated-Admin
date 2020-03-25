@@ -1,0 +1,792 @@
+{
+    "operation": "Retrieve All Users",
+    "users": [
+        {
+            "displayName": "F test L test",
+            "firstName": "F test",
+            "lastName": "L test",
+            "userLogin": "0000001"
+        },
+        {
+            "displayName": "PETER ABCD",
+            "email": "no-dash@fdny.nyc.gov",
+            "firstName": "PETER",
+            "lastName": "ABCD",
+            "userLogin": "0000044"
+        },
+        {
+            "displayName": "XYS HOOPS",
+            "email": "no-dash@fdny.nyc.gov",
+            "firstName": "XYZ",
+            "lastName": "HOOPS",
+            "userLogin": "0000653"
+        },
+        {
+            "displayName": "ABX MANCUSO",
+            "email": "no-dash@fdny.nyc.gov",
+            "firstName": "ABX",
+            "lastName": "MANCUSO",
+            "userLogin": "0000696"
+        },
+        {
+            "displayName": "STEVEN SOCCI",
+            "firstName": "STEVEN",
+            "lastName": "SOCCI",
+            "userLogin": "0001074"
+        },
+        {
+            "displayName": "SALVATORE RIGNOLA",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "SALVATORE",
+            "lastName": "RIGNOLA",
+            "userLogin": "0002754"
+        },
+        {
+            "displayName": "STEVEN ROGERS",
+            "firstName": "STEVEN",
+            "lastName": "ROGERS",
+            "userLogin": "0003041"
+        },
+        {
+            "displayName": "sherwin chow",
+            "email": "sherwin.chow@fdny.nyc.gov",
+            "firstName": "sherwin",
+            "lastName": "chow",
+            "userLogin": "0003432"
+        },
+        {
+            "displayName": "ROBERT RAMETTA",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "RAMETTA",
+            "userLogin": "0003541"
+        },
+        {
+            "displayName": "daniel nemeth",
+            "email": "daniel.nemeth@fdny.nyc.gov",
+            "firstName": "daniel",
+            "lastName": "nemeth",
+            "userLogin": "0003777"
+        },
+        {
+            "displayName": "thomas scambone",
+            "email": "thomas.scambone@fdny.nyc.gov",
+            "firstName": "thomas",
+            "lastName": "scambone",
+            "userLogin": "0004831"
+        },
+        {
+            "displayName": "WILLIAM MCGEE",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "WILLIAM",
+            "lastName": "MCGEE",
+            "userLogin": "0007868"
+        },
+        {
+            "displayName": "JOSEPH LAPOINTE",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOSEPH",
+            "lastName": "LAPOINTE",
+            "userLogin": "0007891"
+        },
+        {
+            "displayName": "JAMES GINTY (2)",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JAMES",
+            "lastName": "GINTY (2)",
+            "userLogin": "0009223"
+        },
+        {
+            "displayName": "FRED STAVANS",
+            "firstName": "FRED",
+            "lastName": "STAVANS",
+            "userLogin": "0011650"
+        },
+        {
+            "displayName": "LEONARD EBERLEIN",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "LEONARD",
+            "lastName": "EBERLEIN",
+            "userLogin": "0014198"
+        },
+        {
+            "displayName": "THOMAS KEMPF",
+            "firstName": "THOMAS",
+            "lastName": "KEMPF",
+            "userLogin": "0014225"
+        },
+        {
+            "displayName": "MARK WILLIAMS",
+            "firstName": "MARK",
+            "lastName": "WILLIAMS",
+            "userLogin": "0014630"
+        },
+        {
+            "displayName": "THOMAS BRADLEY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "THOMAS",
+            "lastName": "BRADLEY",
+            "userLogin": "0015186"
+        },
+        {
+            "displayName": "PAUL WASHINGTON",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "PAUL",
+            "lastName": "WASHINGTON",
+            "userLogin": "0016892"
+        },
+        {
+            "displayName": "JOAN LIPTON",
+            "email": "liptonj@fdny.nyc.gov",
+            "firstName": "JOAN",
+            "lastName": "LIPTON",
+            "userLogin": "0018046"
+        },
+        {
+            "displayName": "EDWARD DURKIN",
+            "email": "durkine@fdny.nyc.gov",
+            "firstName": "EDWARD",
+            "lastName": "DURKIN",
+            "userLogin": "0020345"
+        },
+        {
+            "displayName": "JAMES YAKIMOVICH",
+            "email": "yakimoj@fdny.nyc.gov",
+            "firstName": "JAMES",
+            "lastName": "YAKIMOVICH",
+            "userLogin": "0022128"
+        },
+        {
+            "displayName": "HRISFN",
+            "email": "testhris@fdny.nyc.gov",
+            "firstName": "HRISTestUpdated",
+            "lastName": "HRISLN",
+            "middleName": "Nme",
+            "userLogin": "002255"
+        },
+        {
+            "displayName": "HRISTrusted",
+            "email": "testhris2@fdny.nyc.gov",
+            "firstName": "HRISTrustVal",
+            "lastName": "HRISTrusLN",
+            "middleName": "MN",
+            "userLogin": "002256"
+        },
+        {
+            "displayName": "FullNme",
+            "email": "testnm@fdny.nyc.gov",
+            "firstName": "FiNme",
+            "lastName": "LstName",
+            "middleName": "MNam",
+            "userLogin": "002257"
+        },
+        {
+            "displayName": "BRIAN SPISTO",
+            "firstName": "BRIAN",
+            "lastName": "SPISTO",
+            "userLogin": "0023284"
+        },
+        {
+            "displayName": "GURCHARAN WALIA",
+            "email": "waliag@fdny.nyc.gov",
+            "firstName": "GURCHARAN",
+            "lastName": "WALIA",
+            "userLogin": "0024045"
+        },
+        {
+            "displayName": "WILLIAM LEITH",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "WILLIAM",
+            "lastName": "LEITH",
+            "userLogin": "0026897"
+        },
+        {
+            "displayName": "DANIEL SAMBRATO",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "DANIEL",
+            "lastName": "SAMBRATO",
+            "userLogin": "0027700"
+        },
+        {
+            "displayName": "JAMES HANSEN",
+            "email": "hansenj@fdny.nyc.gov",
+            "firstName": "JAMES",
+            "lastName": "HANSEN",
+            "userLogin": "0031624"
+        },
+        {
+            "displayName": "DEXTER WASHINGTON",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "DEXTER",
+            "lastName": "WASHINGTON",
+            "userLogin": "0031797"
+        },
+        {
+            "displayName": "Darryl Chalmers",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "Darryl",
+            "lastName": "Chalmers",
+            "middleName": "T",
+            "userLogin": "0031799"
+        },
+        {
+            "displayName": "ROBERT ATHANAS",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "ATHANAS",
+            "userLogin": "0031999"
+        },
+        {
+            "displayName": "THOMAS FALLON",
+            "email": "lilu@fdny.nyc.gov",
+            "firstName": "THOMAS",
+            "lastName": "FALLON",
+            "userLogin": "0032036"
+        },
+        {
+            "displayName": "JOHN SULLIVAN",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "SULLIVAN",
+            "userLogin": "0032040"
+        },
+        {
+            "displayName": "ROBERT MORRIS",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "MORRIS",
+            "userLogin": "0032052"
+        },
+        {
+            "displayName": "BRIAN REDMOND",
+            "firstName": "BRIAN",
+            "lastName": "REDMOND",
+            "userLogin": "0032056"
+        },
+        {
+            "displayName": "DOMINIC MANZELLA",
+            "email": "DOMINIC.MANZELLA@fdny.nyc.gov",
+            "firstName": "DOMINIC",
+            "lastName": "MANZELLA",
+            "userLogin": "0032141"
+        },
+        {
+            "displayName": "JOHN LYNN",
+            "email": "lynnjd@fdn@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "LYNN",
+            "userLogin": "0032260"
+        },
+        {
+            "displayName": "JOHN CALDERONE",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "CALDERONE",
+            "userLogin": "0032267"
+        },
+        {
+            "displayName": "Jo-Ann Blackwell",
+            "firstName": "Jo-Ann",
+            "lastName": "Blackwell",
+            "userLogin": "0032274"
+        },
+        {
+            "displayName": "WILLIAM WALLACE",
+            "email": "wallacew@fdny.nyc.gov",
+            "firstName": "WILLIAM",
+            "lastName": "WALLACE",
+            "userLogin": "0032278"
+        },
+        {
+            "displayName": "LEON MORRIS",
+            "email": "morrisl@fdny.nyc.gov",
+            "firstName": "LEON",
+            "lastName": "MORRIS",
+            "userLogin": "0032282"
+        },
+        {
+            "displayName": "JOHN MEARA JR",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "MEARA JR",
+            "userLogin": "0032294"
+        },
+        {
+            "displayName": "DANIEL DELARGY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "DANIEL",
+            "lastName": "DELARGY",
+            "userLogin": "0032311"
+        },
+        {
+            "displayName": "JOSEPH JARDIN",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOSEPH",
+            "lastName": "JARDIN",
+            "userLogin": "0032320"
+        },
+        {
+            "displayName": "ANTHONY DEVITA JR",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ANTHONY",
+            "lastName": "DEVITA JR",
+            "userLogin": "0032321"
+        },
+        {
+            "displayName": "STEVEN HURON",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "STEVEN",
+            "lastName": "HURON",
+            "userLogin": "0032468"
+        },
+        {
+            "displayName": "MICHAEL LEGGE",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "M'CHAEL",
+            "lastName": "LEGGE",
+            "userLogin": "0032473"
+        },
+        {
+            "displayName": "PATRICIA MIMS",
+            "email": "mimsp@fdny.nyc.gov",
+            "firstName": "PATRICIA",
+            "lastName": "MIMS",
+            "userLogin": "0032479"
+        },
+        {
+            "displayName": "RONALD WERNER",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "RONALD",
+            "lastName": "WERNER",
+            "userLogin": "0032499"
+        },
+        {
+            "displayName": "WILLIAM THOMPSON",
+            "email": "eng052@fdny.nyc.gov",
+            "firstName": "WILLIAM",
+            "lastName": "THOMPSON",
+            "userLogin": "0032510"
+        },
+        {
+            "displayName": "HUGH MULLIGAN",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "HUGH",
+            "lastName": "MULLIGAN",
+            "userLogin": "0032528"
+        },
+        {
+            "displayName": "JOHN GINLEY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "GINLEY",
+            "userLogin": "0032538"
+        },
+        {
+            "displayName": "ROBERT CARROLL",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "CARROLL",
+            "userLogin": "0032545"
+        },
+        {
+            "displayName": "DENIS TWOMEY",
+            "firstName": "DENIS",
+            "lastName": "TWOMEY",
+            "userLogin": "0032547"
+        },
+        {
+            "displayName": "JANE FERNEN",
+            "email": "fernenj@fdny.nyc.gov",
+            "firstName": "JANE",
+            "lastName": "FERNEN",
+            "userLogin": "0032648"
+        },
+        {
+            "displayName": "JAMES LEIBMAN",
+            "firstName": "JAMES",
+            "lastName": "LEIBMAN",
+            "userLogin": "0032656"
+        },
+        {
+            "displayName": "THOMAS WILKINSON",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "THOMAS",
+            "lastName": "WILKINSON",
+            "userLogin": "0032660"
+        },
+        {
+            "displayName": "RICHARD BIENENSTEIN",
+            "email": "bienstr@fdny.nyc.gov",
+            "firstName": "RICHARD",
+            "lastName": "BIENENSTEIN",
+            "userLogin": "0032668"
+        },
+        {
+            "displayName": "STEVEN CALZOLANO",
+            "email": "calzols@fdny.nyc.gov",
+            "firstName": "STEVEN",
+            "lastName": "CALZOLANO",
+            "userLogin": "0032681"
+        },
+        {
+            "displayName": "LOUIS GUZZO III",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "LOUIS",
+            "lastName": "GUZZO III",
+            "userLogin": "0032692"
+        },
+        {
+            "displayName": "MARK FERNEN",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "MARK",
+            "lastName": "FERNEN",
+            "userLogin": "0032799"
+        },
+        {
+            "displayName": "KEVIN BUTLER",
+            "email": "butlerk@fdny.nyc.gov",
+            "firstName": "KEVIN",
+            "lastName": "BUTLER",
+            "userLogin": "0032821"
+        },
+        {
+            "displayName": "ROBERT DRISCOLL",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "Robert",
+            "lastName": "DRISCOLL",
+            "userLogin": "0032826"
+        },
+        {
+            "displayName": "ROBERT OKEEFE",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "OKEEFE",
+            "userLogin": "0032836"
+        },
+        {
+            "displayName": "PETER LEICHT",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "PETER",
+            "lastName": "LEICHT",
+            "userLogin": "0032843"
+        },
+        {
+            "displayName": "STEPHEN KINNEARY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "STEPHEN",
+            "lastName": "KINNEARY",
+            "userLogin": "0032847"
+        },
+        {
+            "displayName": "JAMES ESPOSITO",
+            "email": "esposij@fdny.nyc.gov",
+            "firstName": "JAMES",
+            "lastName": "ESPOSITO",
+            "userLogin": "0032861"
+        },
+        {
+            "displayName": "STEVEN KOVEL",
+            "email": "kovels@fdny.nyc.gov",
+            "firstName": "STEVEN",
+            "lastName": "KOVEL",
+            "userLogin": "0032875"
+        },
+        {
+            "displayName": "THOMAS ZUHLKE",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "THOMAS",
+            "lastName": "ZUHLKE",
+            "userLogin": "0033058"
+        },
+        {
+            "displayName": "JOHN LUONGO JR",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "LUONGO JR",
+            "userLogin": "0033081"
+        },
+        {
+            "displayName": "JAMES DONLEVY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JAMES",
+            "lastName": "DONLEVY",
+            "userLogin": "0033100"
+        },
+        {
+            "displayName": "BRIAN OBOYLE",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "BRIAN",
+            "lastName": "OBOYLE",
+            "userLogin": "0033105"
+        },
+        {
+            "displayName": "JOSEPH GANDIELLO III",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOSEPH",
+            "lastName": "GANDIELLO III",
+            "userLogin": "0033106"
+        },
+        {
+            "displayName": "ANTHONY SANNELLA JR",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ANTHONY",
+            "lastName": "SANNELLA JR",
+            "userLogin": "0033110"
+        },
+        {
+            "displayName": "JOHN PLANT",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "PLANT",
+            "userLogin": "0033251"
+        },
+        {
+            "displayName": "THOMAS ROACH",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "THOMAS",
+            "lastName": "ROACH",
+            "userLogin": "0033255"
+        },
+        {
+            "displayName": "WAYNE MCPARTLAND",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "WAYNE",
+            "lastName": "MCPARTLAND",
+            "userLogin": "0033260"
+        },
+        {
+            "displayName": "CHARLES LAMBERTA",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "CHARLES",
+            "lastName": "LAMBERTA",
+            "userLogin": "0033279"
+        },
+        {
+            "displayName": "ROBERT TILEARCIO",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "TILEARCIO",
+            "userLogin": "0033280"
+        },
+        {
+            "displayName": "JOHN COSTELLO",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "COSTELLO",
+            "userLogin": "0033291"
+        },
+        {
+            "displayName": "THOMAS VENDITTO",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "THOMAS",
+            "lastName": "VENDITTO",
+            "userLogin": "0033295"
+        },
+        {
+            "displayName": "JOHN FRANZONE JR",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "FRANZONE JR",
+            "userLogin": "0033418"
+        },
+        {
+            "displayName": "JOHN LOGRASSO",
+            "firstName": "JOHN",
+            "lastName": "LOGRASSO",
+            "userLogin": "0033419"
+        },
+        {
+            "displayName": "MICHAEL DEVOY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "MICHAEL",
+            "lastName": "DEVOY",
+            "userLogin": "0033425"
+        },
+        {
+            "displayName": "ROBERT STRAFER",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "STRAFER",
+            "userLogin": "0033435"
+        },
+        {
+            "displayName": "AUSTIN HORAN",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "AUSTIN",
+            "lastName": "HORAN",
+            "userLogin": "0033443"
+        },
+        {
+            "displayName": "ANTHONY ORLANDI",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ANTHONY",
+            "lastName": "ORLANDI",
+            "userLogin": "0033456"
+        },
+        {
+            "displayName": "DANIEL DIMARTINO",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "DANIEL",
+            "lastName": "DIMARTINO",
+            "userLogin": "0033544"
+        },
+        {
+            "displayName": "MICHAEL VECCHI",
+            "email": "vecchima@fdny.nyc.gov",
+            "firstName": "MICHAEL",
+            "lastName": "VECCHI",
+            "userLogin": "0033567"
+        },
+        {
+            "displayName": "WILLIAM CROAK",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "WILLIAM",
+            "lastName": "CROAK",
+            "userLogin": "0033581"
+        },
+        {
+            "displayName": "DON KLEINT",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "DON",
+            "lastName": "KLEINT",
+            "userLogin": "0033586"
+        },
+        {
+            "displayName": "PATRICIA CARTER",
+            "email": "carterpa@fdny.nyc.gov",
+            "firstName": "PATRICIA",
+            "lastName": "CARTER",
+            "userLogin": "0033589"
+        },
+        {
+            "displayName": "JOSEPH PRINCIPIO",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOSEPH",
+            "lastName": "PRINCIPIO",
+            "userLogin": "0033596"
+        },
+        {
+            "displayName": "JOHN JONAS",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JOHN",
+            "lastName": "JONAS",
+            "userLogin": "0033599"
+        },
+        {
+            "displayName": "MARGARET MCFADDEN",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "MARGARET",
+            "lastName": "MCFADDEN",
+            "userLogin": "0033600"
+        },
+        {
+            "displayName": "SEAN KISSANE",
+            "firstName": "SEAN",
+            "lastName": "KISSANE",
+            "userLogin": "0033601"
+        },
+        {
+            "displayName": "JAMES DALEY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JAMES",
+            "lastName": "DALEY",
+            "userLogin": "0033608"
+        },
+        {
+            "displayName": "PETER ROBB",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "PETER",
+            "lastName": "ROBB",
+            "userLogin": "0033617"
+        },
+        {
+            "displayName": "BRIAN MCKEON",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "BRIAN",
+            "lastName": "MCKEON",
+            "userLogin": "0033621"
+        },
+        {
+            "displayName": "GEORGE CAMPBELL",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "GEORGE",
+            "lastName": "CAMPBELL",
+            "userLogin": "0033627"
+        },
+        {
+            "displayName": "DANIEL OGARA",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "DANIEL",
+            "lastName": "OGARA",
+            "userLogin": "0033750"
+        },
+        {
+            "displayName": "DEBBIE CROSKEY-SMITH",
+            "email": "croskedj@fdny.nyc.gov",
+            "firstName": "DEBBIE",
+            "lastName": "CROSKEY-SMITH",
+            "userLogin": "0033779"
+        },
+        {
+            "displayName": "Maria Ortiz",
+            "email": "Maria.Ortiz@fdny.nyc.gov",
+            "firstName": "Maria",
+            "lastName": "Ortiz",
+            "userLogin": "0033780"
+        },
+        {
+            "displayName": "AGATHA ACTIE",
+            "email": "actiea@fdny.nyc.gov",
+            "firstName": "AGATHA",
+            "lastName": "ACTIE",
+            "userLogin": "0033786"
+        },
+        {
+            "displayName": "BRIAN SMITH",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "BRIAN",
+            "lastName": "SMITH",
+            "userLogin": "0033789"
+        },
+        {
+            "displayName": "ROBERT INGRAM",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "ROBERT",
+            "lastName": "INGRAM",
+            "userLogin": "0033972"
+        },
+        {
+            "displayName": "KEITH CARTICA",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "KEITH",
+            "lastName": "CARTICA",
+            "userLogin": "0033990"
+        },
+        {
+            "displayName": "JEFFREY RAY",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "JEFFREY",
+            "lastName": "RAY",
+            "userLogin": "0034004"
+        },
+        {
+            "displayName": "DOMENICK CALERI",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "DOMENICK",
+            "lastName": "CALERI",
+            "userLogin": "0034006"
+        },
+        {
+            "displayName": "BRIAN LANCI",
+            "email": "noemail@fdny.nyc.gov",
+            "firstName": "BRIAN",
+            "lastName": "LANCI",
+            "userLogin": "0034012"
+        },
+        {
+            "displayName": "test_sn",
+            "lastName": "test_sn",
+            "userLogin": "ZTEST_SN@ORACLE.COM"
+        }
+    ]
+}

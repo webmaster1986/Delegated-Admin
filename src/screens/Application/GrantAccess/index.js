@@ -5,7 +5,7 @@ import Cookies from "universal-cookie"
 import Spin from "antd/lib/spin";
 import _ from "lodash"
 import Select from 'react-select';
-import { Table, Transfer } from 'antd/lib'
+import { Table, Transfer, Popconfirm, Icon } from 'antd/lib'
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
@@ -334,7 +334,7 @@ class Index extends Component {
         if (category === "roles") {
             const totalUsers = []
             roles.forEach((role) => {
-                role.users.forEach(u => {
+                (role.users || []).forEach(u => {
                     const isExists = totalUsers.find(user => user.userLogin === u.userLogin)
                     const newRole = {
                         roleName: role.roleName,
@@ -417,13 +417,13 @@ class Index extends Component {
             data = []
             message.error('something is wrong! please try again');
         }
-        const users = ((data && data.users) || []).map((f, i) => ({
+        const users = ((data && data.userRoles) || []).map((f, i) => ({
             id: i, key: i, ...f
         }))
         this.setState({
             isLoading: false,
             users,
-            allUsers: [...data.users],
+            allUsers: [...data.userRoles],
         })
     }
 
@@ -456,7 +456,7 @@ class Index extends Component {
         this.setState({
             isLoading: false,
             applicationsList: (applicationsList && applicationsList.applications) || [],
-            allRoles: (ownerRoles && ownerRoles.roles) || []
+            allRoles: (ownerRoles && ownerRoles.userRoles) || []
         }, () => this.getRoles())
     }
 
@@ -560,13 +560,24 @@ class Index extends Component {
         }, () => this.getRoles())
     }
 
+        onRemoveTarget = (index, childIndex, length) => {
+            if(length === 1){
+                return message.error("At least one target should be selected");
+            }
+            const { rolesData } = this.state
+            rolesData[index].oimTarget.splice(childIndex, 1)
+            this.setState({
+                rolesData
+            })
+        }
+
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users, searchRoleList,
             info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy } = this.state;
         const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
 
-        const roleTableColumns = [
+        const roleTableColumns = (flag) => [
             {
                 dataIndex: 'roleName',
                 title: <div>Role Name</div>,
@@ -578,6 +589,35 @@ class Index extends Component {
                     return 0
                 },
                 render: (record, data) => <div className="link-text" onClick={(e) => this.toggleModal(e, data)}><u>{record}</u></div>
+            },
+            {
+                dataIndex: 'oimTarget',
+                title: <div>OIM targets</div>,
+                render: (record, data, index) => {
+                    return(
+                        (record || []).map((role, i) => (
+                            <span className="static-tag">
+                                {role}
+                                <Popconfirm
+                                    title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
+                                    disabled={!flag || record.length === 1}
+                                    okText={'Yes'}
+                                    cancelText={'No'}
+                                    onConfirm={() => this.onRemoveTarget(index, i, record.length)}
+                                >
+                                    { flag ?
+                                        <Icon
+                                            type="close"
+                                            className="tag-close-icon"
+                                            onClick={record.length === 1 ? () => this.onRemoveTarget(index, i, record.length) : () => {}}
+                                        /> :
+                                        null
+                                    }
+                                </Popconfirm>
+                            </span>
+                        ))
+                    )
+                }
             },
             {
                 dataIndex: 'appCode',
@@ -760,8 +800,8 @@ class Index extends Component {
                                                             )
                                                         })
                                                     }}
-                                                    leftColumns={roleTableColumns}
-                                                    rightColumns={roleTableColumns}
+                                                    leftColumns={roleTableColumns(false)}
+                                                    rightColumns={roleTableColumns(true)}
                                                     operations={['Select', 'Remove']}
                                                 />
                                             </div>

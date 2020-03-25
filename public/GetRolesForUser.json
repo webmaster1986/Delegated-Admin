@@ -1,0 +1,56 @@
+{
+    "identifier": "N001054",
+    "operation": "Retrieve User Roles",
+    "userRoles": [
+        {
+            "appCode": "APP1",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP1_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL8",
+            "roleName": "APP4_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL4",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL4",
+            "roleName": "APPL4_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL6",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL6",
+            "roleName": "APPL6_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "ROLE2",
+            "roleName": "APPL8_ROLE2",
+            "status": "Active"
+        }
+    ]
+}

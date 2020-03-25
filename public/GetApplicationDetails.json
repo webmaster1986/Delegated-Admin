@@ -1,0 +1,10 @@
+{
+    "application": {
+        "appCode": "APPL8",
+        "appDescription": "DESCRIPTION",
+        "appName": "APPLICATION 8",
+        "ownerGroup": "APP4_OWNER"
+    },
+    "identifier": "APPL8",
+    "operation": "Retrieve Application Details"
+}

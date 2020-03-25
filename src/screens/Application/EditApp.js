@@ -46,7 +46,7 @@ class EditApp extends React.Component {
             this.setState({
                 isLoading: false,
                 appObject: (appDetails && appDetails.application) || {},
-                rolesList: ((appRoles && appRoles.roles) || []).map((role, index) => ({...role, id: index})) || []
+                rolesList: ((appRoles && appRoles.userRoles) || []).map((role, index) => ({...role, id: index})) || []
             })
         }
     }

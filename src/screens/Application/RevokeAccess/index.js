@@ -107,13 +107,13 @@ class RevokeAccess extends Component {
       data = []
       message.error('something is wrong! please try again');
     }
-    const users = ((data && data.users) || []).map((f, i) => ({
+    const users = ((data && data.userRoles) || []).map((f, i) => ({
       id: i, key: i, ...f
     }))
     this.setState({
       isLoading: false,
       users,
-      allUsers: [...data.users],
+      allUsers: [...data.userRoles],
     })
   }
 
@@ -135,7 +135,7 @@ class RevokeAccess extends Component {
     this.setState({
       isLoading: false,
       applicationsList: (applicationsList && applicationsList.applications) || [],
-      allRoles: (ownerRoles && ownerRoles.roles) || []
+      allRoles: (ownerRoles && ownerRoles.userRoles) || []
     }, () => this.getRoles())
   }
 
@@ -259,6 +259,20 @@ class RevokeAccess extends Component {
           return (
               <a className="text-info" onClick={(e) => this.toggleModal(e, row)}>{cell}</a>
           )}
+      },
+      {
+        text: 'OIM targets',
+        dataField: 'oimTarget',
+        headerStyle: {width: "30%"},
+        formatter: (record) => {
+          return (
+            (record || []).map((role, i) => (
+              <span className="static-tag" key={i.toString()}>
+                {role}
+              </span>
+            ))
+          )
+        }
       },
       {
         dataField: 'appCode',

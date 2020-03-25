@@ -153,6 +153,7 @@ export class ApiService {
     }
 
     async getRolesForUser(id) {
+        // return await ApiService.getData(`GetRolesForUser.json`);
         return await ApiService.getData(`v1/users/${id}/roles`);
     }
 
@@ -165,6 +166,7 @@ export class ApiService {
     }
 
     async getLoginUserRole(user_id) {
+        // return 'APP_OWNERS'
         return await ApiService.getData(`v1/users/types`);
     }
 
@@ -173,6 +175,7 @@ export class ApiService {
     }
 
     async getOwnerApplications(userId) {
+        // return await ApiService.getData(`GetAllApplications.json`);
         return await ApiService.getData(`v1/users/owner-applications `);
     }
 
@@ -181,6 +184,7 @@ export class ApiService {
     }
 
     async getOwnerRoles(userId) {
+        // return await ApiService.getData(`GetAllActiveRoles.json`);
         return await ApiService.getData(`v1/users/owner-roles `);
     }
 
@@ -197,10 +201,12 @@ export class ApiService {
     }
 
     async getAllUsers() {
+        // return await ApiService.getData(`GetAllUsers.json`);
         return await ApiService.getData(`v1/users`);
     }
 
     async getUsersByRoles(body) {
+        // return await ApiService.getData(`GetAllUsers.json`);
         return await ApiService.getData(`v1/applications/${body.appCode}/roles/${body.roleName}/users  `);
     }
 
@@ -217,6 +223,7 @@ export class ApiService {
     }
 
     async getLoginUserName(user_id) {
+        // return 'DEEPA  GEORGE'
         return await ApiService.getData(`v1/users/name`);
     }
 

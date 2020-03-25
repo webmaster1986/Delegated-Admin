@@ -44,7 +44,8 @@ class RoleModal extends React.Component {
       { label: 'Application description', key: 'appDescription' },
       { label: 'Application Owner Group', key: 'ownerGroup' },
       { label: 'Role Name', key: 'roleName' },
-      { label: 'Role description', key: 'roleDescription' }
+      { label: 'Role description', key: 'roleDescription' },
+      { label: 'Available Targets', key: 'oimTarget' },
     ];
     return (
       <Modal
@@ -60,10 +61,15 @@ class RoleModal extends React.Component {
               <div>
                 <Row>
                   {displayFields.map((field, i) =>
-                      <Col sm={12} md={6} key={i.toString() + i}>
-                        <b>{field.label}:&nbsp;&nbsp;</b>
-                        <span>{role[field.key] || ""}</span>
-                      </Col>
+                    <Col sm={12} md={6} key={i.toString() + i}>
+                      <b>{field.label}:&nbsp;&nbsp;</b>
+                      <span>
+                        { field.key === 'oimTarget' ?
+                            (role[field.key] || []).map((x, i) => <span key={i.toString()} className="mr-5-px">{x}{(role[field.key] || []).length - 1 === i ? "" : ","}</span>) :
+                            role[field.key] || ""
+                        }
+                      </span>
+                    </Col>
                   )}
                 </Row>
                 <br/>

@@ -1,0 +1,11 @@
+{
+    "identifier": "N001055",
+    "operation": "Retrieve User Details",
+    "user": {
+        "displayName": "DEEPA  GEORGE",
+        "email": "no-dash@fdny.nyc.gov",
+        "firstName": "DEEPA ",
+        "lastName": "GEORGE",
+        "userLogin": "1234567"
+    }
+}

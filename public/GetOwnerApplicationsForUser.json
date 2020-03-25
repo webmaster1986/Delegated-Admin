@@ -1,0 +1,36 @@
+{
+    "applications": [
+        {
+            "appCode": "APP4",
+            "appDescription": "Description for App 4",
+            "appName": "Application 4",
+            "ownerGroup": "APP4_OWNER"
+        },
+        {
+            "appCode": "APPL4",
+            "appDescription": "Description for App 4",
+            "appName": "Application 4",
+            "ownerGroup": "APPL4_OWNER"
+        },
+        {
+            "appCode": "APPL6",
+            "appDescription": "Description for Appl 6",
+            "appName": "Application 6",
+            "ownerGroup": "APPL6_OWNER"
+        },
+        {
+            "appCode": "APPL7",
+            "appDescription": "Appl7 descriptiom",
+            "appName": "Application 7",
+            "ownerGroup": "APP4_OWNER"
+        },
+        {
+            "appCode": "APPL8",
+            "appDescription": "DESCRIPTION",
+            "appName": "APPLICATION 8",
+            "ownerGroup": "APP4_OWNER"
+        }
+    ],
+    "identifier": "N001054",
+    "operation": "Retrieve Owner Applications for User"
+}

@@ -256,3 +256,54 @@ code {
 .heading-text-color {
   color: #367aba
 }
+
+.ant-tag-hidden {
+  display: inline-block !important;
+}
+
+.mr-5-px {
+  margin-right: 5px !important;
+}
+
+.static-tag {
+  /*webkit-box-sizing: border-box;*/
+  box-sizing: border-box;
+  margin: 0;
+  /*padding: 0;*/
+  color: rgba(0, 0, 0, 0.65);
+  /*font-size: 14px;*/
+  font-variant: tabular-nums;
+  /*line-height: 1.5;*/
+  list-style: none;
+  /*-webkit-font-feature-settings: 'tnum';*/
+  font-feature-settings: 'tnum', "tnum";
+  display: inline-block;
+  height: auto;
+  margin-right: 8px;
+  padding: 0 7px;
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+  background: #fafafa;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  cursor: default;
+  opacity: 1;
+  /*-webkit-transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);*/
+  transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+}
+
+.tag-close-icon {
+  display: inline-block;
+  font-size: 12px;
+  /*font-size: 10px \9;*/
+  /*-webkit-transform: scale(0.83333333) rotate(0deg);*/
+  /*-ms-transform: scale(0.83333333) rotate(0deg);*/
+  transform: scale(0.83333333) rotate(0deg);
+  margin-left: 3px;
+  color: rgba(0, 0, 0, 0.45);
+  font-weight: bold;
+  cursor: pointer;
+  /*-webkit-transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);*/
+  transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+}

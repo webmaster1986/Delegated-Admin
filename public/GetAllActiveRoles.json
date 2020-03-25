@@ -1,0 +1,298 @@
+{
+    "operation": "Retrieve All Roles",
+    "userRoles": [
+        {
+            "appCode": "APL10",
+            "creationDate": "03/19/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APL10",
+            "roleName": "APL10_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APL10",
+            "creationDate": "03/19/2020",
+            "oimTarget": [
+                "IDCS",
+                "OID"
+            ],
+            "roleDescription": "Description",
+            "roleName": "APL10_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APL10",
+            "creationDate": "03/19/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleName": "APL10_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APL11",
+            "creationDate": "03/19/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APL11",
+            "roleName": "APL11_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APL11",
+            "creationDate": "03/19/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Role 1 description",
+            "roleName": "APL11_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP1",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application App1",
+            "roleName": "APP1_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP1",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "IDCS",
+                "OID"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP1_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP1",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP1_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP1",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "IDCS",
+                "OID"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP1_ROLE3",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP1",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleName": "APP1_ROLE6",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP3",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application App3",
+            "roleName": "APP3_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP3",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "IDCS",
+                "OID"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP3_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP3",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP3_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP3",
+            "creationDate": "03/09/2020",
+            "oimTarget": [
+                "IDCS"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP3_ROLE3",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL7",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL7",
+            "roleName": "APP4_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL4",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL4",
+            "roleName": "APPL4_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL4",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Description for Role1",
+            "roleName": "APPL4_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL4",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Description for Role 2",
+            "roleName": "APPL4_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL5",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Description for Role 5",
+            "roleName": "APPL5_OID",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL5",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL5",
+            "roleName": "APPL5_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL6",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL6",
+            "roleName": "APPL6_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL6",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "IDCS"
+            ],
+            "roleDescription": "Role 1",
+            "roleName": "APPL6_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL6",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "IDCS"
+            ],
+            "roleDescription": "Role 2",
+            "roleName": "APPL6_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL7",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleName": "APPL7_ROLE4",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "IDCS",
+                "OID"
+            ],
+            "roleDescription": "ROLE1",
+            "roleName": "APPL8_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "ROLE2",
+            "roleName": "APPL8_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "IDCS"
+            ],
+            "roleDescription": "ROLE3",
+            "roleName": "APPL8_ROLE3",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL9",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "OID"
+            ],
+            "roleDescription": "Owner group for application APPL9",
+            "roleName": "APPL9_OWNER",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL9",
+            "creationDate": "03/16/2020",
+            "oimTarget": [
+                "IDCS",
+                "OID"
+            ],
+            "roleDescription": "Role 1",
+            "roleName": "APPL9_ROLE1",
+            "status": "Active"
+        }
+    ]
+}
