@@ -46,7 +46,7 @@ const Review = (props) => {
     },
     {
       text: 'OIM targets',
-      dataField: 'oimTarget',
+      dataField: 'oimTargets',
       headerStyle: {width: "30%"},
       formatter: (record) => {
         return (
@@ -60,7 +60,7 @@ const Review = (props) => {
     },
     {text: 'App Code', dataField: 'appCode', headerStyle: {width: "20%"}},
     /* {text: 'Role Description', dataField: 'roleDescription'}, */
-    /* {text: 'OIM Target', dataField: 'oimTarget'}, */
+    /* {text: 'OIM Target', dataField: 'oimTargets'}, */
     {
       text: 'Action',
       dataField: 'id',
@@ -105,6 +105,26 @@ const Review = (props) => {
   const tagColumn = (rootRecord) => {
     return (
       [
+        // {text: 'Role Name', dataField: 'roleName'},
+        {
+          text: 'Role Name',
+          dataField: 'roleName',
+          formatter: (cell, row) => {
+            return (
+                <div className="link-text"><u onClick={(e) => props.toggleModal(e, row)}>{cell}</u></div>
+            )
+          }
+        },
+        {
+          text: 'OIM targets',
+          dataField: 'oimTargets',
+          headerStyle: {width: "30%"},
+          formatter: (record) => {
+            return (
+              (record || []).join(",")
+            )
+          }
+        },
         {
           text: 'App Code',
           dataField: 'appCode',
@@ -115,23 +135,8 @@ const Review = (props) => {
             )
           }
         },
-        {text: 'Role Name', dataField: 'roleName'},
-        {
-          text: 'OIM targets',
-          dataField: 'oimTarget',
-          headerStyle: {width: "30%"},
-          formatter: (record) => {
-            return (
-                (record || []).map((role, i) => (
-                    <span className="static-tag" key={i.toString()}>
-              {role}
-            </span>
-                ))
-            )
-          }
-        },
         /* {text: 'Role Description', dataField: 'roleDescription'}, */
-        /* {text: 'OIM Target', dataField: 'oimTarget'}, */
+        /* {text: 'OIM Target', dataField: 'oimTargets'}, */
         {
           text: 'Action',
           dataField: 'id',

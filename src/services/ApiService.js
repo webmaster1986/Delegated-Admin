@@ -118,7 +118,8 @@ export class ApiService {
     }
 
     async getAllApplications(appId) {
-        return await ApiService.getData(`v1/applications/${appId || ""}`);
+        return await ApiService.getData(`GetAllApplications.json`);
+        // return await ApiService.getData(`v1/applications${appId ? `/${appId}` : ""}`);
     }
 
     async getAllApplicationsByOwner(appId) {
@@ -130,12 +131,14 @@ export class ApiService {
     }
 
     async getAppDetailByAppCode(appCode) {
-        return await ApiService.getData(`v1/applications/${appCode}`);
+        return await ApiService.getData(`GetApplicationDetails.json`);
+        // return await ApiService.getData(`v1/applications/${appCode}`);
         // return appDetails
     }
 
     async getRolesForApp(appCode) {
-        return await ApiService.getData(`v1/applications/${appCode}/roles`);
+        return await ApiService.getData(`GetRolesForApplication.json`);
+        // return await ApiService.getData(`v1/applications/${appCode}/roles`);
         // return appRoles
     }
 
@@ -149,24 +152,26 @@ export class ApiService {
     }
 
     async rolesStatusActiveDisable(body, appCode, status) {
-        return await ApiService.putMethod(`v1/applications/${appCode}/roles/${body.roleName}/${status}`, body);
+        return await ApiService.putMethod(`v1/roles/${body.roleName}/${status}`, body);
     }
 
     async getRolesForUser(id) {
-        // return await ApiService.getData(`GetRolesForUser.json`);
-        return await ApiService.getData(`v1/users/${id}/roles`);
+        return await ApiService.getData(`GetRolesForUser.json`);
+        // return await ApiService.getData(`v1/users/${id}/roles`);
     }
 
     async getAppOwnerGroups(id) {
-        return await ApiService.getData(`v1/owner-groups`);
+        return await ApiService.getData(`GetAllAppOwnerGroups.json`);
+        // return await ApiService.getData(`v1/owner-groups`);
     }
 
     async getAppRoleTargets() {
-        return await ApiService.getData(`v1/role-targets`);
+        return await ApiService.getData(`GetOIMTargets.json`);
+        // return await ApiService.getData(`v1/role-targets`);
     }
 
     async getLoginUserRole(user_id) {
-        // return 'APP_OWNERS'
+        // return 'SUPER_OWNER'
         return await ApiService.getData(`v1/users/types`);
     }
 
@@ -175,39 +180,42 @@ export class ApiService {
     }
 
     async getOwnerApplications(userId) {
-        // return await ApiService.getData(`GetAllApplications.json`);
-        return await ApiService.getData(`v1/users/owner-applications `);
+        return await ApiService.getData(`GetOwnerApplicationsForUser.json`);
+        // return await ApiService.getData(`v1/owner-applications `);
     }
 
     async getApplications(userId) {
-        return await ApiService.getData(`v1/users/applications`);
+        return await ApiService.getData(`GetAllApplications.json`);
+        // return await ApiService.getData(`v1/applications`);
     }
 
     async getOwnerRoles(userId) {
-        // return await ApiService.getData(`GetAllActiveRoles.json`);
-        return await ApiService.getData(`v1/users/owner-roles `);
+        return await ApiService.getData(`GetOwnerRolesForUser.json`);
+        // return await ApiService.getData(`v1/owner-roles `);
     }
 
     async getSuperOwnerRoles(userId) {
-        return await ApiService.getData(`v1/users/app-owner-roles`);
+        return await ApiService.getData(`v1/app-owner-roles`);
     }
 
     async getSuperAdminRoles(userId) {
-        return await ApiService.getData(`v1/users/roles`);
+        return await ApiService.getData(`GetAllActiveRoles.json`);
+        // return await ApiService.getData(`v1/roles`);
     }
 
     async getUserDetails(userId) {
-        return await ApiService.getData(`v1/users/${userId}`);
+        return await ApiService.getData(`GetUserDetails.json`);
+        // return await ApiService.getData(`v1/users/${userId}`);
     }
 
     async getAllUsers() {
-        // return await ApiService.getData(`GetAllUsers.json`);
-        return await ApiService.getData(`v1/users`);
+        return await ApiService.getData(`GetAllUsers.json`);
+        // return await ApiService.getData(`v1/users`);
     }
 
     async getUsersByRoles(body) {
-        // return await ApiService.getData(`GetAllUsers.json`);
-        return await ApiService.getData(`v1/applications/${body.appCode}/roles/${body.roleName}/users  `);
+        return await ApiService.getData(`GetUsersForARole.json`);
+        // return await ApiService.getData(`v1/roles/${body.roleName}/users`);
     }
 
     async putUsersRoles(userId, body) {

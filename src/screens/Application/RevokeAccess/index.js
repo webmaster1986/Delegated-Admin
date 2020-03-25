@@ -10,6 +10,7 @@ import UserModal from "../UserModal";
 import RoleModal from "../RoleModal";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import {isLoggedIn} from "../GrantAccess";
 
 class RevokeAccess extends Component {
   _apiService = new ApiService();
@@ -107,21 +108,29 @@ class RevokeAccess extends Component {
       data = []
       message.error('something is wrong! please try again');
     }
-    const users = ((data && data.userRoles) || []).map((f, i) => ({
+    const users = ((data && data.users) || []).map((f, i) => ({
       id: i, key: i, ...f
     }))
     this.setState({
       isLoading: false,
       users,
-      allUsers: [...data.userRoles],
+      allUsers: [...data.users],
     })
   }
 
   getDataForRole = async () => {
     const {user} = this.state
 
-    let applicationsList = await this._apiService.getOwnerApplications(user.login)
-    let ownerRoles =  await this._apiService.getOwnerRoles(user.login)
+    let applicationsList = ''
+    let ownerRoles = ''
+
+    if (isLoggedIn('SUPER_ADMIN')) {
+      applicationsList = await this._apiService.getApplications(user.login)
+      ownerRoles = await this._apiService.getSuperAdminRoles(user.login)
+    } else {
+      applicationsList = await this._apiService.getOwnerApplications(user.login);
+      ownerRoles = await this._apiService.getOwnerRoles(user.login);
+    }
 
     if (!applicationsList || applicationsList.error) {
       applicationsList = []
@@ -262,15 +271,11 @@ class RevokeAccess extends Component {
       },
       {
         text: 'OIM targets',
-        dataField: 'oimTarget',
+        dataField: 'oimTargets',
         headerStyle: {width: "30%"},
         formatter: (record) => {
           return (
-            (record || []).map((role, i) => (
-              <span className="static-tag" key={i.toString()}>
-                {role}
-              </span>
-            ))
+            (record || []).join(",")
           )
         }
       },

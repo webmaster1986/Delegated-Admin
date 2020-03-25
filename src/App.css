@@ -194,6 +194,7 @@ code {
 
 .link-text {
   color: deepskyblue;
+  cursor: pointer;
 }
 
 .anticon svg {

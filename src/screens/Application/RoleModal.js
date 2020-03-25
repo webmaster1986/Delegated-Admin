@@ -45,7 +45,7 @@ class RoleModal extends React.Component {
       { label: 'Application Owner Group', key: 'ownerGroup' },
       { label: 'Role Name', key: 'roleName' },
       { label: 'Role description', key: 'roleDescription' },
-      { label: 'Available Targets', key: 'oimTarget' },
+      { label: 'Available Targets', key: 'oimTargets' },
     ];
     return (
       <Modal
@@ -64,8 +64,8 @@ class RoleModal extends React.Component {
                     <Col sm={12} md={6} key={i.toString() + i}>
                       <b>{field.label}:&nbsp;&nbsp;</b>
                       <span>
-                        { field.key === 'oimTarget' ?
-                            (role[field.key] || []).map((x, i) => <span key={i.toString()} className="mr-5-px">{x}{(role[field.key] || []).length - 1 === i ? "" : ","}</span>) :
+                        { field.key === 'oimTargets' ?
+                            (role[field.key] || []).join(",") :
                             role[field.key] || ""
                         }
                       </span>
@@ -82,12 +82,12 @@ class RoleModal extends React.Component {
                   pagination={ paginationFactory(options) }
                   columns={[
                     {
-                      dataField: 'login',
+                      dataField: 'userLogin',
                       text: 'Login',
                       sort: true
                     },
                     {
-                      dataField: 'name',
+                      dataField: 'displayName',
                       text: 'Name',
                       sort: true
                     },

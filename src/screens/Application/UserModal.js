@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal} from 'antd';
+import {Icon, Modal, Popconfirm} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import { Row, Col } from 'react-bootstrap';
@@ -52,7 +52,8 @@ class UserModal extends React.Component {
       { label: 'Email', key: 'email' },
       { label: 'First Name', key: 'firstName' },
       { label: 'Last Name', key: 'lastName' },
-      { label: 'User Login', key: 'userLogin' }
+      { label: 'User Login', key: 'userLogin' },
+      { label: 'Bureau', key: 'bureau' }
     ];
     return (
       <Modal
@@ -89,13 +90,17 @@ class UserModal extends React.Component {
                       sort: true
                     },
                     {
-                      dataField: 'roleDescription',
-                      text: 'Application',
-                      sort: true
+                      dataField: 'oimTargets',
+                      text: 'OIM targets',
+                      formatter: (record, data, index) => {
+                        return(
+                            (record || []).join(",")
+                        )
+                      }
                     },
                     {
-                      dataField: 'oimTarget',
-                      text: 'OIM Target',
+                      dataField: 'roleDescription',
+                      text: 'Description',
                       sort: true
                     },
                     {

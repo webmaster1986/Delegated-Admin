@@ -104,7 +104,7 @@ class RevokeUsersTransfer extends React.Component {
         if (!users || users.error) {
           return message.error('something is wrong! please try again');
         } else {
-          const data = (users || []).map((user, i) => ({
+          const data = (users.users || []).map((user, i) => ({
             id: i, key: i, ...user
           }))
           allUsers.push(...data)
@@ -279,7 +279,7 @@ class RevokeUsersTransfer extends React.Component {
       },
       {
         text: 'OIM targets',
-        dataField: 'oimTarget',
+        dataField: 'oimTargets',
         headerStyle: {width: "30%"},
         formatter: (record) => {
           return (
@@ -375,12 +375,12 @@ class RevokeUsersTransfer extends React.Component {
             const newRole = {
               roleName: role.roleName,
               roleDescription: role.roleDescription,
-              oimTarget: role.oimTarget
+              oimTargets: role.oimTargets
             }
             const roles = totalUsers[findIndex] && totalUsers[findIndex].roles ? totalUsers[findIndex].roles.push(newRole) : [newRole]
             totalUsers[findIndex] = {
               ...totalUsers[findIndex],
-              roles
+              roles: typeof roles === "number" ? totalUsers[findIndex].roles : roles
             }
           }
         })
@@ -391,7 +391,7 @@ class RevokeUsersTransfer extends React.Component {
     userRoles.forEach(user => {
       payload.push({
         userLogin: user.userLogin || user.login,
-        roleNames: user.roles.map(f => f.roleName)
+        roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: f.oimTargets || []}))
       })
     })
     const res = await this._apiService.putUsersRevokeRoles(user.login, payload)
@@ -403,11 +403,11 @@ class RevokeUsersTransfer extends React.Component {
         if (alr.successSet && alr.successSet.length) {
           message.success(`
             RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
-              ${(alr.successSet[0] && alr.successSet[0].oimTarget) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTarget)}` : ""} has been successfully updated`);
+              ${(alr.successSet[0] && alr.successSet[0].oimTargets) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTargets)}` : ""} has been successfully updated`);
         } else {
           message.error(`
             RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
-              ${(alr.failedSet[0] && alr.failedSet[0].oimTarget) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTarget)}` : ""} has been fail to update`);
+              ${(alr.failedSet[0] && alr.failedSet[0].oimTargets) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTargets)}` : ""} has been fail to update`);
         }
       })
       let isError = false
@@ -429,7 +429,7 @@ class RevokeUsersTransfer extends React.Component {
       return message.error("At least one target should be selected");
     }
     const { selectedData } = this.state
-    selectedData[index].oimTarget.splice(childIndex, 1)
+    selectedData[index].oimTargets.splice(childIndex, 1)
     this.setState({
       selectedData
     })
@@ -443,16 +443,43 @@ class RevokeUsersTransfer extends React.Component {
 
     const userColumns = [
       {
-        dataIndex: 'login',
+        dataIndex: 'userLogin',
         title: 'Login',
         render: (record, data) => (
           <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, data)}>{record}</a>
         )
       },
       {
-        dataIndex: 'name',
+        dataIndex: 'displayName',
         title: 'Name',
       },
+      // {
+      //   dataIndex: 'oimTargets',
+      //   title: 'OIM targets',
+      //   render: (record, data) => (
+      //     (record || []).map((role, i) => (
+      //       <span className="static-tag">
+      //         {role}
+      //         <Popconfirm
+      //           title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
+      //           disabled={!flag || record.length === 1}
+      //           okText={'Yes'}
+      //           cancelText={'No'}
+      //           onConfirm={() => this.onRemoveTarget(index, i, record.length)}
+      //         >
+      //         { flag ?
+      //           <Icon
+      //             type="close"
+      //             className="tag-close-icon"
+      //             onClick={record.length === 1 ? () => this.onRemoveTarget(index, i, record.length) : () => {}}
+      //           /> :
+      //           null
+      //         }
+      //       </Popconfirm>
+      //       </span>
+      //     ))
+      //   )
+      // },
       {
         dataIndex: 'bureau',
         title: 'Bureau',
@@ -472,7 +499,7 @@ class RevokeUsersTransfer extends React.Component {
         )
       },
       {
-        dataIndex: 'oimTarget',
+        dataIndex: 'oimTargets',
         title: <div>OIM targets</div>,
         render: (record, data, index) => {
           return(

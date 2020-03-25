@@ -5,7 +5,7 @@
         {
             "appCode": "APPL4",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "OID"
             ],
             "roleDescription": "Description for Role1",
@@ -15,7 +15,7 @@
         {
             "appCode": "APPL4",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "OID"
             ],
             "roleDescription": "Description for Role 2",
@@ -25,7 +25,7 @@
         {
             "appCode": "APPL6",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "IDCS"
             ],
             "roleDescription": "Role 1",
@@ -35,7 +35,7 @@
         {
             "appCode": "APPL6",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "OID",
 				"IDCS"
             ],
@@ -46,7 +46,7 @@
         {
             "appCode": "APPL7",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "OID"
             ],
             "roleName": "APPL7_ROLE4",
@@ -55,7 +55,7 @@
         {
             "appCode": "APPL8",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "OID",
 				"IDCS"
             ],
@@ -66,7 +66,7 @@
         {
             "appCode": "APPL8",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "OID"
             ],
             "roleDescription": "ROLE2",
@@ -76,7 +76,7 @@
         {
             "appCode": "APPL8",
             "creationDate": "03/16/2020",
-			"oimTarget": [
+			"oimTargets": [
                 "OID"
             ],
             "roleDescription": "ROLE3",

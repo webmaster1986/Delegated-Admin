@@ -4,7 +4,7 @@
         {
             "appCode": "APL10",
             "creationDate": "03/19/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application APL10",
@@ -14,7 +14,7 @@
         {
             "appCode": "APL10",
             "creationDate": "03/19/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS",
                 "OID"
             ],
@@ -25,7 +25,7 @@
         {
             "appCode": "APL10",
             "creationDate": "03/19/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleName": "APL10_ROLE2",
@@ -34,7 +34,7 @@
         {
             "appCode": "APL11",
             "creationDate": "03/19/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application APL11",
@@ -44,7 +44,7 @@
         {
             "appCode": "APL11",
             "creationDate": "03/19/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Role 1 description",
@@ -54,7 +54,7 @@
         {
             "appCode": "APP1",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application App1",
@@ -64,7 +64,7 @@
         {
             "appCode": "APP1",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS",
                 "OID"
             ],
@@ -75,7 +75,7 @@
         {
             "appCode": "APP1",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Role Description",
@@ -85,7 +85,7 @@
         {
             "appCode": "APP1",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS",
                 "OID"
             ],
@@ -96,7 +96,7 @@
         {
             "appCode": "APP1",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleName": "APP1_ROLE6",
@@ -105,7 +105,7 @@
         {
             "appCode": "APP3",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application App3",
@@ -115,7 +115,7 @@
         {
             "appCode": "APP3",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS",
                 "OID"
             ],
@@ -126,7 +126,7 @@
         {
             "appCode": "APP3",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Role Description",
@@ -136,7 +136,7 @@
         {
             "appCode": "APP3",
             "creationDate": "03/09/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS"
             ],
             "roleDescription": "Role Description",
@@ -146,7 +146,7 @@
         {
             "appCode": "APPL7",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application APPL7",
@@ -156,7 +156,7 @@
         {
             "appCode": "APPL4",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application APPL4",
@@ -166,7 +166,7 @@
         {
             "appCode": "APPL4",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Description for Role1",
@@ -176,7 +176,7 @@
         {
             "appCode": "APPL4",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Description for Role 2",
@@ -186,7 +186,7 @@
         {
             "appCode": "APPL5",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Description for Role 5",
@@ -196,7 +196,7 @@
         {
             "appCode": "APPL5",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application APPL5",
@@ -206,7 +206,7 @@
         {
             "appCode": "APPL6",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application APPL6",
@@ -216,7 +216,7 @@
         {
             "appCode": "APPL6",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS"
             ],
             "roleDescription": "Role 1",
@@ -226,7 +226,7 @@
         {
             "appCode": "APPL6",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS"
             ],
             "roleDescription": "Role 2",
@@ -236,7 +236,7 @@
         {
             "appCode": "APPL7",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleName": "APPL7_ROLE4",
@@ -245,7 +245,7 @@
         {
             "appCode": "APPL8",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS",
                 "OID"
             ],
@@ -256,7 +256,7 @@
         {
             "appCode": "APPL8",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "ROLE2",
@@ -266,7 +266,7 @@
         {
             "appCode": "APPL8",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS"
             ],
             "roleDescription": "ROLE3",
@@ -276,7 +276,7 @@
         {
             "appCode": "APPL9",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "OID"
             ],
             "roleDescription": "Owner group for application APPL9",
@@ -286,7 +286,7 @@
         {
             "appCode": "APPL9",
             "creationDate": "03/16/2020",
-            "oimTarget": [
+            "oimTargets": [
                 "IDCS",
                 "OID"
             ],

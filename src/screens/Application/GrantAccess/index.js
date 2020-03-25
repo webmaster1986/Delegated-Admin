@@ -339,7 +339,7 @@ class Index extends Component {
                     const newRole = {
                         roleName: role.roleName,
                         roleDescription: role.roleDescription,
-                        oimTarget: role.oimTarget
+                        oimTargets: role.oimTargets
                     }
                     if(!isExists){
                         u = {
@@ -360,14 +360,14 @@ class Index extends Component {
             totalUsers.forEach(user => {
                 payload.push({
                     userLogin: user.userLogin,
-                    roleNames: user.roles.map(f => f.roleName)
+                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargetss: f.oimTargets || []}))
                 })
             })
         } else {
             usersData.forEach(user => {
                 payload.push({
                     userLogin: user.userLogin,
-                    roleNames: user.roles.map(f => f.roleName)
+                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargetss: f.oimTargets || []}))
                 })
             })
         }
@@ -383,11 +383,11 @@ class Index extends Component {
                 if (alr.successSet && alr.successSet.length) {
                     message.success(`
                         RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
-                            ${(alr.successSet[0] && alr.successSet[0].oimTarget) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTarget)}` : ""} has been successfully updated`);
+                            ${(alr.successSet[0] && alr.successSet[0].oimTargetss) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTargetss)}` : ""} has been successfully updated`);
                 } else {
                     message.error(`
                         RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
-                            ${(alr.failedSet[0] && alr.failedSet[0].oimTarget) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTarget)}` : ""} has been fail to update`);
+                            ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss)}` : ""} has been fail to update`);
                 }
             })
             // message.success('Grant Access Submitted Successfully');
@@ -417,13 +417,13 @@ class Index extends Component {
             data = []
             message.error('something is wrong! please try again');
         }
-        const users = ((data && data.userRoles) || []).map((f, i) => ({
+        const users = ((data && data.users) || []).map((f, i) => ({
             id: i, key: i, ...f
         }))
         this.setState({
             isLoading: false,
             users,
-            allUsers: [...data.userRoles],
+            allUsers: [...data.users],
         })
     }
 
@@ -436,10 +436,10 @@ class Index extends Component {
         if (isLoggedIn('SUPER_ADMIN')) {
             applicationsList = await this._apiService.getApplications(user.login)
             ownerRoles = await this._apiService.getSuperAdminRoles(user.login)
-        } else if(isLoggedIn('SUPER_APP_OWNER')) {
+        } /*else if(isLoggedIn('SUPER_APP_OWNER')) {
             applicationsList = await this._apiService.getApplications(user.login)
             ownerRoles = await this._apiService.getSuperOwnerRoles(user.login)
-        } else {
+        }*/ else {
             applicationsList = await this._apiService.getOwnerApplications(user.login);
             ownerRoles = await this._apiService.getOwnerRoles(user.login);
         }
@@ -565,7 +565,7 @@ class Index extends Component {
                 return message.error("At least one target should be selected");
             }
             const { rolesData } = this.state
-            rolesData[index].oimTarget.splice(childIndex, 1)
+            rolesData[index].oimTargets.splice(childIndex, 1)
             this.setState({
                 rolesData
             })
@@ -591,7 +591,7 @@ class Index extends Component {
                 render: (record, data) => <div className="link-text" onClick={(e) => this.toggleModal(e, data)}><u>{record}</u></div>
             },
             {
-                dataIndex: 'oimTarget',
+                dataIndex: 'oimTargets',
                 title: <div>OIM targets</div>,
                 render: (record, data, index) => {
                     return(
@@ -730,7 +730,8 @@ class Index extends Component {
                                                                 (usersData && usersData.length) ?
                                                                     usersData.map((user, i) => {
                                                                         return (
-                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} style={{cursor: "default"}}>{user.displayName || user.userLogin}&nbsp;&nbsp;
+                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} style={{cursor: "default"}}>
+                                                                                <span className="link-text"><u onClick={(e) => this.toggleUserModal(e, user)}>{user.displayName || user.userLogin}</u></span>&nbsp;&nbsp;
                                                                                 <i onClick={() => this.onRemove(user.id)} className="fa fa-close cursor-pointer"/>
                                                                             </button>
                                                                             /*<Tag key={i.toString() + i} closable onClose={() => this.onRemove(user.id)}>{user.displayName || user.userLogin}</Tag>*/
