@@ -88,9 +88,93 @@ nav ul {
     right:5px;
 }
 .nav .nav-submenu {
-    background: #CC0000;
+    background: #9ACD32;
     padding: 0;
 }
+.nav .dev-header-submenu {
+    background: #9ACD32 !important;
+    padding: 0;
+}
+
+.nav .dev-header-submenu li {
+    padding: 6px;
+}
+.nav .dev-header-submenu .dev-header {
+    padding: 5px
+}
+.nav .dev-header-submenu .dev-header:hover, .nav .dev-header-submenu li:hover {
+    background: #80808036;
+}
+
+.nav .dev-header-submenu li a, .nav .dev-header-submenu li .nav-link {
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.nav .tst-header-submenu {
+    background: #6495ED !important;
+    padding: 0;
+}
+
+.nav .tst-header-submenu li {
+    padding: 6px;
+}
+.nav .tst-header-submenu .tst-header {
+    padding: 5px
+}
+.nav .tst-header-submenu .tst-header:hover, .nav .tst-header-submenu li:hover {
+    background: #80808036;
+}
+
+.nav .tst-header-submenu li a, .nav .tst-header-submenu li .nav-link {
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.nav .stg-header-submenu {
+    background: #946fdd !important;
+    padding: 0;
+}
+
+.nav .stg-header-submenu li {
+    padding: 6px;
+}
+.nav .stg-header-submenu .stg-header {
+    padding: 5px
+}
+.nav .stg-header-submenu .stg-header:hover, .nav .stg-header-submenu li:hover {
+    background: #80808036;
+}
+
+.nav .stg-header-submenu li a, .nav .stg-header-submenu li .nav-link {
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.nav .prd-header-submenu {
+    background: #CC0000 !important;
+    padding: 0;
+}
+
+.nav .prd-header-submenu li {
+    padding: 6px;
+}
+.nav .prd-header-submenu .prd-header {
+    padding: 5px
+}
+.nav .prd-header-submenu .prd-header:hover, .nav .prd-header-submenu li:hover {
+    background: #80808036;
+}
+
+.nav .prd-header-submenu li a, .nav .prd-header-submenu li .nav-link {
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: normal;
+}
+
 .nav .nav-submenu li {
     padding: 6px;
 }

@@ -19,6 +19,8 @@ const getHost = () => {
     return apiEndPoint
 };
 
+export const getEnvironment = () => process.env.REACT_APP_ENV
+
 const apiEndPoint = process.env.NODE_ENV === 'production' ? getHost() : '/';
 
 const axiosInstance = axios.create({
@@ -118,8 +120,8 @@ export class ApiService {
     }
 
     async getAllApplications(appId) {
-        return await ApiService.getData(`GetAllApplications.json`);
-        // return await ApiService.getData(`v1/applications${appId ? `/${appId}` : ""}`);
+        // return await ApiService.getData(`GetAllApplications.json`);
+        return await ApiService.getData(`v1/applications${appId ? `/${appId}` : ""}`);
     }
 
     async getAllApplicationsByOwner(appId) {
@@ -131,14 +133,14 @@ export class ApiService {
     }
 
     async getAppDetailByAppCode(appCode) {
-        return await ApiService.getData(`GetApplicationDetails.json`);
-        // return await ApiService.getData(`v1/applications/${appCode}`);
+        // return await ApiService.getData(`GetApplicationDetails.json`);
+        return await ApiService.getData(`v1/applications/${appCode}`);
         // return appDetails
     }
 
     async getRolesForApp(appCode) {
-        return await ApiService.getData(`GetRolesForApplication.json`);
-        // return await ApiService.getData(`v1/applications/${appCode}/roles`);
+        // return await ApiService.getData(`GetRolesForApplication.json`);
+        return await ApiService.getData(`v1/applications/${appCode}/roles`);
         // return appRoles
     }
 
@@ -156,28 +158,28 @@ export class ApiService {
     }
 
     async getRolesForUser(id) {
-        return await ApiService.getData(`GetRolesForUser.json`);
-        // return await ApiService.getData(`v1/users/${id}/roles`);
+        // return await ApiService.getData(`GetRolesForUser.json`);
+        return await ApiService.getData(`v1/users/${id}/roles`);
     }
 
     async getRolesForRevoke(id) {
-        return await ApiService.getData(`GetRolesForRevoke.json`);
-        // return await ApiService.getData(`v1/users/${id}/roles-for-revoke`);
+        // return await ApiService.getData(`GetRolesForRevoke.json`);
+        return await ApiService.getData(`v1/users/${id}/roles-for-revoke`);
     }
 
     async getAppOwnerGroups(id) {
-        return await ApiService.getData(`GetAllAppOwnerGroups.json`);
-        // return await ApiService.getData(`v1/owner-groups`);
+        // return await ApiService.getData(`GetAllAppOwnerGroups.json`);
+        return await ApiService.getData(`v1/owner-groups`);
     }
 
     async getAppRoleTargets() {
-        return await ApiService.getData(`GetOIMTargets.json`);
-        // return await ApiService.getData(`v1/role-targets`);
+        // return await ApiService.getData(`GetOIMTargets.json`);
+        return await ApiService.getData(`v1/role-targets`);
     }
 
     async getLoginUserRole(user_id) {
-        return 'SUPER_ADMIN'
-        // return await ApiService.getData(`v1/users/types`);
+        // return 'APP_OWNER'
+        return await ApiService.getData(`v1/users/types`);
     }
 
     async addRoleToApplication(appId, body) {
@@ -185,18 +187,18 @@ export class ApiService {
     }
 
     async getOwnerApplications(userId) {
-        return await ApiService.getData(`GetOwnerApplicationsForUser.json`);
-        // return await ApiService.getData(`v1/owner-applications `);
+        // return await ApiService.getData(`GetOwnerApplicationsForUser.json`);
+        return await ApiService.getData(`v1/owner-applications `);
     }
 
     async getApplications(userId) {
-        return await ApiService.getData(`GetAllApplications.json`);
-        // return await ApiService.getData(`v1/applications`);
+        // return await ApiService.getData(`GetAllApplications.json`);
+        return await ApiService.getData(`v1/applications`);
     }
 
     async getOwnerRoles(userId) {
-        return await ApiService.getData(`GetOwnerRolesForUser.json`);
-        // return await ApiService.getData(`v1/owner-roles `);
+        // return await ApiService.getData(`GetOwnerRolesForUser.json`);
+        return await ApiService.getData(`v1/owner-roles `);
     }
 
     async getSuperOwnerRoles(userId) {
@@ -204,33 +206,33 @@ export class ApiService {
     }
 
     async getSuperAdminRoles(userId) {
-        return await ApiService.getData(`GetAllActiveRoles.json`);
-        // return await ApiService.getData(`v1/roles`);
+        // return await ApiService.getData(`GetAllActiveRoles.json`);
+        return await ApiService.getData(`v1/roles`);
     }
 
     async getUserDetails(userId) {
-        return await ApiService.getData(`GetUserDetails.json`);
-        // return await ApiService.getData(`v1/users/${userId}`);
+        // return await ApiService.getData(`GetUserDetails.json`);
+        return await ApiService.getData(`v1/users/${userId}`);
     }
 
     async getAllUsers() {
-        return await ApiService.getData(`GetAllUsers.json`);
-        // return await ApiService.getData(`v1/users`);
+        // return await ApiService.getData(`GetAllUsers.json`);
+        return await ApiService.getData(`v1/users`);
     }
 
     async getUsersByRoles(body) {
-        return await ApiService.getData(`GetUsersForARole.json`);
-        // return await ApiService.getData(`v1/roles/${body.roleName}/users`);
+        // return await ApiService.getData(`GetUsersForARole.json`);
+        return await ApiService.getData(`v1/roles/${body.roleName}/users`);
     }
 
     async putUsersRoles(userId, body) {
-        return await ApiService.getData(`submitResponse.json`);
-        // return await ApiService.putMethod(`v1/users/roles `, body);
+        // return await ApiService.getData(`submitResponse.json`);
+        return await ApiService.putMethod(`v1/users/roles `, body);
     }
 
     async putUsersRevokeRoles(userId, body) {
-        return await ApiService.getData(`submitResponse.json`);
-        // return await ApiService.deleteMethod(`v1/users/roles `, body);
+        // return await ApiService.getData(`submitResponse.json`);
+        return await ApiService.deleteMethod(`v1/users/roles `, body);
     }
 
     async getRoleByRoleName(body) {
@@ -238,8 +240,8 @@ export class ApiService {
     }
 
     async getLoginUserName(user_id) {
-        return 'DEEPA  GEORGE'
-        // return await ApiService.getData(`v1/users/name`);
+        // return 'DEEPA  GEORGE'
+        return await ApiService.getData(`v1/users/name`);
     }
 
     async logout () {

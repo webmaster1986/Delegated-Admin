@@ -2,6 +2,17 @@
     "operation": "Retrieve Users For Role",
     "users": [
         {
+            "displayName": "EDFG",
+            "email": "no-dash@fdny.nyc.gov",
+            "firstName": "PETER",
+            "lastName": "LUCKSAVAGE",
+            "oimTargets": [
+                "IDCS",
+                "OID"
+            ],
+            "userLogin": "002256"
+        },
+        {
             "displayName": "PETER LUCKSAVAGE",
             "email": "no-dash@fdny.nyc.gov",
             "firstName": "PETER",
@@ -34,6 +45,17 @@
             "userLogin": "N001053"
         },
         {
+            "displayName": "AB CD",
+            "email": "Tushar.Jagadale@fdny.nyc.gov",
+            "firstName": "TUSHAR ",
+            "lastName": "JAGADALE",
+            "oimTargets": [
+                "OID",
+				"IDCS"
+            ],
+            "userLogin": "0003041"
+        },
+        {
             "displayName": "MANOHAR  PARELLY",
             "email": "Manohar.Parelly@fdny.nyc.gov",
             "firstName": "MANOHAR ",
@@ -53,6 +75,16 @@
                 "OID"
             ],
             "userLogin": "N001055"
+        },
+        {
+            "displayName": "XYZ",
+            "email": "Deepa.George@fdny.nyc.gov",
+            "firstName": "DEEPA ",
+            "lastName": "GEORGE",
+            "oimTargets": [
+                "OID"
+            ],
+            "userLogin": "0014630"
         }
     ]
 }

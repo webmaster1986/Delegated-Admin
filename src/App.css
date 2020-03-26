@@ -59,6 +59,38 @@ code {
 }
 
 .red-background {
+  background-color:#9ACD32;
+}
+
+.dev-header {
+  background-color: #9ACD32 !important;
+}
+
+.dev-header:hover {
+  background-color: #9ACD32 !important;
+}
+
+.tst-header {
+  background: #6495ED;
+}
+
+.tst-header:hover {
+  background-color: #6495ED;
+}
+
+.stg-header {
+  background: #946fdd;
+}
+
+.stg-header:hover {
+  background-color: #946fdd;
+}
+
+.prd-header {
+  background: #CC0000;
+}
+
+.prd-header:hover {
   background-color:#CC0000;
 }
 
@@ -71,10 +103,10 @@ code {
   font-size: 1em;
 }
 
-.nav-item:hover {
-  background-color: #B70F0A;
-  /*height: 5em;*/
-}
+/*.nav-item:hover {*/
+/*  background-color: #B70F0A;*/
+/*  !*height: 5em;*!*/
+/*}*/
 
 .nav-link {
   font-weight: 500;
@@ -307,4 +339,10 @@ code {
   cursor: pointer;
   /*-webkit-transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);*/
   transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+}
+
+.copy-button {
+  border-top-left-radius: .25rem !important;
+  border-bottom-left-radius: .25rem !important;
+  margin-left: 100px;
 }

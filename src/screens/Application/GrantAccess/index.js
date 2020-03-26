@@ -13,6 +13,7 @@ import Review from "./Review";
 import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
 import { ROLES } from "../../../constants/constants"
+import CopyUsersModal from "../CopyUsersModal"
 
 const cookies = new Cookies();
 const role = cookies.get('USER_ROLE');
@@ -82,6 +83,7 @@ class Index extends Component {
         this.state = {
             roleTargetKeys: [],
             userTargetKeys: [],
+            usersData: [],
             size: 'default',
             selectedApp: [],
             rolesData: [],
@@ -96,6 +98,7 @@ class Index extends Component {
             isUserModal: false,
             isInfoModal: false,
             isSave: false,
+            copyUserModal: false,
             selectBy: "",
             category: "",
             user: getLoginUser()
@@ -596,9 +599,31 @@ class Index extends Component {
         })
     }
 
+    onCopyUserModal = () => {
+        this.setState({
+            copyUserModal: !this.state.copyUserModal
+        })
+    }
+
+    onCopyUsers = (keys) => {
+        const { users, usersData, userTargetKeys } = this.state
+        keys.forEach(key => {
+            const obj = (users || []).find(x => x.userLogin === key)
+            if(!(userTargetKeys.includes(obj.id))) {
+                usersData.push(obj)
+                userTargetKeys.push(obj.id)
+            }
+        })
+        this.setState({
+            usersData,
+            userTargetKeys,
+            copyUserModal: false
+        })
+    }
+
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users, searchRoleList,
-            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, showAlert } = this.state;
+            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, copyUserModal } = this.state;
         const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
 
@@ -708,6 +733,7 @@ class Index extends Component {
 
         return(
             <div className={"mt-3"}>
+                { copyUserModal ? <CopyUsersModal onCloseModal={this.onCopyUserModal} toggleUserModal={this.toggleUserModal} onCopyUsers={this.onCopyUsers}/> : null }
                 {
                     (selectBy === "roles" && step2) || (selectBy === "user" && step1) || preview ?
                       <a className="back-btn" onClick={preview ? this.onPreviewBack : step1 ? this.onRoleBack : this.onUserBack}>
@@ -885,6 +911,12 @@ class Index extends Component {
                                                         <InputGroup.Append>
                                                             <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>Clear</Button>
                                                         </InputGroup.Append>
+                                                        {
+                                                            category === "user" ?
+                                                                <InputGroup.Append>
+                                                                    <Button onClick={this.onCopyUserModal} className="copy-button">Copy Users from another Role</Button>
+                                                                </InputGroup.Append> : null
+                                                        }
                                                     </InputGroup>
                                                 </Col>
                                             </Row>

@@ -9,12 +9,15 @@ import badge from '../components/images/FDNY.png';
 import "./nav.css"
 import MobileMenu from "./MobileMenu";
 import message from "antd/lib/message";
-import {ApiService, getLoginUser} from "../services/ApiService";
+import {ApiService, getLoginUser, getEnvironment} from "../services/ApiService";
 
 class Header extends Component {
   _apiService = new ApiService();
 
-  state = { loginUser: "" }
+  state = {
+    loginUser: "",
+    headerClass: `${getEnvironment()}-header`,
+  }
 
   async componentDidMount() {
     this.setState({
@@ -40,10 +43,11 @@ class Header extends Component {
   }
 
   render() {
-    const {loginUser} = this.state
+    const {loginUser, headerClass} = this.state
+    console.log({getEnvironment: getEnvironment()})
     return (
       <div
-        className='red-background header-nav'
+        className={`${headerClass} header-nav`}
       >
         <Container>
           <Navbar collapseOnSelect expand="lg">
@@ -60,7 +64,7 @@ class Header extends Component {
               <Nav className="mr-auto desktop-menu">
                 <ul className="nav">
                   <li>
-                    <Nav.Item>
+                    <Nav.Item className={headerClass}>
                       <Link
                         to="/DelegatedAdmin/"
                         className={'nav-link color-white'}
@@ -70,14 +74,14 @@ class Header extends Component {
                     </Nav.Item>
                   </li>
                   <li>
-                    <Nav.Item>
+                    <Nav.Item className={headerClass}>
                       <a className={'nav-link color-white'}>
                         Manage Access
                       </a>
                     </Nav.Item>
-                    <ul className="nav-submenu">
+                    <ul className={`${headerClass}-submenu`}>
                       <li><a>Grant Access</a>
-                        <ul className="nav-submenu">
+                        <ul className={`${headerClass}-submenu`}>
                           <li>
                             <a
                               href={"/DelegatedAdmin/grant-access?by=user"}
@@ -97,7 +101,7 @@ class Header extends Component {
                         </ul>
                       </li>
                       <li><a>Revoke Access</a>
-                        <ul className="nav-submenu">
+                        <ul className={`${headerClass}-submenu`}>
                           <li>
                             <a
                               href={"/DelegatedAdmin/revoke-access?by=user"}
@@ -120,7 +124,7 @@ class Header extends Component {
                   </li>
                 </ul>
               </Nav>
-              <MobileMenu/>
+              <MobileMenu headerClass={headerClass}/>
               <div className="header-nav-right">
                 <h6 className="wc-username">{loginUser ? `Welcome ${loginUser}` : ""}</h6>
                 <a className="logout" onClick={() => this.onLogout()}>Logout</a>
