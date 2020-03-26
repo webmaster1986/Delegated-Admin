@@ -160,6 +160,11 @@ export class ApiService {
         // return await ApiService.getData(`v1/users/${id}/roles`);
     }
 
+    async getRolesForRevoke(id) {
+        return await ApiService.getData(`GetRolesForRevoke.json`);
+        // return await ApiService.getData(`v1/users/${id}/roles-for-revoke`);
+    }
+
     async getAppOwnerGroups(id) {
         return await ApiService.getData(`GetAllAppOwnerGroups.json`);
         // return await ApiService.getData(`v1/owner-groups`);
@@ -171,8 +176,8 @@ export class ApiService {
     }
 
     async getLoginUserRole(user_id) {
-        // return 'SUPER_OWNER'
-        return await ApiService.getData(`v1/users/types`);
+        return 'SUPER_ADMIN'
+        // return await ApiService.getData(`v1/users/types`);
     }
 
     async addRoleToApplication(appId, body) {
@@ -219,11 +224,13 @@ export class ApiService {
     }
 
     async putUsersRoles(userId, body) {
-        return await ApiService.putMethod(`v1/users/roles `, body);
+        return await ApiService.getData(`submitResponse.json`);
+        // return await ApiService.putMethod(`v1/users/roles `, body);
     }
 
     async putUsersRevokeRoles(userId, body) {
-        return await ApiService.deleteMethod(`v1/users/roles `, body);
+        return await ApiService.getData(`submitResponse.json`);
+        // return await ApiService.deleteMethod(`v1/users/roles `, body);
     }
 
     async getRoleByRoleName(body) {
@@ -231,8 +238,8 @@ export class ApiService {
     }
 
     async getLoginUserName(user_id) {
-        // return 'DEEPA  GEORGE'
-        return await ApiService.getData(`v1/users/name`);
+        return 'DEEPA  GEORGE'
+        // return await ApiService.getData(`v1/users/name`);
     }
 
     async logout () {

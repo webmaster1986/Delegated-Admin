@@ -5,7 +5,7 @@ import Cookies from "universal-cookie"
 import Spin from "antd/lib/spin";
 import _ from "lodash"
 import Select from 'react-select';
-import { Table, Transfer, Popconfirm, Icon } from 'antd/lib'
+import { Table, Transfer, Popconfirm, Icon, notification } from 'antd/lib'
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
@@ -379,22 +379,46 @@ class Index extends Component {
             })
             return message.error('something is wrong! please try again');
         } else {
-            res.manageAccessResponse.forEach(alr => {
-                if (alr.successSet && alr.successSet.length) {
-                    message.success(`
-                        RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
-                            ${(alr.successSet[0] && alr.successSet[0].oimTargetss) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTargetss)}` : ""} has been successfully updated`);
-                } else {
-                    message.error(`
-                        RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
-                            ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss)}` : ""} has been fail to update`);
+
+            let success = []
+            let failed = []
+            let message = ""
+            let isError = false
+
+            res.manageAccessResponse.forEach(manage => {
+                if(manage.successSet && manage.successSet.length){
+                    success = success.length ? success.concat(manage.successSet) : manage.successSet
+                }
+                if(manage.failedSet && manage.failedSet.length){
+                    failed = failed.length ? failed.concat(manage.failedSet) : manage.failedSet
                 }
             })
-            // message.success('Grant Access Submitted Successfully');
-            let isError = false
-            if (res.manageAccessResponse) {
-                isError = Object.keys(res.manageAccessResponse).some((key) => res.manageAccessResponse[key].failedSet && res.manageAccessResponse[key].failedSet.length)
+            if(failed.length){
+                message = `${failed.map(x => x.roleName).join(",")} has been fail to update`
+                isError = true
+            } else {
+                message = `${success.map(x => x.roleName).join(",")} has been successfully updated`
             }
+            notification[failed.length ? 'error' : 'success']({
+                message: failed.length ? 'Error' : 'Success',
+                description: message,
+                duration: 0,
+                onClick: () => {},
+            });
+
+            // res.manageAccessResponse.forEach(alr => {
+            //     if (alr.successSet && alr.successSet.length) {
+            //         message.success(`
+            //             RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
+            //                 ${(alr.successSet[0] && alr.successSet[0].oimTargetss) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTargetss)}` : ""} has been successfully updated`);
+            //     } else {
+            //         message.error(`
+            //             RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
+            //                 ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss)}` : ""} has been fail to update`);
+            //     }
+            // })
+            // message.success('Grant Access Submitted Successfully');
+
             if(isError) {
                 return this.setState({ isSave: false })
             } else {
@@ -560,20 +584,21 @@ class Index extends Component {
         }, () => this.getRoles())
     }
 
-        onRemoveTarget = (index, childIndex, length) => {
-            if(length === 1){
-                return message.error("At least one target should be selected");
-            }
-            const { rolesData } = this.state
-            rolesData[index].oimTargets.splice(childIndex, 1)
-            this.setState({
-                rolesData
-            })
+    onRemoveTarget = (key, childIndex, length) => {
+        if(length === 1){
+            return message.error("At least one target should be selected");
         }
+        const { rolesData } = this.state
+        const index = rolesData.findIndex(x => x.key === key)
+        rolesData[index].oimTargets.splice(childIndex, 1)
+        this.setState({
+            rolesData
+        })
+    }
 
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users, searchRoleList,
-            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy } = this.state;
+            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, showAlert } = this.state;
         const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
 
@@ -591,33 +616,34 @@ class Index extends Component {
                 render: (record, data) => <div className="link-text" onClick={(e) => this.toggleModal(e, data)}><u>{record}</u></div>
             },
             {
-                dataIndex: 'oimTargets',
-                title: <div>OIM targets</div>,
-                render: (record, data, index) => {
-                    return(
-                        (record || []).map((role, i) => (
-                            <span className="static-tag">
+                // dataIndex: 'oimTargets',
+                title: 'OIM targets',
+                render: (record) => (
+                    (record.oimTargets || []).map((role, i) => {
+                        const length = (record.oimTargets || []).length
+                        return(
+                            <span className="static-tag" key={i.toString()}>
                                 {role}
                                 <Popconfirm
                                     title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
-                                    disabled={!flag || record.length === 1}
+                                    disabled={!flag || length === 1}
                                     okText={'Yes'}
                                     cancelText={'No'}
-                                    onConfirm={() => this.onRemoveTarget(index, i, record.length)}
+                                    onConfirm={() => this.onRemoveTarget(record.key, i, length)}
                                 >
-                                    { flag ?
-                                        <Icon
-                                            type="close"
-                                            className="tag-close-icon"
-                                            onClick={record.length === 1 ? () => this.onRemoveTarget(index, i, record.length) : () => {}}
-                                        /> :
-                                        null
-                                    }
+                                { flag ?
+                                    <Icon
+                                        type="close"
+                                        className="tag-close-icon"
+                                        onClick={length === 1 ? () => this.onRemoveTarget(record.key, i, length) : () => {}}
+                                    /> :
+                                    null
+                                }
                                 </Popconfirm>
                             </span>
-                        ))
-                    )
-                }
+                        )
+                    })
+                )
             },
             {
                 dataIndex: 'appCode',
@@ -830,7 +856,8 @@ class Index extends Component {
                                                                 (rolesData && rolesData.length) ?
                                                                     rolesData.map((role, i) => {
                                                                         return (
-                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} style={{cursor: "default"}}>{role.roleName}&nbsp;&nbsp;
+                                                                            <button className="btn btn-sm btn-outline m-1 border" key={i.toString() + i} style={{cursor: "default"}}>
+                                                                                <span className="link-text"><u onClick={(e) => this.toggleModal(e, role)}>{role.roleName}</u></span>&nbsp;&nbsp;
                                                                                 <i onClick={() => this.onRemove(role.id)} className="fa fa-close cursor-pointer"/>
                                                                             </button>
                                                                         )

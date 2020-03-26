@@ -1,0 +1,52 @@
+{
+  "manageAccessResponse": [
+    {
+      "failedSet": [
+        {
+           "oimTargets": [
+               "IDCS",
+               "OID"
+           ],
+           "roleName": "APL10_ROLE1"
+         },
+        {
+           "oimTargets": [
+               "IDCS",
+               "OID"
+           ],
+           "roleName": "APL10_ROLE1"
+         }
+      ],
+      "successSet": [
+        {
+          "oimTargets": [
+            "OID"
+          ],
+          "roleName": "APL10_ROLE1"
+        }
+      ],
+      "userLogin": "N001054"
+    },
+    {
+      "failedSet": [
+        {
+            "oimTargets": [
+                "OID"
+            ],
+            "roleName": "APPL7_ROLE1"
+        }
+      ],
+      "successSet": [
+        {
+          "oimTargets": [
+            "IDCS",
+            "OID"
+          ],
+          "roleName": "APL10_ROLE1"
+        }
+      ],
+      "userLogin": "N001053"
+    }
+  ],
+  "operation": "Grant Roles To Users"
+}

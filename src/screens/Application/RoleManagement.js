@@ -47,10 +47,12 @@ class RoleManagement extends React.Component {
             })
             return message.error('something is wrong! please try again');
         } else {
+            const appObject = (appDetails && appDetails.application) || {}
             this.setState({
                 isLoading: false,
-                appObject: (appDetails && appDetails.application) || {},
-                oimTargetList: (roleTarget && roleTarget.resultCollection) || []
+                appObject,
+                oimTargetList: (roleTarget && roleTarget.resultCollection) || [],
+                rolesObject: {...this.state.rolesObject, roleName: appObject && appObject.appCode ? `${appObject.appCode}_` : ""}
             }, () => this.getRoles())
         }
     }
@@ -76,7 +78,10 @@ class RoleManagement extends React.Component {
     }
 
     onChange = (event) => {
-        const { name, value } = event.target
+        let { name, value } = event.target
+        if (name === 'roleName') {
+            value = this.removeAppCode(value).toUpperCase()
+        }
         this.setState({
             rolesObject: {
                 ...this.state.rolesObject,
@@ -85,15 +90,24 @@ class RoleManagement extends React.Component {
         })
     }
 
+    removeAppCode = (value) => {
+        const index = value.indexOf("_")
+        if(index === -1) {
+            return `${this.state.appObject.appCode}_`
+        }
+        const setValue = value.substring(index + 1)
+        return `${this.state.appObject.appCode}_${setValue}`
+    }
+
     onAddRole = async () => {
         let { list, rolesObject, appObject, rolesList } = this.state
         if(rolesObject && Object.keys(rolesObject).length > 0){
 
             let isDuplicate = false
             let body = []
-            const allRoles = (rolesList && rolesList.map((item) => item.roleName.toLowerCase())) || []
-            if (allRoles && allRoles.indexOf(rolesObject.roleName.toLowerCase()) !== -1) {
-                const data = (rolesList && rolesList.filter(f => f.roleName.toLowerCase() === rolesObject.roleName.toLowerCase())) || []
+            const allRoles = (rolesList && rolesList.map((item) => item.roleName)) || []
+            if (allRoles && allRoles.indexOf(rolesObject.roleName) !== -1) {
+                const data = (rolesList && rolesList.filter(f => f.roleName === rolesObject.roleName)) || []
                 data && data.forEach(g => {
                     if (rolesObject.oimTarget && rolesObject.oimTarget.indexOf(g.oimTarget) !== -1) {
                         isDuplicate = true
@@ -105,7 +119,7 @@ class RoleManagement extends React.Component {
             } else {
                 rolesObject.oimTarget.forEach(item => {
                     body.push({
-                        roleName: `${appObject.appCode}_${rolesObject.roleName}`.toUpperCase(),
+                        roleName: rolesObject.roleName,
                         oimTarget: item,
                     })
                 })
@@ -126,7 +140,9 @@ class RoleManagement extends React.Component {
                 this.setState({
                     isLoading: false,
                     list,
-                    rolesObject: {},
+                    rolesObject: {
+                        roleName: `${appObject.appCode}_`
+                    },
                     selectedOption: null,
                     isSave: false
                 }, () => this.getRoles())
@@ -317,18 +333,14 @@ class RoleManagement extends React.Component {
                                 <Col sm={12} md={12}>
                                     <Row>
                                         <Col className="pt-2" md={3}>
-                                            <InputGroup className="mb-3">
-                                                <InputGroup.Prepend>
-                                                    <InputGroup.Text id="basic-addon1">{appCode}</InputGroup.Text>
-                                                </InputGroup.Prepend>
-                                                <Form.Control
-                                                  type="text"
-                                                  placeholder="Role Name"
-                                                  name={'roleName'}
-                                                  value={roleName || ""}
-                                                  onChange={this.onChange}
-                                                />
-                                            </InputGroup>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Role Name"
+                                                name={'roleName'}
+                                                id={"roleName"}
+                                                value={roleName || ""}
+                                                onChange={this.onChange}
+                                            />
                                         </Col>
                                         <Col className="pt-2" md={5}>
                                             <Form.Control

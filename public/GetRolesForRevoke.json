@@ -1,0 +1,48 @@
+{
+    "identifier": "N001054",
+    "operation": "Retrieve User Roles For Revoke",
+    "userRoles": [
+        {
+            "appCode": "APP1",
+            "creationDate": "03/09/2020",
+            "oimTargets": [
+                "OID"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP1_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL8",
+            "creationDate": "03/16/2020",
+            "oimTargets": [
+                "OID"
+            ],
+            "roleDescription": "ROLE2",
+            "roleName": "APPL8_ROLE2",
+            "status": "Active"
+        },
+        {
+            "appCode": "APP2",
+            "creationDate": "03/09/2020",
+            "oimTargets": [
+                "OID",
+                "IDCS"
+            ],
+            "roleDescription": "Role Description",
+            "roleName": "APP2_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APPL3",
+            "creationDate": "03/16/2020",
+            "oimTargets": [
+                "IDCS",
+                "OID"
+            ],
+            "roleDescription": "ROLE2",
+            "roleName": "APPL3_ROLE2",
+            "status": "Active"
+        }
+    ]
+}
