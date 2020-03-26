@@ -9,7 +9,7 @@ import {
 import {Link} from "react-router-dom";
 import Spin from "antd/lib/spin";
 import message from "antd/lib/message";
-import {ApiService} from "../../services/ApiService";
+import {ApiService, getLoginRole} from "../../services/ApiService";
 import Select from 'react-select';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -36,28 +36,27 @@ class AppOwners extends Component {
   }
 
   async componentDidMount() {
+
+    const userRole = getLoginRole()
+    if(!userRole){
+      return
+    }
+
     this.setState({
       isLoading: true
     })
 
-    const userRole = await this._apiService.getLoginUserRole()
-    if (!userRole || userRole.error) {
+    const data = userRole === ROLES.APP_OWNER ? await this._apiService.getOwnerApplications() : await this._apiService.getAllApplications()
+    if (!data || data.error) {
       this.setState({
         isLoading: false
       })
+      return message.error('something is wrong! please try again');
     } else {
-      const data = userRole === ROLES.APP_OWNER ? await this._apiService.getOwnerApplications() : await this._apiService.getAllApplications()
-      if (!data || data.error) {
-        this.setState({
-          isLoading: false
-        })
-        return message.error('something is wrong! please try again');
-      } else {
-        this.setState({
-          isLoading: false,
-          applicationsList: (data && data.applications && data.applications.map((f, i) => ({ ...f, id: i}))) || []
-        })
-      }
+      this.setState({
+        isLoading: false,
+        applicationsList: (data && data.applications && data.applications.map((f, i) => ({ ...f, id: i}))) || []
+      })
     }
   }
 

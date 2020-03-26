@@ -30,22 +30,27 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLoading: true
+            isLoading: true,
+            isAuth: true,
+            environment: "prd"
         }
     }
 
     async componentDidMount() {
         const user = getLoginUser();
         const data = await this._apiService.getLoginUserRole(user.login)
-        if (!data || data.error) {
-            this.setState({
-                isLoading: false
-            })
-        } else {
-            cookies.set('USER_ROLE', data, {path: '/'});
+        const envData = await this._apiService.getEnvironment()
+        if (!data || data.error || !data.result) {
             this.setState({
                 isLoading: false,
-                userRole: data,
+                isAuth: false
+            })
+        } else {
+            cookies.set('USER_ROLE', data.result, {path: '/'});
+            this.setState({
+                isLoading: false,
+                userRole: data.result,
+                environment: envData && envData.environment
             })
         }
     }
@@ -74,12 +79,15 @@ class App extends Component {
     }
 
     render() {
-        const {isLoading, userRole} = this.state
+        const {isLoading, userRole, environment, isAuth} = this.state
+        if(!isAuth){
+            return <h3>You don't have a permission to load this page.</h3>
+        }
         return (
             <div>
                 {isLoading ? <div className="text-center mt-5-p"><Spin className='mt-50 custom-loading'/></div> :
                     <>
-                        <Header userRole={userRole}/>
+                        <Header userRole={userRole} environment={environment}/>
                         <Container>
                             {this.getRoutes()}
                             <Footer/>

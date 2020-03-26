@@ -9,14 +9,14 @@ import badge from '../components/images/FDNY.png';
 import "./nav.css"
 import MobileMenu from "./MobileMenu";
 import message from "antd/lib/message";
-import {ApiService, getLoginUser, getEnvironment} from "../services/ApiService";
+import {ApiService, getLoginUser} from "../services/ApiService";
 
 class Header extends Component {
   _apiService = new ApiService();
 
   state = {
     loginUser: "",
-    headerClass: `${getEnvironment()}-header`,
+    headerClass: `${this.props.environment}-header`,
   }
 
   async componentDidMount() {
@@ -44,7 +44,6 @@ class Header extends Component {
 
   render() {
     const {loginUser, headerClass} = this.state
-    console.log({getEnvironment: getEnvironment()})
     return (
       <div
         className={`${headerClass} header-nav`}

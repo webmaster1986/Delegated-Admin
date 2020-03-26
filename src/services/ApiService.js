@@ -19,8 +19,6 @@ const getHost = () => {
     return apiEndPoint
 };
 
-export const getEnvironment = () => process.env.REACT_APP_ENV
-
 const apiEndPoint = process.env.NODE_ENV === 'production' ? getHost() : '/';
 
 const axiosInstance = axios.create({
@@ -33,6 +31,8 @@ export const getLoginUser = () => {
         "login": cookies.get('OAMUserName'),
     }
 }
+
+export const getLoginRole = () => cookies.get("USER_ROLE")
 
 export class ApiService {
 
@@ -178,8 +178,13 @@ export class ApiService {
     }
 
     async getLoginUserRole(user_id) {
-        // return 'APP_OWNER'
+        // return await ApiService.getData(`GetUserTypes.json`);
         return await ApiService.getData(`v1/users/types`);
+    }
+
+    async getEnvironment(user_id) {
+        // return await ApiService.getData(`environment.json`);
+        return await ApiService.getData(`v1/environments`);
     }
 
     async addRoleToApplication(appId, body) {
