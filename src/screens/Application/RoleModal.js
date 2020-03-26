@@ -19,19 +19,21 @@ class RoleModal extends React.Component {
     const that = this
     const {role} = this.props
     const data = await this._apiService.getUsersByRoles(role)
+    const appDetails = await this._apiService.getAppDetailByAppCode(role.appCode)
     let result1 = (data && data.users) || []
     if (!result1 || result1.error) {
       message.error('something is wrong! please try again');
     }
     that.setState({
       users: result1 || [],
+      role: {...role, ...(appDetails && appDetails.application)},
       isLoading: false
     })
   }
 
   render(){
-    const {isLoading, users} = this.state
-    const {role} = this.props
+    const {isLoading, users, role} = this.state
+    // const {role} = this.props
     const options = {
       hidePageListOnlyOnePage: true,
       hideSizePerPage: true
