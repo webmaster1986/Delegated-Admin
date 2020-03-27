@@ -1,5 +1,5 @@
 import React from "react";
-import {Icon, Modal, Popconfirm} from 'antd';
+import {Icon, Modal, Button} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import { Row, Col } from 'react-bootstrap';
@@ -59,9 +59,14 @@ class UserModal extends React.Component {
       <Modal
         title="User Info"
         visible={true}
-        width={800}
-        onOk={this.props.toggleModal}
+        width={"50%"}
+        // onOk={this.props.toggleModal}
         onCancel={this.props.toggleModal}
+        footer={
+          <div>
+            <Button className="ant-btn-primary" onClick={this.props.toggleModal}>Close</Button>
+          </div>
+        }
       >
         <>
           {
@@ -76,6 +81,7 @@ class UserModal extends React.Component {
                   )}
                 </Row>
                 <br/>
+                <h6>Assigned Roles</h6>
                 <BootstrapTable
                   bootstrap4
                   striped

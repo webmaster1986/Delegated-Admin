@@ -1,6 +1,6 @@
 import React from "react"
 import {Col, Form, InputGroup, Row, Button} from "react-bootstrap";
-import {Icon, notification, Popconfirm, Table, Transfer} from "antd";
+import {Icon, notification, Popconfirm, Table, Tooltip, Transfer} from "antd";
 import difference from "lodash/difference";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
@@ -93,7 +93,7 @@ class RevokeUsersTransfer extends React.Component {
           return message.error('something is wrong! please try again');
         } else {
           const data = (roles.userRoles || []).map((role, i) => ({
-            id: i, key: i, ...role
+            id: i, key: i, ...role, oimTargets: (role.oimTargets || []).map(x => ({name: x, isRemoved: false}))
           }))
           allRoles.push(...data)
         }
@@ -105,7 +105,7 @@ class RevokeUsersTransfer extends React.Component {
           return message.error('something is wrong! please try again');
         } else {
           const data = (users.users || []).map((user, i) => ({
-            id: i, key: i, ...user
+            id: i, key: i, ...user, oimTargets: (user.oimTargets || []).map(x => ({name: x, isRemoved: false}))
           }))
           allUsers.push(...data)
         }
@@ -283,11 +283,14 @@ class RevokeUsersTransfer extends React.Component {
         headerStyle: {width: "30%"},
         formatter: (record) => {
           return (
-            (record || []).map((role, i) => (
-              <span className="static-tag" key={i.toString()}>
-                {role}
-              </span>
-            ))
+            (record || []).map((role, i) => {
+              if(role.isRemoved) return
+              return(
+                <span className="static-tag" key={i.toString()}>
+                  {role.name}
+                </span>
+              )
+            })
           )
         }
       },
@@ -308,6 +311,17 @@ class RevokeUsersTransfer extends React.Component {
     return type === 'user' ? usersCol : rolesCol
   }
 
+  isDisabled = () => {
+    const { reviewList } = this.state
+    let array = 0
+    if(reviewList.length){
+      reviewList.forEach(x => {
+        array += this.props.revokeBy === "user" ? x.roles.length : x.users.length
+      })
+    }
+    return !(array > 0)
+  }
+
   renderReview = () => {
     const {reviewList, isSave} = this.state
     const {revokeBy} = this.props
@@ -325,7 +339,7 @@ class RevokeUsersTransfer extends React.Component {
         />
         <div className="text-right mt-5">
           <button className="btn btn-danger btn-sm" onClick={() => this.props.history.push('DelegatedAdmin/app-owner')}>Cancel</button>&nbsp;&nbsp;
-          <button className="btn btn-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length || isSave}>
+          <button className="btn btn-success btn-sm" onClick={this.onReviewSubmit} disabled={!reviewList.length || isSave || this.isDisabled()}>
             { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
             {' '}Submit
           </button>
@@ -363,8 +377,9 @@ class RevokeUsersTransfer extends React.Component {
       reviewList.forEach((role) => {
         role.users.forEach(u => {
           const isExists = totalUsers.find(user => user.login === u.login)
+          const targetList = (u.oimTargets || []).filter(x => !x.isRemoved)
           if(!isExists){
-            totalUsers.push(u)
+            totalUsers.push({...u, oimTargets: (targetList || []).map(x => x.name)})
           }
         })
       })
@@ -372,10 +387,11 @@ class RevokeUsersTransfer extends React.Component {
         role.users.forEach(u => {
           const findIndex = totalUsers.findIndex(user => user.login === u.login)
           if(findIndex !== -1){
+            const targetList = (role.oimTargets || []).filter(x => !x.isRemoved)
             const newRole = {
               roleName: role.roleName,
               roleDescription: role.roleDescription,
-              oimTargets: role.oimTargets
+              oimTargets: (targetList || []).map(x => x.name)
             }
             const roles = totalUsers[findIndex] && totalUsers[findIndex].roles ? totalUsers[findIndex].roles.push(newRole) : [newRole]
             totalUsers[findIndex] = {
@@ -391,9 +407,10 @@ class RevokeUsersTransfer extends React.Component {
     userRoles.forEach(user => {
       payload.push({
         userLogin: user.userLogin || user.login,
-        roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: f.oimTargets || []}))
+        roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: revokeBy === "user" ? ((f.oimTargets || []).filter(x => !x.isRemoved).map(x => x.name)) : f.oimTargets || []}))
       })
     })
+    console.log({payload})
     const res = await this._apiService.putUsersRevokeRoles(user.login, payload)
     if (!res || res.error) {
       this.setState({ isSave: false })
@@ -421,7 +438,16 @@ class RevokeUsersTransfer extends React.Component {
       }
       notification[failed.length ? 'error' : 'success']({
         message: failed.length ? 'Error' : 'Success',
-        description: message,
+        description:
+          res.manageAccessResponse.map((x, index) => {
+            return(
+              <div key={index.toString()}>
+                <div><b>{x.userLogin}:</b></div>
+                <div className="word-break">Update success - {(x.successSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.successSet || []).length -1 === i ? "" : ","}</span>)}</div>
+                <div className="word-break">Update failed - {(x.failedSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.failedSet || []).length -1 === i ? "" : ","}</span>)}</div>
+              </div>
+            )
+          }) ,
         duration: 0,
         onClick: () => {},
       });
@@ -448,13 +474,26 @@ class RevokeUsersTransfer extends React.Component {
     }
   }
 
-  onRemoveTarget = (key, childIndex, length) => {
-    if(length === 1){
+  onRemoveTarget = (key, childIndex, show) => {
+    if(show){
       return message.error("At least one target should be selected");
     }
     const { selectedData } = this.state
     const index = selectedData.findIndex(x => x.key === key)
-    selectedData[index].oimTargets.splice(childIndex, 1)
+    if(index > -1) {
+      selectedData[index].oimTargets[childIndex].isRemoved = true
+    }
+    this.setState({
+      selectedData
+    })
+  }
+
+  onUndoTargets = (key, childId) => {
+    let { selectedData } = this.state
+    const index = selectedData.findIndex(x => x.key === key)
+    if(index > -1){
+      selectedData[index].oimTargets[childId].isRemoved = false
+    }
     this.setState({
       selectedData
     })
@@ -484,23 +523,27 @@ class RevokeUsersTransfer extends React.Component {
         render: (record) => (
           (record.oimTargets || []).map((role, i) => {
             const length = (record.oimTargets || []).length
+            const isRemove = role.isRemoved
+            const isRemoveLength = (record.oimTargets || []).filter(x => x.isRemoved)
+            const isDisabled = length -1 === isRemoveLength.length
             return(
               <span className="static-tag" key={i.toString()}>
-                {role}
-                  <Popconfirm
-                    title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
-                    disabled={!flag || length === 1}
-                    okText={'Yes'}
-                    cancelText={'No'}
-                    onConfirm={() => this.onRemoveTarget(record.key, i, length)}
-                  >
+                <span className={isRemove ? "text-line-through" : ""}>{role.name}</span>
+                <Popconfirm
+                  title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
+                  disabled={!flag || isRemove || isDisabled}
+                  okText={'Yes'}
+                  cancelText={'No'}
+                  onConfirm={() => this.onRemoveTarget(record.key, i, isDisabled)}
+                >
                 { flag ?
-                  <Icon
-                    type="close"
-                    className="tag-close-icon"
-                    onClick={length === 1 ? () => this.onRemoveTarget(record.key, i, length) : () => {}}
-                  /> :
-                  null
+                  <Tooltip title={isRemove ? "Undo" : "Remove"}>
+                    <Icon
+                      type={isRemove ? "undo" : "close"}
+                      className="tag-close-icon"
+                      onClick={isRemove ? () => this.onUndoTargets(record.key, i) : isDisabled ? () => this.onRemoveTarget(record.key, i, isDisabled) : () => {}}
+                    />
+                  </Tooltip> : null
                 }
                 </Popconfirm>
               </span>
@@ -532,23 +575,27 @@ class RevokeUsersTransfer extends React.Component {
         render: (record) => (
           (record.oimTargets || []).map((role, i) => {
             const length = (record.oimTargets || []).length
+            const isRemove = role.isRemoved
+            const isRemoveLength = (record.oimTargets || []).filter(x => x.isRemoved)
+            const isDisabled = length -1 === isRemoveLength.length
             return(
               <span className="static-tag" key={i.toString()}>
-                {role}
-                  <Popconfirm
-                    title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
-                    disabled={!flag || length === 1}
-                    okText={'Yes'}
-                    cancelText={'No'}
-                    onConfirm={() => this.onRemoveTarget(record.key, i, length)}
-                  >
+                <span className={isRemove ? "text-line-through" : ""}>{role.name}</span>
+                <Popconfirm
+                  title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
+                  disabled={!flag || isRemove || isDisabled}
+                  okText={'Yes'}
+                  cancelText={'No'}
+                  onConfirm={() => this.onRemoveTarget(record.key, i, isDisabled)}
+                >
                 { flag ?
-                  <Icon
-                    type="close"
-                    className="tag-close-icon"
-                    onClick={length === 1 ? () => this.onRemoveTarget(record.key, i, length) : () => {}}
-                  /> :
-                  null
+                  <Tooltip title={isRemove ? "Undo" : "Remove"}>
+                    <Icon
+                      type={isRemove ? "undo" : "close"}
+                      className="tag-close-icon"
+                      onClick={isRemove ? () => this.onUndoTargets(record.key, i) : isDisabled ? () => this.onRemoveTarget(record.key, i, isDisabled) : () => {}}
+                    />
+                  </Tooltip> : null
                 }
                 </Popconfirm>
               </span>

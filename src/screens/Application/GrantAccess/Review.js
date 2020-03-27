@@ -50,11 +50,14 @@ const Review = (props) => {
       headerStyle: {width: "30%"},
       formatter: (record) => {
         return (
-          (record || []).map((role, i) => (
-            <span className="static-tag" key={i.toString()}>
-              {role}
-            </span>
-          ))
+          (record || []).map((role, i) => {
+            if(role.isRemoved) return
+            return(
+              <span className="static-tag" key={i.toString()}>
+                {role.name}
+              </span>
+            )
+          })
         )
       }
     },
@@ -121,7 +124,12 @@ const Review = (props) => {
           headerStyle: {width: "30%"},
           formatter: (record) => {
             return (
-              (record || []).join(",")
+              (record || []).map((x, index) => {
+                if(x.isRemoved) return
+                return (
+                    <span key={index.toString()}>{x.name}{record.length - 1 === index ? "" : ","}</span>
+                )
+              })
             )
           }
         },
@@ -149,6 +157,17 @@ const Review = (props) => {
         }
       ]
     )
+  }
+
+  const isDisabled = () => {
+    const { data, category } = props
+    let array = 0
+    if(data.length){
+      data.forEach(x => {
+        array += category === "user" ? x.roles.length : x.users.length
+      })
+    }
+    return !(array > 0)
   }
 
   const expandRow = {
@@ -201,7 +220,7 @@ const Review = (props) => {
       <div className="text-right mt-3">
         <button className="btn btn-danger btn-sm" onClick={() => props.history.push('/DelegatedAdmin/app-owner')}>Cancel</button>
         &nbsp;&nbsp;
-        <button className="btn btn-success btn-sm" onClick={() => props.onSubmit()} disabled={props && props.isSave}>
+        <button className="btn btn-success btn-sm" onClick={() => props.onSubmit()} disabled={props && props.isSave || isDisabled()}>
           { (props && props.isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
           {' '}Submit
         </button>

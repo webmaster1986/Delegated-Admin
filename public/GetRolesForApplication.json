@@ -23,15 +23,15 @@
             "creationDate": "03/16/2020",
             "oimTarget": "OID",
             "roleDescription": "ROLE1",
-            "roleName": "APPL8_ROLE1",
-            "status": "Active"
+            "roleName": "APPL8_ROLE2",
+            "status": "Disabled"
         },
         {
             "appCode": "APPL8",
             "creationDate": "03/16/2020",
             "oimTarget": "OID",
             "roleDescription": "ROLE2",
-            "roleName": "APPL8_ROLE2",
+            "roleName": "APPL8_ROLE3",
             "status": "Active"
         },
         {
@@ -39,7 +39,7 @@
             "creationDate": "03/16/2020",
             "oimTarget": "IDCS",
             "roleDescription": "ROLE3",
-            "roleName": "APPL8_ROLE3",
+            "roleName": "APPL8_ROLE4",
             "status": "Active"
         }
     ]

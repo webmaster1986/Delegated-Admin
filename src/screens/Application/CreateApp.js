@@ -1,19 +1,14 @@
 import React from "react";
 import {Row, Col, Form, Button, Breadcrumb, InputGroup} from "react-bootstrap";
-import { ApiService } from "../../services/ApiService";
 import {Icon} from 'antd';
 import message from "antd/lib/message";
-// import notification from "antd/lib/notification";
 import Spin from "antd/lib/spin";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
+import { ApiService } from "../../services/ApiService";
+import { isAlphaNum, checkAlphaNum } from "../../constants/constants";
 
-/*const openNotificationWithIcon = (type, message) => {
-    notification[type]({
-        message,
-    });
-};*/
 
 class CreateApp extends React.Component {
     _apiService = new ApiService();
@@ -27,6 +22,7 @@ class CreateApp extends React.Component {
             rolesObject: {roleName: ""},
             appObject: {appName: '', appCode: '', appDescription: '', ownerGroup: '', selectedOwnerGroup: ''},
             appCodeError: '',
+            roleNameError: '',
             duplicateRoleName: '',
             appCode: '',
             selectedOption: null,
@@ -57,19 +53,30 @@ class CreateApp extends React.Component {
     }
 
     onRoleChange = (event) => {
+        let { roleNameError, appObject, rolesObject } = this.state;
         let { name, value } = event.target;
         const object = {}
         if (name === 'roleName') {
+            if(!(appObject.appCode && rolesObject.roleName) && !value.includes("_")){
+                value = `_${value}`
+            }
             value = this.removeAppCode(value)
+            if(value && !isAlphaNum(value)) return
             object.duplicateRoleName = value.toUpperCase()
-            value = this.appendAppCode(value, this.state.appObject.appCode).toUpperCase()
+            if(!checkAlphaNum(value)){
+                roleNameError = 'should have at least one alphabet or digit after the underscore.'
+            } else {
+                roleNameError = ''
+            }
+            value = this.appendAppCode(value, appObject.appCode).toUpperCase()
         }
 
         this.setState({
             rolesObject: {
-                ...this.state.rolesObject,
+                ...rolesObject,
                 [name]: value
             },
+            roleNameError,
             ...object
         })
     }
@@ -78,6 +85,8 @@ class CreateApp extends React.Component {
         const { appObject, duplicateRoleName, rolesList } = this.state
         const { name } = event.target
         const value = ['appName', 'appCode'].includes(name) ? event.target.value.toUpperCase() : event.target.value
+
+        if(name === 'appCode' && !isAlphaNum(value)) return
 
         let object = {}
         let obj = {}
@@ -94,7 +103,7 @@ class CreateApp extends React.Component {
         if(name === 'appCode'){
             obj = {
                 rolesObject: {
-                    roleName: `${value}${duplicateRoleName ? duplicateRoleName : `_${duplicateRoleName}`}`
+                    roleName: `${value}_${duplicateRoleName}`
                 }
             }
 
@@ -261,16 +270,15 @@ class CreateApp extends React.Component {
     }
 
     removeAppCode = (role) => {
-        return role.indexOf('_') > -1 ? role.substr(role.indexOf('_')) : "";
+        return role.indexOf('_') > -1 ? role.substr(role.indexOf('_') + 1) : "";
     };
 
     appendAppCode = (role, appCode) => {
-        const value = `${appCode}${role}`
-        return value.indexOf("_") > -1 ? value : `${appCode}_${role}`
+        return `${appCode}_${role}`
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption, isSave } = this.state;
+        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption, isSave, roleNameError } = this.state;
         const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !(ownerGroup || selectedOwnerGroup) || !rolesList.length;
@@ -439,6 +447,7 @@ class CreateApp extends React.Component {
                                               value={roleName || ""}
                                               onChange={this.onRoleChange}
                                           />
+                                          {roleNameError ? <span className="color-red">{roleNameError}</span> : null}
                                       </Col>
                                       <Col className="pt-2" md={5}>
                                           <Form.Control type="text" placeholder="Role Description"
@@ -460,7 +469,7 @@ class CreateApp extends React.Component {
                                           <Button
                                             type="submit"
                                             onClick={this.onAddRole}
-                                            disabled={!roleName || !oimTarget}
+                                            disabled={!roleName || !oimTarget || roleNameError || !roleDescription}
                                           >
                                               Add Role
                                           </Button>

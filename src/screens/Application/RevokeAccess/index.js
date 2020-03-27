@@ -140,7 +140,9 @@ class RevokeAccess extends Component {
       ownerRoles = []
       message.error('something is wrong! please try again');
     }
-
+    (ownerRoles && ownerRoles.userRoles).forEach(user => {
+      user.oimTargets = (user.oimTargets || []).map(x => ({name: x, isRemoved: false}))
+    })
     this.setState({
       isLoading: false,
       applicationsList: (applicationsList && applicationsList.applications) || [],
@@ -275,7 +277,7 @@ class RevokeAccess extends Component {
         headerStyle: {width: "30%"},
         formatter: (record) => {
           return (
-            (record || []).join(",")
+            (record || []).map(x => x.name).join(",")
           )
         }
       },

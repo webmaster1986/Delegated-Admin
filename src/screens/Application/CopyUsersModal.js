@@ -6,6 +6,8 @@ import {ApiService} from "../../services/ApiService";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
 import difference from "lodash/difference";
+import {Form, InputGroup, Row, Col} from "react-bootstrap";
+import _ from "lodash";
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
     <Transfer {...restProps} showSelectAll={false}>
@@ -65,6 +67,7 @@ class CopyUsersModal extends React.Component {
     users: [],
     userTargetKeys: [],
     usersData: [],
+    search: "",
     step: 1
   }
 
@@ -110,8 +113,33 @@ class CopyUsersModal extends React.Component {
     this.props.onCopyUsers(this.state.userTargetKeys)
   }
 
+  getFilteredList = () => {
+    const { rolesList, search } = this.state
+
+    if(!search){
+      return rolesList || []
+    }
+
+    const filterList = _.cloneDeep(rolesList)
+
+    const searchList = (filterList || []).filter(obj =>
+      ["roleName"].some(key => {
+        return (
+          obj && obj[key] && obj[key].toLowerCase().includes(search.toLowerCase())
+        )
+      })
+    )
+    return searchList || []
+  }
+
+  onChange = (e) => {
+    this.setState({
+      search: e.target.value
+    }, () => this.getFilteredList())
+  }
+
   render(){
-    const {isLoading, rolesList, step, usersList, userTargetKeys} = this.state
+    const {isLoading, rolesList, step, usersList, userTargetKeys, search} = this.state
     const options = {
       hidePageListOnlyOnePage: true,
       hideSizePerPage: true
@@ -195,7 +223,7 @@ class CopyUsersModal extends React.Component {
         footer={
           <div>
             <Button onClick={this.props.onCloseModal}>Cancel</Button>
-            <Button className="ant-btn-primary" disabled={!userTargetKeys.length} onClick={this.onSave}>Save</Button>
+            <Button className="ant-btn-primary" disabled={!userTargetKeys.length} onClick={this.onSave}>Add Selected Users</Button>
           </div>
         }
       >
@@ -213,15 +241,37 @@ class CopyUsersModal extends React.Component {
                   </> : null
                 }
                 { step === 1 ?
-                  <BootstrapTable
-                    bootstrap4
-                    striped
-                    keyField={'roleName'}
-                    data={rolesList || []}
-                    headerClasses="styled-header"
-                    columns={columnsByRole}
-                    pagination={paginationFactory(options)}
-                  /> : null
+                  <div>
+
+                    <Row>
+                      <Col>
+                        <InputGroup className="input-prepend">
+                          <InputGroup.Prepend>
+                            <InputGroup.Text><i className="fa fa-search" /></InputGroup.Text>
+                          </InputGroup.Prepend>
+                          <Form.Control
+                            type="text"
+                            placeholder="search"
+                            aria-describedby="inputGroupPrepend"
+                            value={search || ""}
+                            onChange={this.onChange}
+                          />
+                        </InputGroup>
+                      </Col>
+                    </Row>
+                    <br/>
+
+                    <BootstrapTable
+                        bootstrap4
+                        striped
+                        keyField={'roleName'}
+                        data={this.getFilteredList() || []}
+                        headerClasses="styled-header"
+                        columns={columnsByRole}
+                        pagination={paginationFactory(options)}
+                    />
+
+                  </div> : null
                 }
 
                 {

@@ -1,0 +1,13 @@
+{
+	"identifier": "APL8_ROLE1",
+	"operation": "Activate Role",
+	"role": {
+		"appCode": "APPL8",
+		"creationDate": "03/26/2020",
+		"oimTarget": "IDCS",
+		"roleDescription": "Role1",
+		"roleName": "APPL8_ROLE1",
+		"status": "Active"
+	}
+
+}

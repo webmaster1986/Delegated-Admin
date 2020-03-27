@@ -66,11 +66,7 @@ export class ApiService {
         }
         let resData = '';
         const response = await axiosInstance.post(url, data, config).catch(thrown => {
-            if (thrown.toString() === 'Cancel') {
-                resData = 'cancel';
-            } else {
-                resData = {error: 'something went wrong'};;
-            }
+            resData = {error: 'something went wrong' , errorData: thrown};
         });
         return resData || response.data;
     }
@@ -86,11 +82,7 @@ export class ApiService {
         }
         let resData = '';
         const response = await axiosInstance.put(url, data, config).catch(thrown => {
-            if (thrown.toString() === 'Cancel') {
-                resData = 'cancel';
-            } else {
-                resData = {error: 'something went wrong'};;
-            }
+            resData = {error: 'something went wrong' , errorData: thrown};
         });
         return resData || response.data;
     }
@@ -105,16 +97,8 @@ export class ApiService {
             config.cancelToken = cancelToken.token;
         }
         let resData = '';
-        const response = await axios({
-            method: 'DELETE',
-            url: url,
-            data
-        }).catch(thrown => {
-            if (thrown.toString() === 'Cancel') {
-                resData = 'cancel';
-            } else {
-                resData = {error: 'something went wrong'};
-            }
+        const response = await axiosInstance.delete(url, data, config).catch(thrown => {
+            resData = {error: 'something went wrong' , errorData: thrown};
         })
         return resData || response.data;
     }
@@ -154,6 +138,7 @@ export class ApiService {
     }
 
     async rolesStatusActiveDisable(body, appCode, status) {
+        // return await ApiService.getData(status === "activate" ? "ActiveRole.json" : "DisableRole.json");
         return await ApiService.putMethod(`v1/roles/${body.roleName}/${status}`, body);
     }
 
@@ -250,13 +235,13 @@ export class ApiService {
     }
 
     async logout () {
-        const res = await ApiService.postMethod(`v1/logout`);
-        if (!res || res.error) {
-            return message.error('something is wrong! please try again');
-        } else {
+        const res = await ApiService.getData(`logout.json`);
+        // const res = await ApiService.postMethod(`v1/logout`);
+        if (res && res.status === "SUCCESS") {
             cookies.remove('USER_ROLE', { path: '/'})
-            window.history.pushState({}, document.title, "/");
-            window.location.reload()
+            window.location.href = "http://www.fdny.org"
+        } else {
+            return message.error('something is wrong! please try again');
         }
     }
 

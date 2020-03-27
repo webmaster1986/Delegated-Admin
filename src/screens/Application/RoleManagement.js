@@ -8,6 +8,7 @@ import {ApiService} from "../../services/ApiService";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
+import {checkAlphaNum, isAlphaNum} from "../../constants/constants";
 
 
 class RoleManagement extends React.Component {
@@ -23,7 +24,8 @@ class RoleManagement extends React.Component {
             statusButtonDisabled: false,
             isSave: false,
             isSaveStatus: false,
-            selectedOption: null
+            selectedOption: null,
+            roleNameError: ""
         }
     }
 
@@ -78,25 +80,36 @@ class RoleManagement extends React.Component {
     }
 
     onChange = (event) => {
+        let { appObject, rolesObject, roleNameError } = this.state
         let { name, value } = event.target
         if (name === 'roleName') {
-            value = this.removeAppCode(value).toUpperCase()
+            if(!(rolesObject.roleName) && !value.includes("_")){
+                value = `_${value}`
+            }
+            value = this.removeAppCode(value)
+            if(value && !isAlphaNum(value)) return
+            if(!checkAlphaNum(value)){
+                roleNameError = 'should have at least one alphabet or digit after the underscore.'
+            } else {
+                roleNameError = ''
+            }
+            value = this.appendAppCode(value, appObject.appCode).toUpperCase()
         }
         this.setState({
             rolesObject: {
                 ...this.state.rolesObject,
                 [name]: value
-            }
+            },
+            roleNameError
         })
     }
 
-    removeAppCode = (value) => {
-        const index = value.indexOf("_")
-        if(index === -1) {
-            return `${this.state.appObject.appCode}_`
-        }
-        const setValue = value.substring(index + 1)
-        return `${this.state.appObject.appCode}_${setValue}`
+    removeAppCode = (role) => {
+        return role.indexOf('_') > -1 ? role.substr(role.indexOf('_') + 1) : "";
+    };
+
+    appendAppCode = (role, appCode) => {
+        return `${appCode}_${role}`
     }
 
     onAddRole = async () => {
@@ -120,6 +133,7 @@ class RoleManagement extends React.Component {
                 rolesObject.oimTarget.forEach(item => {
                     body.push({
                         roleName: rolesObject.roleName,
+                        roleDescription: rolesObject.roleDescription,
                         oimTarget: item,
                     })
                 })
@@ -131,11 +145,15 @@ class RoleManagement extends React.Component {
             })
             const data = await this._apiService.addRoleToApplication(appObject.appCode, body)
             if (!data || data.error) {
+                let errMessage = "something is wrong! please try again"
+                if(data && data.errorData && data.errorData.response && data.errorData.response.data && data.errorData.response.data.message) {
+                    errMessage = data.errorData.response.data.message
+                }
                 this.setState({
                     isLoading: false,
                     isSave: false
                 })
-                return message.error('something is wrong! please try again');
+                return message.error(errMessage);
             } else {
                 this.setState({
                     isLoading: false,
@@ -159,26 +177,28 @@ class RoleManagement extends React.Component {
         })
         const data = await this._apiService.rolesStatusActiveDisable({oimTarget, roleName}, appObject.appCode, type)
         if (!data || data.error) {
+
+            let errMessage = "something is wrong! please try again"
+            if(data && data.errorData && data.errorData.response && data.errorData.response.data && data.errorData.response.data.message) {
+                errMessage = data.errorData.response.data.message
+            }
             this.setState({
                 isLoading: false,
                 statusButtonDisabled: false
             })
-            return message.error('something is wrong! please try again');
+            return message.error(errMessage);
+
         } else {
-            const rolesForApp =  await this._apiService.getRolesForApp(appObject.appCode)
-            if (!rolesForApp || rolesForApp.error) {
-                this.setState({
-                    isLoading: false,
-                    statusButtonDisabled: false
-                })
-                return message.error('something is wrong! please try again');
-            } else {
-                this.setState({
-                    isLoading: false,
-                    statusButtonDisabled: false,
-                    rolesList: ((rolesForApp && rolesForApp.userRoles) || []).map((role, index) => ({...role, id: index})) || []
-                })
+            const { rolesList } = this.state
+            const index = (rolesList || []).findIndex(role => role.roleName === roleName)
+            if(index > -1) {
+                rolesList[index] = {...rolesList[index], ...data.role}
             }
+            this.setState({
+                rolesList,
+                isLoading: false,
+                statusButtonDisabled: false
+            })
         }
     }
 
@@ -194,7 +214,7 @@ class RoleManagement extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled, isSave } = this.state;
+        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled, isSave, roleNameError } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const rolesListColumn = [
@@ -341,6 +361,7 @@ class RoleManagement extends React.Component {
                                                 value={roleName || ""}
                                                 onChange={this.onChange}
                                             />
+                                            {roleNameError ? <span className="color-red">{roleNameError}</span> : null}
                                         </Col>
                                         <Col className="pt-2" md={5}>
                                             <Form.Control
@@ -363,7 +384,7 @@ class RoleManagement extends React.Component {
                                             />
                                         </Col>
                                         <Col md={2} className={'pt-2'}>
-                                            <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget || isSave}>
+                                            <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget || isSave || roleNameError || !roleDescription}>
                                                 { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
                                                 {' '}Add Role
                                             </Button>

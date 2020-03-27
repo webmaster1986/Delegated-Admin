@@ -1,22 +1,7 @@
 {
   "manageAccessResponse": [
     {
-      "failedSet": [
-        {
-           "oimTargets": [
-               "IDCS",
-               "OID"
-           ],
-           "roleName": "APL10_ROLE1"
-         },
-        {
-           "oimTargets": [
-               "IDCS",
-               "OID"
-           ],
-           "roleName": "APL10_ROLE1"
-         }
-      ],
+      "failedSet": [],
       "successSet": [
         {
           "oimTargets": [

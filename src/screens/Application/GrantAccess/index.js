@@ -5,7 +5,7 @@ import Cookies from "universal-cookie"
 import Spin from "antd/lib/spin";
 import _ from "lodash"
 import Select from 'react-select';
-import { Table, Transfer, Popconfirm, Icon, notification } from 'antd/lib'
+import { Table, Transfer, Popconfirm, Icon, notification, Tooltip } from 'antd/lib'
 import difference from 'lodash/difference'
 import message from "antd/lib/message";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
@@ -159,7 +159,7 @@ class Index extends Component {
             })
             this.setState({ roleTargetKeys: nextTargetKeys, rolesData: data });
         } else {
-            this.setState({ roleTargetKeys: [], rolesData: [] });
+            this.setState({ roleTargetKeys: [], rolesData: [], removeTargets: {} });
         }
     };
 
@@ -339,10 +339,11 @@ class Index extends Component {
             roles.forEach((role) => {
                 (role.users || []).forEach(u => {
                     const isExists = totalUsers.find(user => user.userLogin === u.userLogin)
+                    const targetList = (role.oimTargets || []).filter(x => !x.isRemoved)
                     const newRole = {
                         roleName: role.roleName,
                         roleDescription: role.roleDescription,
-                        oimTargets: role.oimTargets
+                        oimTargets: (targetList || []).map(x => x.name)
                     }
                     if(!isExists){
                         u = {
@@ -370,10 +371,11 @@ class Index extends Component {
             usersData.forEach(user => {
                 payload.push({
                     userLogin: user.userLogin,
-                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: f.oimTargets || []}))
+                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: ((f.oimTargets || []).filter(x => !x.isRemoved).map(x => x.name)) || []}))
                 })
             })
         }
+        console.log({payload})
         const res = await this._apiService.putUsersRoles(user.login, payload)
         if (!res || res.error) {
             this.setState({
@@ -404,7 +406,16 @@ class Index extends Component {
             }
             notification[failed.length ? 'error' : 'success']({
                 message: failed.length ? 'Error' : 'Success',
-                description: message,
+                description:
+                res.manageAccessResponse.map((x, index) => {
+                    return(
+                        <div key={index.toString()}>
+                            <div><b>{x.userLogin}:</b></div>
+                            <div className="word-break">Update success - {(x.successSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.successSet || []).length -1 === i ? "" : ","}</span>)}</div>
+                            <div className="word-break">Update failed - {(x.failedSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.failedSet || []).length -1 === i ? "" : ","}</span>)}</div>
+                        </div>
+                    )
+                }) ,
                 duration: 0,
                 onClick: () => {},
             });
@@ -479,7 +490,9 @@ class Index extends Component {
             ownerRoles = []
             message.error('something is wrong! please try again');
         }
-
+        (ownerRoles && ownerRoles.userRoles).forEach(user => {
+            user.oimTargets = (user.oimTargets || []).map(x => ({name: x, isRemoved: false}))
+        })
         this.setState({
             isLoading: false,
             applicationsList: (applicationsList && applicationsList.applications) || [],
@@ -587,13 +600,26 @@ class Index extends Component {
         }, () => this.getRoles())
     }
 
-    onRemoveTarget = (key, childIndex, length) => {
-        if(length === 1){
+    onRemoveTarget = (key, childIndex, show) => {
+        if(show){
             return message.error("At least one target should be selected");
         }
         const { rolesData } = this.state
         const index = rolesData.findIndex(x => x.key === key)
-        rolesData[index].oimTargets.splice(childIndex, 1)
+        if(index > -1) {
+            rolesData[index].oimTargets[childIndex].isRemoved = true
+        }
+        this.setState({
+            rolesData
+        })
+    }
+
+    onUndoTargets = (key, childId) => {
+        let { rolesData } = this.state
+        const index = rolesData.findIndex(x => x.key === key)
+        if(index > -1){
+            rolesData[index].oimTargets[childId].isRemoved = false
+        }
         this.setState({
             rolesData
         })
@@ -601,7 +627,8 @@ class Index extends Component {
 
     onCopyUserModal = () => {
         this.setState({
-            copyUserModal: !this.state.copyUserModal
+            copyUserModal: !this.state.copyUserModal,
+            searchString: ""
         })
     }
 
@@ -609,7 +636,7 @@ class Index extends Component {
         const { users, usersData, userTargetKeys } = this.state
         keys.forEach(key => {
             const obj = (users || []).find(x => x.userLogin === key)
-            if(!(userTargetKeys.includes(obj.id))) {
+            if(Object.keys(obj).length && !(userTargetKeys.includes(obj.id))) {
                 usersData.push(obj)
                 userTargetKeys.push(obj.id)
             }
@@ -623,7 +650,7 @@ class Index extends Component {
 
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users, searchRoleList,
-            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, copyUserModal } = this.state;
+            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, copyUserModal, removeTargets } = this.state;
         const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
 
@@ -646,23 +673,27 @@ class Index extends Component {
                 render: (record) => (
                     (record.oimTargets || []).map((role, i) => {
                         const length = (record.oimTargets || []).length
+                        const isRemove = role.isRemoved
+                        const isRemoveLength = (record.oimTargets || []).filter(x => x.isRemoved)
+                        const isDisabled = length -1 === isRemoveLength.length
                         return(
                             <span className="static-tag" key={i.toString()}>
-                                {role}
+                                <span className={isRemove ? "text-line-through" : ""}>{role.name}</span>
                                 <Popconfirm
                                     title={"This role is linked to multiple targets. Are you sure you want to assign the role partially?"}
-                                    disabled={!flag || length === 1}
+                                    disabled={!flag || isRemove || isDisabled}
                                     okText={'Yes'}
                                     cancelText={'No'}
-                                    onConfirm={() => this.onRemoveTarget(record.key, i, length)}
+                                    onConfirm={() => this.onRemoveTarget(record.key, i, isDisabled)}
                                 >
                                 { flag ?
-                                    <Icon
-                                        type="close"
-                                        className="tag-close-icon"
-                                        onClick={length === 1 ? () => this.onRemoveTarget(record.key, i, length) : () => {}}
-                                    /> :
-                                    null
+                                    <Tooltip title={isRemove ? "Undo" : "Remove"}>
+                                        <Icon
+                                            type={isRemove ? "undo" : "close"}
+                                            className="tag-close-icon"
+                                            onClick={isRemove ? () => this.onUndoTargets(record.key, i) : isDisabled ? () => this.onRemoveTarget(record.key, i, isDisabled) : () => {}}
+                                        />
+                                    </Tooltip> : null
                                 }
                                 </Popconfirm>
                             </span>
@@ -733,7 +764,7 @@ class Index extends Component {
 
         return(
             <div className={"mt-3"}>
-                { copyUserModal ? <CopyUsersModal onCloseModal={this.onCopyUserModal} toggleUserModal={this.toggleUserModal} onCopyUsers={this.onCopyUsers}/> : null }
+                { copyUserModal ? <CopyUsersModal onCloseModal={this.onCopyUserModal} usersData={usersData} toggleUserModal={this.toggleUserModal} onCopyUsers={this.onCopyUsers}/> : null }
                 {
                     (selectBy === "roles" && step2) || (selectBy === "user" && step1) || preview ?
                         <a className="back-btn" onClick={preview ? this.onPreviewBack : step1 ? this.onRoleBack : this.onUserBack}>

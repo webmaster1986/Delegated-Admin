@@ -16,7 +16,9 @@
             "creationDate": "03/19/2020",
             "oimTargets": [
                 "IDCS",
-                "OID"
+                "OID",
+                "A",
+                "B"
             ],
             "roleDescription": "Description",
             "roleName": "APL10_ROLE1",
@@ -35,7 +37,11 @@
             "appCode": "APL11",
             "creationDate": "03/19/2020",
             "oimTargets": [
-                "OID"
+                "OID",
+                "XX",
+                "YY",
+                "ZZ",
+                "ZA"
             ],
             "roleDescription": "Owner group for application APL11",
             "roleName": "APL11_OWNER",

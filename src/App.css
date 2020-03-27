@@ -314,7 +314,7 @@ code {
   height: auto;
   margin-right: 8px;
   padding: 0 7px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   white-space: nowrap;
   background: #fafafa;
@@ -328,7 +328,7 @@ code {
 
 .tag-close-icon {
   display: inline-block;
-  font-size: 12px;
+  font-size: 14px;
   /*font-size: 10px \9;*/
   /*-webkit-transform: scale(0.83333333) rotate(0deg);*/
   /*-ms-transform: scale(0.83333333) rotate(0deg);*/
@@ -345,4 +345,13 @@ code {
   border-top-left-radius: .25rem !important;
   border-bottom-left-radius: .25rem !important;
   margin-left: 100px;
+}
+
+.text-line-through {
+  text-decoration: line-through;
+  color: red;
+}
+
+.word-break {
+  word-break: break-all;
 }

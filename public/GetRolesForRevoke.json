@@ -43,6 +43,33 @@
             "roleDescription": "ROLE2",
             "roleName": "APPL3_ROLE2",
             "status": "Active"
+        },
+        {
+            "appCode": "APPL4",
+            "creationDate": "03/19/2020",
+            "oimTargets": [
+                "IDCS",
+                "OID",
+                "A",
+                "B"
+            ],
+            "roleDescription": "Description",
+            "roleName": "APL10_ROLE1",
+            "status": "Active"
+        },
+        {
+            "appCode": "APL11",
+            "creationDate": "03/19/2020",
+            "oimTargets": [
+                "OID",
+                "XX",
+                "YY",
+                "ZZ",
+                "ZA"
+            ],
+            "roleDescription": "Owner group for application APL11",
+            "roleName": "APL11_OWNER",
+            "status": "Active"
         }
     ]
 }

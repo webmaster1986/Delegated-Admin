@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal} from 'antd';
+import {Button, Modal} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import {ApiService} from "../../services/ApiService";
@@ -48,14 +48,20 @@ class RoleModal extends React.Component {
       { label: 'Role Name', key: 'roleName' },
       { label: 'Role description', key: 'roleDescription' },
       { label: 'Available Targets', key: 'oimTargets' },
+      { label: 'Role Creation Date', key: 'creationDate' },
     ];
     return (
       <Modal
         title="Role Info"
         visible={true}
-        width={800}
-        onOk={this.props.toggleModal}
+        width={"50%"}
+        // onOk={this.props.toggleModal}
         onCancel={this.props.toggleModal}
+        footer={
+          <div>
+            <Button className="ant-btn-primary" onClick={this.props.toggleModal}>Close</Button>
+          </div>
+        }
       >
         <>
           {
@@ -75,6 +81,7 @@ class RoleModal extends React.Component {
                   )}
                 </Row>
                 <br/>
+                <h6>Users Assigned</h6>
                 <BootstrapTable
                   bootstrap4
                   striped
