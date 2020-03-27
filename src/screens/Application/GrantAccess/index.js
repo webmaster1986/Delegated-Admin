@@ -36,7 +36,7 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
               onItemSelect,
               selectedKeys: listSelectedKeys,
               disabled: listDisabled,
-        }) => {
+          }) => {
             const columns = direction === 'left' ? leftColumns : rightColumns;
 
             const rowSelection = {
@@ -363,14 +363,14 @@ class Index extends Component {
             totalUsers.forEach(user => {
                 payload.push({
                     userLogin: user.userLogin,
-                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargetss: f.oimTargets || []}))
+                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: f.oimTargets || []}))
                 })
             })
         } else {
             usersData.forEach(user => {
                 payload.push({
                     userLogin: user.userLogin,
-                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargetss: f.oimTargets || []}))
+                    roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: f.oimTargets || []}))
                 })
             })
         }
@@ -736,10 +736,10 @@ class Index extends Component {
                 { copyUserModal ? <CopyUsersModal onCloseModal={this.onCopyUserModal} toggleUserModal={this.toggleUserModal} onCopyUsers={this.onCopyUsers}/> : null }
                 {
                     (selectBy === "roles" && step2) || (selectBy === "user" && step1) || preview ?
-                      <a className="back-btn" onClick={preview ? this.onPreviewBack : step1 ? this.onRoleBack : this.onUserBack}>
-                          <i className="fa fa-chevron-left"/>{"  Back"}
-                      </a>
-                      : null
+                        <a className="back-btn" onClick={preview ? this.onPreviewBack : step1 ? this.onRoleBack : this.onUserBack}>
+                            <i className="fa fa-chevron-left"/>{"  Back"}
+                        </a>
+                        : null
                 }
                 <div className={'container-design'}>
                     <h4 className="text-left">
@@ -849,7 +849,7 @@ class Index extends Component {
                                                     filterOption={(inputValue, item) => {
                                                         return ["roleName", "roleDescription"].some(key => {
                                                             return (
-                                                              item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
+                                                                item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
                                                             )
                                                         })
                                                     }}

@@ -125,7 +125,7 @@ export class ApiService {
     }
 
     async getAllApplicationsByOwner(appId) {
-        return await ApiService.getData(`v1/owner-applications/${appId || ""}`);
+        return await ApiService.getData(`v1/users/owner-applications/${appId || ""}`);
     }
 
     async applicationOnBoarding(body) {
@@ -193,7 +193,7 @@ export class ApiService {
 
     async getOwnerApplications(userId) {
         // return await ApiService.getData(`GetOwnerApplicationsForUser.json`);
-        return await ApiService.getData(`v1/owner-applications `);
+        return await ApiService.getData(`v1/users/owner-applications `);
     }
 
     async getApplications(userId) {
@@ -203,7 +203,7 @@ export class ApiService {
 
     async getOwnerRoles(userId) {
         // return await ApiService.getData(`GetOwnerRolesForUser.json`);
-        return await ApiService.getData(`v1/owner-roles `);
+        return await ApiService.getData(`v1/users/owner-roles `);
     }
 
     async getSuperOwnerRoles(userId) {
