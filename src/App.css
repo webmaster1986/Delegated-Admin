@@ -355,3 +355,17 @@ code {
 .word-break {
   word-break: break-all;
 }
+
+.w-80-px {
+  width: 80px;
+}
+
+.ant-message-notice-content {
+  text-align: left;
+}
+
+.close-message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

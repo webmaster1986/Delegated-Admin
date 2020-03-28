@@ -12,7 +12,7 @@ import {ApiService, getLoginUser} from "../../../services/ApiService";
 import Review from "./Review";
 import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
-import { ROLES, showNotification } from "../../../constants/constants"
+import {ROLES, setErrorMsg, showNotification} from "../../../constants/constants"
 import CopyUsersModal from "../CopyUsersModal"
 
 const cookies = new Cookies();
@@ -378,11 +378,12 @@ class Index extends Component {
         console.log({payload})
         const res = await this._apiService.putUsersRoles(user.login, payload)
         if (!res || res.error) {
+            const errMessage = setErrorMsg(res)
             this.setState({
                 isLoading: false,
                 isSave: false
             })
-            return message.error('something is wrong! please try again');
+            return message.error(errMessage);
         } else {
 
             const isError = showNotification(res, "Grant access")

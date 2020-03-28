@@ -109,6 +109,15 @@ class RoleModal extends React.Component {
                       dataField: 'email',
                       text: 'Email',
                       sort: true
+                    },
+                    {
+                      dataField: 'oimTargets',
+                      text: 'Assigned Targets',
+                      formatter: (record) => {
+                        return (
+                            (record || []).join(",")
+                        )
+                      }
                     }
                   ]}
                 />

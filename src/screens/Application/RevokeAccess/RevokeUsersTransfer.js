@@ -6,7 +6,7 @@ import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import {showNotification} from "../../../constants/constants";
+import {setErrorMsg, showNotification} from "../../../constants/constants";
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   <Transfer {...restProps} showSelectAll={false}>
@@ -434,8 +434,9 @@ class RevokeUsersTransfer extends React.Component {
     console.log({payload})
     const res = await this._apiService.putUsersRevokeRoles(user.login, payload)
     if (!res || res.error) {
+      const errMessage = setErrorMsg(res)
       this.setState({ isSave: false })
-      return message.error('something is wrong! please try again');
+      return message.error(errMessage);
     } else {
 
       const isError = showNotification(res, "Revoke access")

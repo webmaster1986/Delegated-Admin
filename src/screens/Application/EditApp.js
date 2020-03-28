@@ -5,6 +5,7 @@ import message from "antd/lib/message";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
+import {setErrorMsg} from "../../constants/constants";
 
 
 class EditApp extends React.Component {
@@ -95,11 +96,12 @@ class EditApp extends React.Component {
             const body = [{roleName: rolesObject.roleName, oimTarget: rolesObject.oimTarget}]
             const data = await this._apiService.addRole(body, appObject.appCode)
             if (!data || data.error) {
+                const errMessage = setErrorMsg(data)
                 this.setState({
                     isLoading: false,
                     isAddRole: false
                 })
-                return message.error('something is wrong! please try again');
+                return message.error(errMessage);
             } else {
                 this.setState({
                     rolesList,
@@ -117,11 +119,12 @@ class EditApp extends React.Component {
         this.setState({isSave: true})
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
+            const errMessage = setErrorMsg(data)
             this.setState({
                 isLoading: false,
                 isSave: false
             })
-            return message.error('something is wrong! please try again');
+            return message.error(errMessage);
         } else {
             this.setState({
                 isLoading: false,

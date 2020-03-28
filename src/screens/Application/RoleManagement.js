@@ -8,7 +8,7 @@ import {ApiService} from "../../services/ApiService";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
-import {checkAlphaNum, isAlphaNum} from "../../constants/constants";
+import {setErrorMsg, isAlphaNum} from "../../constants/constants";
 
 
 class RoleManagement extends React.Component {
@@ -149,10 +149,7 @@ class RoleManagement extends React.Component {
             })
             const data = await this._apiService.addRoleToApplication(appObject.appCode, body)
             if (!data || data.error) {
-                let errMessage = "something is wrong! please try again"
-                if(data && data.errorData && data.errorData.response && data.errorData.response.data && data.errorData.response.data.message) {
-                    errMessage = data.errorData.response.data.message
-                }
+                const errMessage = setErrorMsg(data)
                 this.setState({
                     isLoading: false,
                     isSave: false
@@ -181,11 +178,7 @@ class RoleManagement extends React.Component {
         })
         const data = await this._apiService.rolesStatusActiveDisable({oimTarget, roleName}, appObject.appCode, type)
         if (!data || data.error) {
-
-            let errMessage = "something is wrong! please try again"
-            if(data && data.errorData && data.errorData.response && data.errorData.response.data && data.errorData.response.data.message) {
-                errMessage = data.errorData.response.data.message
-            }
+            const errMessage = setErrorMsg(data)
             this.setState({
                 isLoading: false,
                 statusButtonDisabled: false
@@ -246,15 +239,19 @@ class RoleManagement extends React.Component {
                     //   row.status === 'Active' ? 'Disable' : row.status === 'Disabled' ? 'Activate' :
                     //     row.status === 'Failed' ? 'Retry' : ''
                     let buttonName = '';
+                    let className = '';
 
                     if (row.roleName === `${appCode}_OWNER`) {
                         buttonName = ''
                     } else if (row.status === 'Active') {
                         buttonName = 'Disable'
+                        className = 'danger'
                     } else if (row.status === 'Disabled') {
                         buttonName = 'Activate'
+                        className = 'primary'
                     } else if (row.status === 'Failed') {
                         buttonName = 'Retry'
+                        className = 'warning'
                     } else {
                         buttonName = ''
                     }
@@ -263,7 +260,7 @@ class RoleManagement extends React.Component {
                         <div className="text-center">
                             {
                                 buttonName ?
-                                    <Button variant={row.status === 'Disabled' ? 'primary' : 'danger'} size={'sm'} onClick={() => this.onChangeStatus(row)} disabled={statusButtonDisabled}>
+                                    <Button variant={className} className="w-80-px" size={'sm'} onClick={() => this.onChangeStatus(row)} disabled={statusButtonDisabled}>
                                         {buttonName}
                                     </Button> : null
                             }

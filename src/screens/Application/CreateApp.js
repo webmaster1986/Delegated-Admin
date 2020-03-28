@@ -7,7 +7,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
 import { ApiService } from "../../services/ApiService";
-import { isAlphaNum, checkAlphaNum } from "../../constants/constants";
+import {isAlphaNum, checkAlphaNum, setErrorMsg} from "../../constants/constants";
 
 
 class CreateApp extends React.Component {
@@ -218,7 +218,8 @@ class CreateApp extends React.Component {
         })
         const data =  await this._apiService.applicationOnBoarding(payload)
         if (!data || data.error) {
-            message.error('something is wrong! please try again');
+            const errMessage = setErrorMsg(data)
+            message.error(errMessage);
             this.setState({ isSave: false })
             // openNotificationWithIcon('error', "Something went Wrong!")
         } else {

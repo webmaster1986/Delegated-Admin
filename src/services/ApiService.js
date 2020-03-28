@@ -97,7 +97,7 @@ export class ApiService {
             config.cancelToken = cancelToken.token;
         }
         let resData = '';
-        const response = await axiosInstance.delete(url, data, config).catch(thrown => {
+        const response = await axiosInstance.delete(url, {data}).catch(thrown => {
             resData = {error: 'something went wrong' , errorData: thrown};
         })
         return resData || response.data;
