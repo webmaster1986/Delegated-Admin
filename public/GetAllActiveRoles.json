@@ -40,8 +40,7 @@
                 "OID",
                 "XX",
                 "YY",
-                "ZZ",
-                "ZA"
+                "ZZ"
             ],
             "roleDescription": "Owner group for application APL11",
             "roleName": "APL11_OWNER",

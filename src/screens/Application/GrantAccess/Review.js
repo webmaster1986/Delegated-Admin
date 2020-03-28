@@ -50,11 +50,10 @@ const Review = (props) => {
       headerStyle: {width: "30%"},
       formatter: (record) => {
         return (
-          (record || []).map((role, i) => {
-            if(role.isRemoved) return
+          (record || []).map((role, index) => {
             return(
-              <span className="static-tag" key={i.toString()}>
-                {role.name}
+              <span className="static-tag" key={index.toString()}>
+                <span className={role.isRemoved ? "text-line-through" : ""}>{role.name}</span>
               </span>
             )
           })
@@ -124,10 +123,11 @@ const Review = (props) => {
           headerStyle: {width: "30%"},
           formatter: (record) => {
             return (
-              (record || []).map((x, index) => {
-                if(x.isRemoved) return
+              (record || []).map((role, index) => {
                 return (
-                    <span key={index.toString()}>{x.name}{record.length - 1 === index ? "" : ","}</span>
+                  <span className="static-tag" key={index.toString()}>
+                    <span className={role.isRemoved ? "text-line-through" : ""}>{role.name}</span>
+                  </span>
                 )
               })
             )
@@ -137,11 +137,6 @@ const Review = (props) => {
           text: 'App Code',
           dataField: 'appCode',
           headerStyle: {width: "20%"},
-          formatter: (cell, row) => {
-            return (
-              <div className="link-text"><u onClick={(e) => props.toggleModal(e, row)}>{cell}</u></div>
-            )
-          }
         },
         /* {text: 'Role Description', dataField: 'roleDescription'}, */
         /* {text: 'OIM Target', dataField: 'oimTargets'}, */

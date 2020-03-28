@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Breadcrumb, InputGroup} from "react-bootstrap";
+import {Row, Col, Form, Button, Breadcrumb, Tooltip} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
@@ -25,7 +25,8 @@ class RoleManagement extends React.Component {
             isSave: false,
             isSaveStatus: false,
             selectedOption: null,
-            roleNameError: ""
+            roleNameError: "",
+            duplicateRoleName: ""
         }
     }
 
@@ -82,17 +83,19 @@ class RoleManagement extends React.Component {
     onChange = (event) => {
         let { appObject, rolesObject, roleNameError } = this.state
         let { name, value } = event.target
+        const object = {}
         if (name === 'roleName') {
             if(!(rolesObject.roleName) && !value.includes("_")){
                 value = `_${value}`
             }
             value = this.removeAppCode(value)
             if(value && !isAlphaNum(value)) return
-            if(!checkAlphaNum(value)){
-                roleNameError = 'should have at least one alphabet or digit after the underscore.'
-            } else {
-                roleNameError = ''
-            }
+            object.duplicateRoleName = value.toUpperCase()
+            // if(!checkAlphaNum(value)){
+            //     roleNameError = 'should have at least one alphabet or digit after the underscore.'
+            // } else {
+            //     roleNameError = ''
+            // }
             value = this.appendAppCode(value, appObject.appCode).toUpperCase()
         }
         this.setState({
@@ -100,7 +103,8 @@ class RoleManagement extends React.Component {
                 ...this.state.rolesObject,
                 [name]: value
             },
-            roleNameError
+            roleNameError,
+            ...object
         })
     }
 
@@ -171,7 +175,7 @@ class RoleManagement extends React.Component {
     onChangeStatus = async (record) => {
         const {appObject} = this.state
         const {roleName, status, oimTarget} = record
-        const type = status === "Active" ? "disable" : "activate"
+        const type = status === "Active" ? "disable" : status === "Failed" ? "retry" : "activate"
         this.setState({
             statusButtonDisabled: true
         })
@@ -214,7 +218,7 @@ class RoleManagement extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled, isSave, roleNameError } = this.state;
+        const { rolesObject, appObject, rolesList, isLoading, oimTargetList, selectedOption, statusButtonDisabled, isSave, roleNameError, duplicateRoleName } = this.state;
         const { appName, appCode, appDescription, ownerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const rolesListColumn = [
@@ -262,6 +266,11 @@ class RoleManagement extends React.Component {
                                     <Button variant={row.status === 'Disabled' ? 'primary' : 'danger'} size={'sm'} onClick={() => this.onChangeStatus(row)} disabled={statusButtonDisabled}>
                                         {buttonName}
                                     </Button> : null
+                            }
+                            {
+                                row.status === "Pending" ?
+                                    <Icon type="info-circle" style={{fontSize: 20}} title="Status will be updated after the external scheduler runs."/>
+                                     : null
                             }
                         </div>
                     )
@@ -384,7 +393,7 @@ class RoleManagement extends React.Component {
                                             />
                                         </Col>
                                         <Col md={2} className={'pt-2'}>
-                                            <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget || isSave || roleNameError || !roleDescription}>
+                                            <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget || isSave || roleNameError || !roleDescription || !duplicateRoleName}>
                                                 { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
                                                 {' '}Add Role
                                             </Button>

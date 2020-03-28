@@ -12,7 +12,7 @@ import {ApiService, getLoginUser} from "../../../services/ApiService";
 import Review from "./Review";
 import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
-import { ROLES } from "../../../constants/constants"
+import { ROLES, showNotification } from "../../../constants/constants"
 import CopyUsersModal from "../CopyUsersModal"
 
 const cookies = new Cookies();
@@ -385,53 +385,7 @@ class Index extends Component {
             return message.error('something is wrong! please try again');
         } else {
 
-            let success = []
-            let failed = []
-            let message = ""
-            let isError = false
-
-            res.manageAccessResponse.forEach(manage => {
-                if(manage.successSet && manage.successSet.length){
-                    success = success.length ? success.concat(manage.successSet) : manage.successSet
-                }
-                if(manage.failedSet && manage.failedSet.length){
-                    failed = failed.length ? failed.concat(manage.failedSet) : manage.failedSet
-                }
-            })
-            if(failed.length){
-                message = `${failed.map(x => x.roleName).join(",")} has been fail to update`
-                isError = true
-            } else {
-                message = `${success.map(x => x.roleName).join(",")} has been successfully updated`
-            }
-            notification[failed.length ? 'error' : 'success']({
-                message: failed.length ? 'Error' : 'Success',
-                description:
-                res.manageAccessResponse.map((x, index) => {
-                    return(
-                        <div key={index.toString()}>
-                            <div><b>{x.userLogin}:</b></div>
-                            <div className="word-break">Update success - {(x.successSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.successSet || []).length -1 === i ? "" : ","}</span>)}</div>
-                            <div className="word-break">Update failed - {(x.failedSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.failedSet || []).length -1 === i ? "" : ","}</span>)}</div>
-                        </div>
-                    )
-                }) ,
-                duration: 0,
-                onClick: () => {},
-            });
-
-            // res.manageAccessResponse.forEach(alr => {
-            //     if (alr.successSet && alr.successSet.length) {
-            //         message.success(`
-            //             RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
-            //                 ${(alr.successSet[0] && alr.successSet[0].oimTargetss) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTargetss)}` : ""} has been successfully updated`);
-            //     } else {
-            //         message.error(`
-            //             RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
-            //                 ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTargetss)}` : ""} has been fail to update`);
-            //     }
-            // })
-            // message.success('Grant Access Submitted Successfully');
+            const isError = showNotification(res, "Grant access")
 
             if(isError) {
                 return this.setState({ isSave: false })

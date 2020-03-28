@@ -6,6 +6,7 @@ import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import {showNotification} from "../../../constants/constants";
 
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   <Transfer {...restProps} showSelectAll={false}>
@@ -236,6 +237,26 @@ class RevokeUsersTransfer extends React.Component {
   };
 
   renderCols = (rootRecord, type) => {
+    const array = []
+    if(this.props.revokeBy === "roles"){
+      array.push(
+        {
+          text: 'OIM targets',
+          dataField: 'oimTargets',
+          formatter: (record) => {
+            return (
+              (record || []).map((role, i) => {
+                return(
+                  <span className="static-tag" key={i.toString()}>
+                    <span className={role.isRemoved ? "text-line-through" : ""}>{role.name}</span>
+                  </span>
+                )
+              })
+            )
+          }
+        }
+      )
+    }
     const usersCol = [
       {
         dataField: 'userLogin',
@@ -250,6 +271,7 @@ class RevokeUsersTransfer extends React.Component {
         text: 'Name',
         formatter: (cell, row) => <div>{row.displayName || row.name}</div>
       },
+      ...array,
       {
         dataField: 'bureau',
         text: 'Bureau',
@@ -284,10 +306,9 @@ class RevokeUsersTransfer extends React.Component {
         formatter: (record) => {
           return (
             (record || []).map((role, i) => {
-              if(role.isRemoved) return
               return(
                 <span className="static-tag" key={i.toString()}>
-                  {role.name}
+                  <span className={role.isRemoved ? "text-line-through" : ""}>{role.name}</span>
                 </span>
               )
             })
@@ -417,52 +438,7 @@ class RevokeUsersTransfer extends React.Component {
       return message.error('something is wrong! please try again');
     } else {
 
-      let success = []
-      let failed = []
-      let message = ""
-      let isError = false
-
-      res.manageAccessResponse.forEach(manage => {
-        if(manage.successSet && manage.successSet.length){
-          success = success.length ? success.concat(manage.successSet) : manage.successSet
-        }
-        if(manage.failedSet && manage.failedSet.length){
-          failed = failed.length ? failed.concat(manage.failedSet) : manage.failedSet
-        }
-      })
-      if(failed.length){
-        message = `${failed.map(x => x.roleName).join(",")} has been fail to update`
-        isError = true
-      } else {
-        message = `${success.map(x => x.roleName).join(",")} has been successfully updated`
-      }
-      notification[failed.length ? 'error' : 'success']({
-        message: failed.length ? 'Error' : 'Success',
-        description:
-          res.manageAccessResponse.map((x, index) => {
-            return(
-              <div key={index.toString()}>
-                <div><b>{x.userLogin}:</b></div>
-                <div className="word-break">Update success - {(x.successSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.successSet || []).length -1 === i ? "" : ","}</span>)}</div>
-                <div className="word-break">Update failed - {(x.failedSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.failedSet || []).length -1 === i ? "" : ","}</span>)}</div>
-              </div>
-            )
-          }) ,
-        duration: 0,
-        onClick: () => {},
-      });
-
-      // res.manageAccessResponse.forEach(alr => {
-      //   if (alr.successSet && alr.successSet.length) {
-      //     message.success(`
-      //       RoleName:${(alr.successSet[0] && alr.successSet[0].roleName) || ""}
-      //         ${(alr.successSet[0] && alr.successSet[0].oimTargets) ? `& OIM target: ${(alr.successSet[0] && alr.successSet[0].oimTargets)}` : ""} has been successfully updated`);
-      //   } else {
-      //     message.error(`
-      //       RoleName:${(alr.failedSet[0] && alr.failedSet[0].roleName) || ""}
-      //         ${(alr.failedSet[0] && alr.failedSet[0].oimTargets) ? `& OIM target: ${(alr.failedSet[0] && alr.failedSet[0].oimTargets)}` : ""} has been fail to update`);
-      //   }
-      // })
+      const isError = showNotification(res, "Revoke access")
 
       if(isError) {
         return this.setState({ isSave: false })

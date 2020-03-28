@@ -63,11 +63,11 @@ class CreateApp extends React.Component {
             value = this.removeAppCode(value)
             if(value && !isAlphaNum(value)) return
             object.duplicateRoleName = value.toUpperCase()
-            if(!checkAlphaNum(value)){
-                roleNameError = 'should have at least one alphabet or digit after the underscore.'
-            } else {
-                roleNameError = ''
-            }
+            // if(!checkAlphaNum(value)){
+            //     roleNameError = 'should have at least one alphabet or digit after the underscore.'
+            // } else {
+            //     roleNameError = ''
+            // }
             value = this.appendAppCode(value, appObject.appCode).toUpperCase()
         }
 
@@ -86,7 +86,7 @@ class CreateApp extends React.Component {
         const { name } = event.target
         const value = ['appName', 'appCode'].includes(name) ? event.target.value.toUpperCase() : event.target.value
 
-        if(name === 'appCode' && !isAlphaNum(value)) return
+        if(value && name === 'appCode' && !isAlphaNum(value)) return
 
         let object = {}
         let obj = {}
@@ -278,7 +278,7 @@ class CreateApp extends React.Component {
     }
 
     render() {
-        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption, isSave, roleNameError } = this.state;
+        const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption, isSave, roleNameError, duplicateRoleName } = this.state;
         const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
         const { roleName, roleDescription, oimTarget } = rolesObject || {};
         const disabled = !appName || !appCode || (appCode && appCode.length < 2) || appCodeError || !appDescription || !(ownerGroup || selectedOwnerGroup) || !rolesList.length;
@@ -469,7 +469,7 @@ class CreateApp extends React.Component {
                                           <Button
                                             type="submit"
                                             onClick={this.onAddRole}
-                                            disabled={!roleName || !oimTarget || roleNameError || !roleDescription}
+                                            disabled={!roleName || !oimTarget || roleNameError || !roleDescription || !duplicateRoleName}
                                           >
                                               Add Role
                                           </Button>

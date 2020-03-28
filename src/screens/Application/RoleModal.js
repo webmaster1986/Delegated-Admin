@@ -73,7 +73,7 @@ class RoleModal extends React.Component {
                       <b>{field.label}:&nbsp;&nbsp;</b>
                       <span>
                         { field.key === 'oimTargets' ?
-                            (role[field.key] || []).join(",") :
+                            (role[field.key] || []).map(x => x.name).join(",") :
                             role[field.key] || ""
                         }
                       </span>

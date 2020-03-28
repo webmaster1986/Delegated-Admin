@@ -16,7 +16,7 @@
             "oimTarget": "IDCS",
             "roleDescription": "ROLE1",
             "roleName": "APPL8_ROLE1",
-            "status": "Active"
+            "status": "Pending"
         },
         {
             "appCode": "APPL8",
@@ -40,7 +40,7 @@
             "oimTarget": "IDCS",
             "roleDescription": "ROLE3",
             "roleName": "APPL8_ROLE4",
-            "status": "Active"
+            "status": "Failed"
         }
     ]
 }
