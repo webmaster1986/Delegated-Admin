@@ -145,14 +145,53 @@ class Index extends Component {
         })
     }
 
+    getFilteredRoles = () => {
+        const { allRoles, searchedRoles, roleTargetKeys, selectedApp, applicationsList } = this.state
+
+        const rolesList = _.cloneDeep(allRoles)
+        let filteredRoles = []
+
+        const apps = (selectedApp && selectedApp.length) ? selectedApp.map(item => item.value.toLowerCase()) : applicationsList.map(item => item.appCode.toLowerCase())
+        const appRoles = rolesList.filter(item => apps.indexOf(item.appCode.toLowerCase()) !== -1 && item.status === "Active")
+
+        if (appRoles && appRoles.length) {
+
+            if(searchedRoles && searchedRoles.length){
+                appRoles.forEach(i => {
+                    searchedRoles.forEach(j => {
+                        if (j.value === i.roleName) {
+                            filteredRoles.push(i)
+                        }
+                    })
+                })
+            } else {
+                filteredRoles = appRoles
+            }
+
+        } else {
+            filteredRoles = appRoles
+        }
+
+        if(roleTargetKeys && roleTargetKeys.length){
+            roleTargetKeys.forEach(key => {
+                const index = (filteredRoles || []).findIndex(x => x.id === key)
+                if(index === -1){
+                    filteredRoles.push(rolesList[key])
+                }
+            })
+        }
+
+        return filteredRoles
+    }
+
     onRoleTableChange = nextTargetKeys => {
-        const {roles, searchedRoles} = this.state
+        const {roles, allRoles, searchedRoles} = this.state
         if (nextTargetKeys && nextTargetKeys.length) {
             const data = []
             nextTargetKeys.forEach(f => {
                 if (searchedRoles && searchedRoles.length) {
                     const val = (searchedRoles[f] && searchedRoles[f].value) || ""
-                    data.push(roles.find(g => g.roleName === val))
+                    data.push(roles.find(g => g.roleName === val) || allRoles[f])
                 } else {
                     data.push(roles[f])
                 }
@@ -218,7 +257,7 @@ class Index extends Component {
     }
 
     preview = () => {
-        const {usersData, category, rolesData} = this.state
+        const {usersData, category, rolesData, roles} = this.state
         if(category === "user") {
             usersData.forEach(f => {
                 f.roles = Object.assign([], rolesData);
@@ -227,11 +266,18 @@ class Index extends Component {
             rolesData.forEach(f => {
                 f.users = Object.assign([], usersData);
             })
+            roles.forEach(x => {
+                const index = rolesData.findIndex(y => y.key === x.key)
+                if(index !== -1){
+                    x.users = rolesData[index].users
+                }
+            })
         }
 
         this.setState({
             usersData,
             rolesData,
+            roles,
             preview: true,
             step1: false,
             step2: false
@@ -445,8 +491,10 @@ class Index extends Component {
             ownerRoles = []
             message.error('something is wrong! please try again');
         }
-        (ownerRoles && ownerRoles.userRoles).forEach(user => {
+        (ownerRoles && ownerRoles.userRoles).forEach((user, index) => {
             user.oimTargets = (user.oimTargets || []).map(x => ({name: x, isRemoved: false}))
+            user.id = index
+            user.key = index
         })
         this.setState({
             isLoading: false,
@@ -551,7 +599,7 @@ class Index extends Component {
     handleAppChange = selectedOption => {
         const {name, data} = selectedOption
         this.setState({
-            [name]: data
+            [name]: data || []
         }, () => this.getRoles())
     }
 
@@ -828,7 +876,7 @@ class Index extends Component {
 
                                             <div>
                                                 <TableTransfer
-                                                    dataSource={roleData}
+                                                    dataSource={this.getFilteredRoles()}
                                                     targetKeys={roleTargetKeys}
                                                     showSearch={false}
                                                     onChange={this.onRoleTableChange}
@@ -913,13 +961,6 @@ class Index extends Component {
                                                     targetKeys={userTargetKeys}
                                                     showSearch={false}
                                                     onChange={this.onUserTableChange}
-                                                    filterOption={(inputValue, item) => {
-                                                        return ["userLogin", "displayName", "bureau", "email"].some(key => {
-                                                            return (
-                                                                item && item[key] && item[key].toLowerCase().includes((inputValue && inputValue.toLowerCase()) || "")
-                                                            )
-                                                        })
-                                                    }}
                                                     leftColumns={TableColumns}
                                                     rightColumns={TableColumns}
                                                     operations={['Select', 'Remove']}

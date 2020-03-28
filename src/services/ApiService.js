@@ -3,7 +3,7 @@ import Cookies from "universal-cookie"
 import message from "antd/lib/message";
 
 const getHost = () => {
-    const domain = process.env.REACT_APP_ENV;
+    // const domain = process.env.REACT_APP_ENV;
     let apiEndPoint = '/DelegatedAdmin/api'
     /*if (domain === 'dev') {
         apiEndPoint = "http://cloud.kapstonellc.com:7003/api/delegated-admin-ui/admin-services/";
@@ -222,7 +222,7 @@ export class ApiService {
 
     async putUsersRevokeRoles(userId, body) {
         // return await ApiService.getData(`submitResponse.json`);
-        return await ApiService.deleteMethod(`v1/users/roles `, body);
+        return await ApiService.putMethod(`v1/users/roles/revoke`, body);
     }
 
     async getRoleByRoleName(body) {
@@ -239,7 +239,7 @@ export class ApiService {
         // const res = await ApiService.postMethod(`v1/logout`);
         if (res && res.status === "SUCCESS") {
             cookies.remove('USER_ROLE', { path: '/'})
-            window.location.href = "http://www.fdny.org"
+            window.location.href = "/oamsso/logout.html?end_url=/DelegatedAdmin/logout"
         } else {
             return message.error('something is wrong! please try again');
         }

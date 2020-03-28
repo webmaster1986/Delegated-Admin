@@ -1,5 +1,5 @@
 import React from "react";
-import {Icon, Modal, Table, Transfer, Button} from 'antd';
+import {Modal, Table, Transfer, Button} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import {ApiService} from "../../services/ApiService";
@@ -139,7 +139,7 @@ class CopyUsersModal extends React.Component {
   }
 
   render(){
-    const {isLoading, rolesList, step, usersList, userTargetKeys, search} = this.state
+    const {isLoading, step, usersList, userTargetKeys, search} = this.state
     const options = {
       hidePageListOnlyOnePage: true,
       hideSizePerPage: true

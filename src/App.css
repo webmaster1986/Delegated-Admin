@@ -168,6 +168,10 @@ code {
   color: red !important;
 }
 
+.color-green {
+  color: green !important;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }

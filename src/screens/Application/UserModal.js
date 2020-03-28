@@ -1,5 +1,5 @@
 import React from "react";
-import {Icon, Modal, Button} from 'antd';
+import {Modal, Button} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import { Row, Col } from 'react-bootstrap';

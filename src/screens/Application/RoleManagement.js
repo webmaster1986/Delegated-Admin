@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Breadcrumb, Tooltip} from "react-bootstrap";
+import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
 import moment from "moment"
@@ -91,11 +91,11 @@ class RoleManagement extends React.Component {
             value = this.removeAppCode(value)
             if(value && !isAlphaNum(value)) return
             object.duplicateRoleName = value.toUpperCase()
-            // if(!checkAlphaNum(value)){
-            //     roleNameError = 'should have at least one alphabet or digit after the underscore.'
-            // } else {
-            //     roleNameError = ''
-            // }
+            if(!value){
+                roleNameError = 'should have at least one alphabet or digit after the underscore.'
+            } else {
+                roleNameError = ''
+            }
             value = this.appendAppCode(value, appObject.appCode).toUpperCase()
         }
         this.setState({

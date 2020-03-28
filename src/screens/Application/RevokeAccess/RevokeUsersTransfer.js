@@ -1,6 +1,6 @@
 import React from "react"
 import {Col, Form, InputGroup, Row, Button} from "react-bootstrap";
-import {Icon, notification, Popconfirm, Table, Tooltip, Transfer} from "antd";
+import {Icon, Popconfirm, Table, Tooltip, Transfer} from "antd";
 import difference from "lodash/difference";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
@@ -241,7 +241,7 @@ class RevokeUsersTransfer extends React.Component {
     if(this.props.revokeBy === "roles"){
       array.push(
         {
-          text: 'OIM targets',
+          text: 'OIM Target to be Revoked',
           dataField: 'oimTargets',
           formatter: (record) => {
             return (
@@ -393,44 +393,81 @@ class RevokeUsersTransfer extends React.Component {
     const {revokeBy} = this.props
     let userRoles = [...reviewList]
     this.setState({ isSave: true })
-    if(revokeBy === "roles"){
-      const totalUsers = []
-      reviewList.forEach((role) => {
-        role.users.forEach(u => {
-          const isExists = totalUsers.find(user => user.login === u.login)
-          const targetList = (u.oimTargets || []).filter(x => !x.isRemoved)
-          if(!isExists){
-            totalUsers.push({...u, oimTargets: (targetList || []).map(x => x.name)})
-          }
-        })
-      })
-      reviewList.forEach((role) => {
-        role.users.forEach(u => {
-          const findIndex = totalUsers.findIndex(user => user.login === u.login)
-          if(findIndex !== -1){
-            const targetList = (role.oimTargets || []).filter(x => !x.isRemoved)
-            const newRole = {
-              roleName: role.roleName,
-              roleDescription: role.roleDescription,
-              oimTargets: (targetList || []).map(x => x.name)
-            }
-            const roles = totalUsers[findIndex] && totalUsers[findIndex].roles ? totalUsers[findIndex].roles.push(newRole) : [newRole]
-            totalUsers[findIndex] = {
-              ...totalUsers[findIndex],
-              roles: typeof roles === "number" ? totalUsers[findIndex].roles : roles
-            }
-          }
-        })
-      })
-      userRoles = totalUsers
-    }
+    // if(revokeBy === "roles"){
+    //
+    //   const roles = []
+    //   reviewList.forEach(rl => {
+    //
+    //     rl.users.forEach(u => {
+    //       const oimTargets = (u.oimTargets || []).filter(x => !x.isRemoved)
+    //       const object = {
+    //         userLogin: u.userLogin,
+    //         roles: [{
+    //           roleName: rl.roleName,
+    //           oimTargets: oimTargets.map(x => x.name)
+    //         }]
+    //       }
+    //       roles.push(object)
+    //     })
+    //   })
+    //   console.log({roles})
+    //
+    //
+    //   // const totalUsers = []
+    //   // reviewList.forEach((role) => {
+    //   //   role.users.forEach(u => {
+    //   //     const isExists = totalUsers.find(user => user.login === u.login)
+    //   //     const targetList = (u.oimTargets || []).filter(x => !x.isRemoved)
+    //   //     if(!isExists){
+    //   //       totalUsers.push({...u, oimTargets: (targetList || []).map(x => x.name)})
+    //   //     }
+    //   //   })
+    //   // })
+    //   // reviewList.forEach((role) => {
+    //   //   role.users.forEach(u => {
+    //   //     const findIndex = totalUsers.findIndex(user => user.login === u.login)
+    //   //     if(findIndex !== -1){
+    //   //       const targetList = (role.oimTargets || []).filter(x => !x.isRemoved)
+    //   //       const newRole = {
+    //   //         roleName: role.roleName,
+    //   //         roleDescription: role.roleDescription,
+    //   //         oimTargets: (targetList || []).map(x => x.name)
+    //   //       }
+    //   //       const roles = totalUsers[findIndex] && totalUsers[findIndex].roles ? totalUsers[findIndex].roles.push(newRole) : [newRole]
+    //   //       totalUsers[findIndex] = {
+    //   //         ...totalUsers[findIndex],
+    //   //         roles: typeof roles === "number" ? totalUsers[findIndex].roles : roles
+    //   //       }
+    //   //     }
+    //   //   })
+    //   // })
+    //   // userRoles = totalUsers
+    // }
+
     const payload = []
-    userRoles.forEach(user => {
-      payload.push({
-        userLogin: user.userLogin || user.login,
-        roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: revokeBy === "user" ? ((f.oimTargets || []).filter(x => !x.isRemoved).map(x => x.name)) : f.oimTargets || []}))
+    if(revokeBy === "roles"){
+      reviewList.forEach(rl => {
+
+        rl.users.forEach(u => {
+          const oimTargets = (u.oimTargets || []).filter(x => !x.isRemoved)
+          const object = {
+            userLogin: u.userLogin,
+            roles: [{
+              roleName: rl.roleName,
+              oimTargets: oimTargets.map(x => x.name)
+            }]
+          }
+          payload.push(object)
+        })
       })
-    })
+    } else {
+      userRoles.forEach(user => {
+        payload.push({
+          userLogin: user.userLogin || user.login,
+          roles: (user.roles || []).map(f => ({roleName: f.roleName, oimTargets: ((f.oimTargets || []).filter(x => !x.isRemoved).map(x => x.name)) || []}))
+        })
+      })
+    }
     console.log({payload})
     const res = await this._apiService.putUsersRevokeRoles(user.login, payload)
     if (!res || res.error) {
@@ -480,7 +517,7 @@ class RevokeUsersTransfer extends React.Component {
     const {users, searchRoleText, targetKeys, searchString, searchList, selectedData, roles} = this.state
     const {revokeList, revokeBy, step} = this.props
     const data = revokeBy === 'user' ? roles : searchString ? searchList : users
-    const selectedRevoke = revokeList && revokeList.length && revokeList[0] || {}
+    const selectedRevoke = (revokeList && revokeList.length && revokeList[0]) || {}
 
     const userColumns = (flag) => [
       {

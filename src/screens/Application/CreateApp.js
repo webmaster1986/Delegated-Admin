@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Form, Button, Breadcrumb, InputGroup} from "react-bootstrap";
+import {Row, Col, Form, Button, Breadcrumb} from "react-bootstrap";
 import {Icon} from 'antd';
 import message from "antd/lib/message";
 import Spin from "antd/lib/spin";
@@ -7,7 +7,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
 import { ApiService } from "../../services/ApiService";
-import {isAlphaNum, checkAlphaNum, setErrorMsg} from "../../constants/constants";
+import {isAlphaNum, setErrorMsg} from "../../constants/constants";
 
 
 class CreateApp extends React.Component {
@@ -63,11 +63,11 @@ class CreateApp extends React.Component {
             value = this.removeAppCode(value)
             if(value && !isAlphaNum(value)) return
             object.duplicateRoleName = value.toUpperCase()
-            // if(!checkAlphaNum(value)){
-            //     roleNameError = 'should have at least one alphabet or digit after the underscore.'
-            // } else {
-            //     roleNameError = ''
-            // }
+            if(!value){
+                roleNameError = 'should have at least one alphabet or digit after the underscore.'
+            } else {
+                roleNameError = ''
+            }
             value = this.appendAppCode(value, appObject.appCode).toUpperCase()
         }
 

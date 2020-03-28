@@ -1,5 +1,5 @@
 import React from "react";
-import {notification, message, Icon} from "antd";
+import {message, Icon} from "antd";
 
 export const ROLES = {
     SUPER_ADMIN: 'SUPER_ADMIN',
@@ -20,7 +20,6 @@ export const showNotification = (res, key) => {
 
     let success = []
     let failed = []
-    let isError = false
 
     res.manageAccessResponse.forEach(manage => {
         if(manage.successSet && manage.successSet.length){
@@ -30,32 +29,46 @@ export const showNotification = (res, key) => {
             failed = failed.length ? failed.concat(manage.failedSet) : manage.failedSet
         }
     })
+
     if(failed.length) {
-        isError = true
-    }
-    message[failed.length ? 'error' : 'success']({
-        message: failed.length ? 'Status' : 'Success',
-        content: !failed.length ? `${key} submitted successfully` :
-            <div onClick={() => message.destroy()}>
-                <div className="close-message">
-                    <h6><b>{failed.length ? 'Status' : 'Success'}</b></h6>
+        message[failed.length ? 'error' : 'success']({
+            icon: <div className="close-message">
+                    <h6><b>Status</b></h6>
                     <Icon type={'close'} onClick={() => message.destroy()}/>
-                </div>
-                {
-                    res.manageAccessResponse.map((x, index) => {
-                        return(
-                            <div key={index.toString()}>
-                                <div><b>{x.userLogin}:</b></div>
-                                {(x.successSet || []).length ? <div className="word-break">Update success - {(x.successSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.successSet || []).length -1 === i ? "" : ","}</span>)}</div> : null }
-                                {(x.failedSet || []).length ? <div className="word-break">Update failed - {(x.failedSet || []).map((y, i) => <span key={i.toString()}>{y.roleName}({y.oimTargets.join(",")}){(x.failedSet || []).length -1 === i ? "" : ","}</span>)}</div> : null }
-                            </div>
-                        )
-                    })
-                }
-            </div>,
-        duration: failed.length ? 0 : 3,
-    });
-    return isError
+                </div>,
+            content:
+                <div>
+
+                    {
+                        res.manageAccessResponse.map((x, index) => {
+                            return(
+                                <div key={index.toString()}>
+                                    <div><b>{x.userLogin}:</b></div>
+                                    {(x.successSet || []).length ?
+                                        <div className="word-break">
+                                            <span className="color-green">Update success</span> -
+                                            {(x.successSet || []).map((y, i) => <span key={i.toString()} className="mr-5-px"><b>{y.roleName}</b>({y.oimTargets.join(",")}){(x.successSet || []).length -1 === i ? "" : ","}</span>)}
+                                        </div> : null
+                                    }
+                                    {(x.failedSet || []).length ?
+                                        <div className="word-break">
+                                            <span className="color-red">Update failed</span> -
+                                            {(x.failedSet || []).map((y, i) => <span key={i.toString()}  className="mr-5-px"><b>{y.roleName}</b>({y.oimTargets.join(",")}){(x.failedSet || []).length -1 === i ? "" : ","}</span>)}
+                                        </div> : null
+                                    }
+                                </div>
+                            )
+                        })
+                    }
+                </div>,
+            duration: 0,
+        });
+        return true
+    }
+
+    message.success(`${key} submitted successfully`, 3)
+
+    return false
 }
 
 export const setErrorMsg = (data) => {
