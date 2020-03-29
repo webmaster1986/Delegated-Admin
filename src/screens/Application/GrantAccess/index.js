@@ -238,7 +238,7 @@ class Index extends Component {
     }
 
     onSearch = (event) => {
-        const {users} = this.state
+        const {users, userTargetKeys} = this.state
         const searchString = event.target.value || ""
         let searchList = []
         if (searchString) {
@@ -249,6 +249,14 @@ class Index extends Component {
                     )
                 })
             )
+            if(userTargetKeys && userTargetKeys.length){
+                userTargetKeys.forEach(key => {
+                    const index = (searchList || []).findIndex(x => x.id === key)
+                    if(index === -1){
+                        searchList.push(users[key])
+                    }
+                })
+            }
         }
         this.setState({
             searchString,

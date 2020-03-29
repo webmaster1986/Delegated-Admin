@@ -137,17 +137,25 @@ class RevokeUsersTransfer extends React.Component {
   };
 
   onSearch = (event) => {
-    const {allUsers} = this.state
+    const {allUsers, targetKeys} = this.state
     const searchString = (event && event.target.value) || ""
     let searchList = []
     if (searchString) {
       searchList = allUsers && allUsers.filter(obj =>
-        ["login", "name", "bureau", "email"].some(key => {
+        ["displayName", "userLogin"].some(key => {
           return (
             obj && obj[key] && obj[key].toLowerCase().includes((searchString && searchString.toLowerCase()) || "")
           )
         })
       )
+      if(targetKeys && targetKeys.length){
+        targetKeys.forEach(key => {
+          const index = (searchList || []).findIndex(x => x.id === key)
+          if(index === -1){
+            searchList.push(allUsers[key])
+          }
+        })
+      }
     }
     this.setState({
       searchString,
@@ -370,7 +378,7 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   onRoleSearch = (event) => {
-    const {allRoles} = this.state
+    const {allRoles, targetKeys} = this.state
     const searchRoleText = event.target.value || ""
     let roles = []
     if (searchRoleText) {
@@ -381,6 +389,14 @@ class RevokeUsersTransfer extends React.Component {
           )
         })
       )
+      if(targetKeys && targetKeys.length){
+        targetKeys.forEach(key => {
+          const index = (roles || []).findIndex(x => x.id === key)
+          if(index === -1){
+            roles.push(allRoles[key])
+          }
+        })
+      }
     }
     this.setState({
       searchRoleText,
