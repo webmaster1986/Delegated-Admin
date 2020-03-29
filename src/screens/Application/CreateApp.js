@@ -103,6 +103,7 @@ class CreateApp extends React.Component {
         if(name === 'appCode'){
             obj = {
                 rolesObject: {
+                    ...this.state.rolesObject,
                     roleName: `${value}_${duplicateRoleName}`
                 }
             }
@@ -316,6 +317,8 @@ class CreateApp extends React.Component {
             hideSizePerPage: true
         };
 
+        const disable = !roleName || !(oimTarget && oimTarget.length) || roleNameError || !roleDescription || !duplicateRoleName
+
         return (
             <>
                 <div className={'container-design'}>
@@ -470,7 +473,7 @@ class CreateApp extends React.Component {
                                           <Button
                                             type="submit"
                                             onClick={this.onAddRole}
-                                            disabled={!roleName || !oimTarget || roleNameError || !roleDescription || !duplicateRoleName}
+                                            disabled={disable}
                                           >
                                               Add Role
                                           </Button>

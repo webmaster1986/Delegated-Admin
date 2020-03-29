@@ -1,61 +1,12 @@
 import React from "react"
 import {Col, Form, InputGroup, Row, Button} from "react-bootstrap";
-import {Icon, Popconfirm, Table, Tooltip, Transfer} from "antd";
-import difference from "lodash/difference";
+import {Icon, Popconfirm, Tooltip} from "antd";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import message from "antd/lib/message";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {setErrorMsg, showNotification} from "../../../constants/constants";
-
-const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
-  <Transfer {...restProps} showSelectAll={false}>
-    {({
-        direction,
-        filteredItems,
-        onItemSelectAll,
-        onItemSelect,
-        selectedKeys: listSelectedKeys,
-        disabled: listDisabled,
-      }) => {
-      const columns = direction === 'left' ? leftColumns : rightColumns;
-
-      const rowSelection = {
-        getCheckboxProps: item => ({ disabled: listDisabled || item.disabled }),
-        onSelectAll(selected, selectedRows) {
-          const treeSelectedKeys = selectedRows
-            .filter(item => !item.disabled)
-            .map(({ key }) => key);
-          const diffKeys = selected
-            ? difference(treeSelectedKeys, listSelectedKeys)
-            : difference(listSelectedKeys, treeSelectedKeys);
-          onItemSelectAll(diffKeys, selected);
-        },
-        onSelect({ key }, selected) {
-          onItemSelect(key, selected);
-        },
-        selectedRowKeys: listSelectedKeys,
-      };
-
-      return (
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={filteredItems}
-          size="small"
-          rowKey={'id'}
-          style={{ pointerEvents: listDisabled ? 'none' : null }}
-          onRow={({ key }) => ({
-            onClick: () => {
-              if (listDisabled) return;
-              onItemSelect(key, !listSelectedKeys.includes(key));
-            },
-          })}
-        />
-      );
-    }}
-  </Transfer>
-);
+import { TableTransfer } from "../../../components/TableTransfer"
 
 const options = {
   hidePageListOnlyOnePage: true,
@@ -123,16 +74,33 @@ class RevokeUsersTransfer extends React.Component {
   }
 
   onChange = nextTargetKeys => {
-    const {users,roles} = this.state
+    const {users, allRoles, allUsers, targetKeys} = this.state
     const {revokeBy} = this.props
+
+    if(targetKeys && targetKeys.length){
+      const keys = targetKeys.filter(x => !((nextTargetKeys || []).some(y => x === y)))
+      if(revokeBy === 'user') {
+        allRoles.forEach(key => {
+          if((keys || []).includes(key.id)){
+            key.oimTargets = key.oimTargets.map(x => ({...x, isRemoved: false}))
+          }
+        })
+      } else {
+        allUsers.forEach(key => {
+          if((keys || []).includes(key.id)){
+            key.oimTargets = key.oimTargets.map(x => ({...x, isRemoved: false}))
+          }
+        })
+      }
+    }
     if (nextTargetKeys && nextTargetKeys.length) {
       const data = []
       nextTargetKeys.forEach(f => {
-        data.push(revokeBy === 'user' ? roles[f] : users[f])
+        data.push(revokeBy === 'user' ? allRoles[f] : allUsers[f])
       })
-      this.setState({ targetKeys: nextTargetKeys, selectedData: data });
+      this.setState({ targetKeys: nextTargetKeys, selectedData: data, allRoles, allUsers });
     } else {
-      this.setState({ targetKeys: [], selectedData: [] });
+      this.setState({ targetKeys: [], selectedData: [], allRoles, allUsers });
     }
   };
 

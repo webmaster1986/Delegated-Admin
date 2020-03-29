@@ -5,8 +5,7 @@ import Cookies from "universal-cookie"
 import Spin from "antd/lib/spin";
 import _ from "lodash"
 import Select from 'react-select';
-import { Table, Transfer, Popconfirm, Icon, notification, Tooltip } from 'antd/lib'
-import difference from 'lodash/difference'
+import { Popconfirm, Icon, Tooltip } from 'antd/lib'
 import message from "antd/lib/message";
 import {ApiService, getLoginUser} from "../../../services/ApiService";
 import Review from "./Review";
@@ -14,6 +13,7 @@ import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
 import {ROLES, setErrorMsg, showNotification} from "../../../constants/constants"
 import CopyUsersModal from "../CopyUsersModal"
+import {TableTransfer} from "../../../components/TableTransfer"
 
 const cookies = new Cookies();
 const role = cookies.get('USER_ROLE');
@@ -26,55 +26,6 @@ export const isLoggedIn = (key) => {
     };
     return state[key] || false;
 }
-
-const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
-    <Transfer {...restProps} showSelectAll={false}>
-        {({
-              direction,
-              filteredItems,
-              onItemSelectAll,
-              onItemSelect,
-              selectedKeys: listSelectedKeys,
-              disabled: listDisabled,
-          }) => {
-            const columns = direction === 'left' ? leftColumns : rightColumns;
-
-            const rowSelection = {
-                getCheckboxProps: item => ({ disabled: listDisabled || item.disabled }),
-                onSelectAll(selected, selectedRows) {
-                    const treeSelectedKeys = selectedRows
-                        .filter(item => !item.disabled)
-                        .map(({ key }) => key);
-                    const diffKeys = selected
-                        ? difference(treeSelectedKeys, listSelectedKeys)
-                        : difference(listSelectedKeys, treeSelectedKeys);
-                    onItemSelectAll(diffKeys, selected);
-                },
-                onSelect({ key }, selected) {
-                    onItemSelect(key, selected);
-                },
-                selectedRowKeys: listSelectedKeys,
-            };
-
-            return (
-                <Table
-                    rowSelection={rowSelection}
-                    columns={columns}
-                    dataSource={filteredItems}
-                    size="small"
-                    rowKey={'id'}
-                    style={{ pointerEvents: listDisabled ? 'none' : null }}
-                    onRow={({ key }) => ({
-                        onClick: () => {
-                            if (listDisabled) return;
-                            onItemSelect(key, !listSelectedKeys.includes(key));
-                        },
-                    })}
-                />
-            );
-        }}
-    </Transfer>
-);
 
 class Index extends Component {
     _apiService = new ApiService();
@@ -185,20 +136,23 @@ class Index extends Component {
     }
 
     onRoleTableChange = nextTargetKeys => {
-        const {roles, allRoles, searchedRoles} = this.state
+        const {allRoles, roleTargetKeys} = this.state
+        if(roleTargetKeys && roleTargetKeys.length){
+            const keys = roleTargetKeys.filter(x => !((nextTargetKeys || []).some(y => x === y)))
+            allRoles.forEach(key => {
+                if((keys || []).includes(key.id)){
+                    key.oimTargets = key.oimTargets.map(x => ({...x, isRemoved: false}))
+                }
+            })
+        }
         if (nextTargetKeys && nextTargetKeys.length) {
             const data = []
             nextTargetKeys.forEach(f => {
-                if (searchedRoles && searchedRoles.length) {
-                    const val = (searchedRoles[f] && searchedRoles[f].value) || ""
-                    data.push(roles.find(g => g.roleName === val) || allRoles[f])
-                } else {
-                    data.push(roles[f])
-                }
+                data.push(allRoles[f])
             })
-            this.setState({ roleTargetKeys: nextTargetKeys, rolesData: data });
+            this.setState({ roleTargetKeys: nextTargetKeys, rolesData: data, allRoles });
         } else {
-            this.setState({ roleTargetKeys: [], rolesData: [], removeTargets: {} });
+            this.setState({ roleTargetKeys: [], rolesData: [], removeTargets: {}, allRoles });
         }
     };
 
@@ -311,7 +265,7 @@ class Index extends Component {
     onUserRemove = (data) => {
         const {usersData, rolesData, category} = this.state
         if (category === "user") {
-            const index = usersData.findIndex(f => f.login === (data && data.login))
+            const index = usersData.findIndex(f => f.userLogin === (data && data.userLogin))
             usersData.splice(index, 1)
             message.success('User successfully removed')
         } else {
@@ -385,12 +339,12 @@ class Index extends Component {
     }
 
     onSubmit = async () => {
-        const {usersData, roles, category, user} = this.state
+        const {usersData, category, user, rolesData} = this.state
         this.setState({ isSave: true })
         let payload = []
         if (category === "roles") {
             const totalUsers = []
-            roles.forEach((role) => {
+            rolesData.forEach((role) => {
                 (role.users || []).forEach(u => {
                     const isExists = totalUsers.find(user => user.userLogin === u.userLogin)
                     const targetList = (role.oimTargets || []).filter(x => !x.isRemoved)
@@ -660,9 +614,9 @@ class Index extends Component {
     }
 
     render() {
-        const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users, searchRoleList,
-            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, copyUserModal, removeTargets } = this.state;
-        const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
+        const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users,
+            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, copyUserModal } = this.state;
+        // const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
 
         const roleTableColumns = (flag) => [
