@@ -42,7 +42,7 @@ class EditApp extends React.Component {
             this.setState({
                 isLoading: false
             })
-            return message.error('something is wrong! please try again');
+            return message.error('An error has occurred. Please try again.');
         } else {
             this.setState({
                 isLoading: false,
@@ -86,7 +86,7 @@ class EditApp extends React.Component {
                 })
             }
             if (isDuplicate) {
-                return message.warn('Combination of Role Name & OIM Target must be unique');
+                return message.warn('The role is already added to the list');
             } else {
                 rolesList.push({...rolesObject, oimTarget: rolesObject.oimTarget || 'IDCS', id: rolesList.length})
             }

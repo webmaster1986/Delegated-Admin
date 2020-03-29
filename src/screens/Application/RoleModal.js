@@ -22,7 +22,7 @@ class RoleModal extends React.Component {
     const appDetails = await this._apiService.getAppDetailByAppCode(role.appCode)
     let result1 = (data && data.users) || []
     if (!result1 || result1.error) {
-      message.error('something is wrong! please try again');
+      message.error('An error has occurred. Please try again.');
     }
     that.setState({
       users: result1 || [],
@@ -43,10 +43,10 @@ class RoleModal extends React.Component {
     const displayFields = [
       { label: 'Application Name', key: 'appName' },
       { label: 'Application Code', key: 'appCode' },
-      { label: 'Application description', key: 'appDescription' },
+      { label: 'Application Description', key: 'appDescription' },
       { label: 'Application Owner Group', key: 'ownerGroup' },
       { label: 'Role Name', key: 'roleName' },
-      { label: 'Role description', key: 'roleDescription' },
+      { label: 'Role Description', key: 'roleDescription' },
       { label: 'Available Targets', key: 'oimTargets' },
       { label: 'Role Creation Date', key: 'creationDate' },
     ];

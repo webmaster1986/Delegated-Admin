@@ -50,7 +50,7 @@ export class ApiService {
             config.cancelToken = cancelToken.token;
         }
         const response = await axiosInstance.get(url, config).catch((err) => {
-            data = {error: 'something went wrong'};
+            data = {error: 'An error has occurred.'};
         });
         return data || response.data;
     }
@@ -66,7 +66,7 @@ export class ApiService {
         }
         let resData = '';
         const response = await axiosInstance.post(url, data, config).catch(thrown => {
-            resData = {error: 'something went wrong' , errorData: thrown};
+            resData = {error: 'An error has occurred.' , errorData: thrown};
         });
         return resData || response.data;
     }
@@ -82,7 +82,7 @@ export class ApiService {
         }
         let resData = '';
         const response = await axiosInstance.put(url, data, config).catch(thrown => {
-            resData = {error: 'something went wrong' , errorData: thrown};
+            resData = {error: 'An error has occurred.' , errorData: thrown};
         });
         return resData || response.data;
     }
@@ -98,7 +98,7 @@ export class ApiService {
         }
         let resData = '';
         const response = await axiosInstance.delete(url, {data}).catch(thrown => {
-            resData = {error: 'something went wrong' , errorData: thrown};
+            resData = {error: 'An error has occurred.' , errorData: thrown};
         })
         return resData || response.data;
     }
@@ -235,13 +235,13 @@ export class ApiService {
     }
 
     async logout () {
-        const res = await ApiService.getData(`logout.json`);
-        // const res = await ApiService.postMethod(`v1/logout`);
+        //const res = await ApiService.getData(`logout.json`);
+        const res = await ApiService.postMethod(`v1/logout`);
         if (res && res.status === "SUCCESS") {
             cookies.remove('USER_ROLE', { path: '/'})
             window.location.href = "/oamsso/logout.html?end_url=/DelegatedAdmin/logout"
         } else {
-            return message.error('something is wrong! please try again');
+            return message.error('An error has occurred. Please try again.');
         }
     }
 

@@ -26,7 +26,7 @@ class CopyUsersModal extends React.Component {
     const that = this
     const roles = await this._apiService.getSuperAdminRoles()
     if (!roles || roles.error) {
-      message.error('something is wrong! please try again');
+      message.error('An error has occurred. Please try again.');
     }
     that.setState({
       rolesList: (roles && roles.userRoles) || [],
@@ -106,7 +106,7 @@ class CopyUsersModal extends React.Component {
         }
       },
       {
-        text: 'OIM targets',
+        text: 'OIM Targets',
         dataField: 'oimTargets',
         headerStyle: {width: "30%"},
         formatter: (record) => {

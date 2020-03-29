@@ -26,10 +26,10 @@ class UserModal extends React.Component {
       let result2 = results[1]
       if (!result1 || result1.error) {
         result1 = {}
-        message.error('something is wrong! please try again');
+        message.error('An error has occurred. Please try again.');
       }
       if (!result2 || result2.error) {
-        message.error('something is wrong! please try again');
+        message.error('An error has occurred. Please try again.');
       }
       that.setState({
         user: (result1 && result1.user) || {},
@@ -97,10 +97,10 @@ class UserModal extends React.Component {
                     },
                     {
                       dataField: 'oimTargets',
-                      text: 'OIM targets',
+                      text: 'OIM Targets',
                       formatter: (record, data, index) => {
                         return(
-                            (record || []).join(",")
+                            (record || []).join(" ,")
                         )
                       }
                     },

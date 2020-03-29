@@ -267,11 +267,11 @@ class Index extends Component {
         if (category === "user") {
             const index = usersData.findIndex(f => f.userLogin === (data && data.userLogin))
             usersData.splice(index, 1)
-            message.success('User successfully removed')
+            message.success('User removed successfully')
         } else {
             const index = rolesData.findIndex(f => f.roleName === (data && data.roleName))
             rolesData.splice(index, 1)
-            message.success('Role successfully removed')
+            message.success('Role removed successfully')
         }
         this.setState({ usersData, rolesData })
     }
@@ -416,7 +416,7 @@ class Index extends Component {
         let data = await this._apiService.getAllUsers()
         if (!data || data.error) {
             data = []
-            message.error('something is wrong! please try again');
+            message.error('An error has occurred. Please try again.');
         }
         const users = ((data && data.users) || []).map((f, i) => ({
             id: i, key: i, ...f
@@ -447,11 +447,11 @@ class Index extends Component {
 
         if (!applicationsList || applicationsList.error) {
             applicationsList = []
-            message.error('something is wrong! please try again');
+            message.error('An error has occurred. Please try again.');
         }
         if (!ownerRoles || ownerRoles.error) {
             ownerRoles = []
-            message.error('something is wrong! please try again');
+            message.error('An error has occurred. Please try again.');
         }
         (ownerRoles && ownerRoles.userRoles).forEach((user, index) => {
             user.oimTargets = (user.oimTargets || []).map(x => ({name: x, isRemoved: false}))

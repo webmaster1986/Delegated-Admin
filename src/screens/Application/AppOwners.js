@@ -51,7 +51,7 @@ class AppOwners extends Component {
       this.setState({
         isLoading: false
       })
-      return message.error('something is wrong! please try again');
+      return message.error('An error has occurred. Please try again.');
     } else {
       this.setState({
         isLoading: false,

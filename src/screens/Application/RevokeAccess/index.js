@@ -106,7 +106,7 @@ class RevokeAccess extends Component {
     let data = await this._apiService.getAllUsers()
     if (!data || data.error) {
       data = []
-      message.error('something is wrong! please try again');
+      message.error('An error has occurred. Please try again.');
     }
     const users = ((data && data.users) || []).map((f, i) => ({
       id: i, key: i, ...f
@@ -134,11 +134,11 @@ class RevokeAccess extends Component {
 
     if (!applicationsList || applicationsList.error) {
       applicationsList = []
-      message.error('something is wrong! please try again');
+      message.error('An error has occurred. Please try again.');
     }
     if (!ownerRoles || ownerRoles.error) {
       ownerRoles = []
-      message.error('something is wrong! please try again');
+      message.error('An error has occurred. Please try again.');
     }
     (ownerRoles && ownerRoles.userRoles).forEach(user => {
       user.oimTargets = (user.oimTargets || []).map(x => ({name: x, isRemoved: false}))
@@ -208,7 +208,7 @@ class RevokeAccess extends Component {
           value='roles'
           checked={revokeBy === 'roles'}
           onChange={this.onChange}
-          label={'Revoke Access By Roles'}
+          label={'Revoke Access By Role'}
         />
       </div>
     )
@@ -272,7 +272,7 @@ class RevokeAccess extends Component {
           )}
       },
       {
-        text: 'OIM targets',
+        text: 'OIM Targets',
         dataField: 'oimTargets',
         headerStyle: {width: "30%"},
         formatter: (record) => {

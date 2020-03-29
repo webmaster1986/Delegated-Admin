@@ -45,7 +45,7 @@ const Review = (props) => {
       }
     },
     {
-      text: 'OIM targets',
+      text: 'OIM Targets',
       dataField: 'oimTargets',
       headerStyle: {width: "30%"},
       formatter: (record) => {
@@ -118,7 +118,7 @@ const Review = (props) => {
           }
         },
         {
-          text: 'OIM targets',
+          text: 'OIM Targets',
           dataField: 'oimTargets',
           headerStyle: {width: "30%"},
           formatter: (record) => {

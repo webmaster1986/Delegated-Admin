@@ -42,7 +42,7 @@ class CreateApp extends React.Component {
             this.setState({
                 isLoading: false
             })
-            return message.error('something is wrong! please try again');
+            return message.error('An error has occurred. Please try again.');
         } else {
             this.setState({
                 isLoading: false,
@@ -64,7 +64,7 @@ class CreateApp extends React.Component {
             if(value && !isAlphaNum(value)) return
             object.duplicateRoleName = value.toUpperCase()
             if(!value){
-                roleNameError = 'should have at least one alphabet or digit after the underscore.'
+                roleNameError = 'Enter at least one alphabet or digit after the underscore'
             } else {
                 roleNameError = ''
             }
@@ -126,7 +126,7 @@ class CreateApp extends React.Component {
             if (name === 'appCode') {
                 let object = {}
                 if (value.length < 3) {
-                    object.appCodeError = "Application Code should have 3 - 5 characters!"
+                    object.appCodeError = "Enter a 3 - 5 character code. You can use alphabets and numbers."
                 } else {
                     object.appCodeError = ""
                 }
@@ -134,11 +134,11 @@ class CreateApp extends React.Component {
                 if (!object.appCodeError) {
                     const appDetails =  await this._apiService.getAllApplications(value)
                     if (!appDetails || appDetails.error) {
-                        object.appCodeError = "Application Code is not valid!"
+                        object.appCodeError = "Application Code is invalid"
                         object.appObject = { ...this.state.appObject, appCode: "" }
                     }
                     if (appDetails && appDetails.application) {
-                        object.appCodeError = "Application Code is already in use!"
+                        object.appCodeError = "Application Code is already in use"
                         object.appObject = { ...this.state.appObject }
                     }
                 }
@@ -165,7 +165,7 @@ class CreateApp extends React.Component {
     onAddRole = () => {
         let { rolesList, rolesObject, appObject } = this.state
         if (!appObject.appCode) {
-            return message.warn('Add Application code first')
+            return message.warn('Enter the Application Code first')
         }
         if (rolesObject && Object.keys(rolesObject).length > 0) {
             let isDuplicate = false
@@ -179,7 +179,7 @@ class CreateApp extends React.Component {
                 })
             }
             if (isDuplicate) {
-                return message.warn('Combination of Role Name & OIM Target must be unique');
+                return message.warn('The role is already added to the list');
             } else {
                 rolesObject.oimTarget.forEach(item => {
                     rolesList.push({...rolesObject, roleName: rolesObject.roleName, oimTarget: item, id: rolesList.length})
@@ -225,7 +225,7 @@ class CreateApp extends React.Component {
             // openNotificationWithIcon('error', "Something went Wrong!")
         } else {
             // openNotificationWithIcon('success','Application Onboarding Successfully!');
-            message.success('Application Onboarding Successfully!');
+            message.success('Application Onboarding successful');
             this.props.history.push("/DelegatedAdmin/")
         }
     }
@@ -244,7 +244,7 @@ class CreateApp extends React.Component {
         let object = {}
 
         if(name === "appCode" && value.length < 3 ){
-            object.appCodeError = "Application Code should have 3 - 5 characters!"
+            object.appCodeError = "Enter a 3 - 5 character code. You can use alphabets and numbers."
         } else {
             object.appCodeError = ""
         }
@@ -252,7 +252,7 @@ class CreateApp extends React.Component {
         if(!object.appCodeError){
             const appDetails =  await this._apiService.getAllApplications(value)
             if (!appDetails || appDetails.error) {
-                object.appCodeError = "Application Code is not valid!"
+                object.appCodeError = "Application Code is invalid"
                 object.appObject = { ...this.state.appObject, appCode: "" }
             }
         }
@@ -483,7 +483,7 @@ class CreateApp extends React.Component {
                           </Form.Group>
                           <Form.Group as={Row}>
                               <Col>
-                                  <button type="button" className="btn btn-danger btn-md" onClick={() => this.props.history.push('/')}>Cancel</button>&nbsp;&nbsp;
+                                  <button type="button" className="btn btn-danger btn-md" onClick={() => this.props.history.push('/DelegatedAdmin/')}>Cancel</button>&nbsp;&nbsp;
                                   {
                                       disabled ?
                                           <button type="button" className="btn btn-secondary btn-md text-center" disabled style={{cursor: "default"}}>Submit</button> :

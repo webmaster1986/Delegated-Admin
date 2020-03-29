@@ -42,7 +42,7 @@ class RevokeUsersTransfer extends React.Component {
       for (const user of revokeList) {
         const roles = await this._apiService.getRolesForRevoke(user.userLogin)
         if (!roles || roles.error) {
-          return message.error('something is wrong! please try again');
+          return message.error('An error has occurred. Please try again.');
         } else {
           const data = (roles.userRoles || []).map((role, i) => ({
             id: i, key: i, ...role, oimTargets: (role.oimTargets || []).map(x => ({name: x, isRemoved: false}))
@@ -54,7 +54,7 @@ class RevokeUsersTransfer extends React.Component {
       for (const role of revokeList) {
         const users = await this._apiService.getUsersByRoles(role)
         if (!users || users.error) {
-          return message.error('something is wrong! please try again');
+          return message.error('An error has occurred. Please try again.');
         } else {
           const data = (users.users || []).map((user, i) => ({
             id: i, key: i, ...user, oimTargets: (user.oimTargets || []).map(x => ({name: x, isRemoved: false}))

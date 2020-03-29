@@ -48,7 +48,7 @@ class RoleManagement extends React.Component {
             this.setState({
                 isLoading: false
             })
-            return message.error('something is wrong! please try again');
+            return message.error('An error has occurred. Please try again.');
         } else {
             const appObject = (appDetails && appDetails.application) || {}
             this.setState({
@@ -71,7 +71,7 @@ class RoleManagement extends React.Component {
             this.setState({
                 isLoading: false
             })
-            return message.error('something is wrong! please try again');
+            return message.error('An error has occurred. Please try again.');
         } else {
             this.setState({
                 isLoading: false,
@@ -92,7 +92,7 @@ class RoleManagement extends React.Component {
             if(value && !isAlphaNum(value)) return
             object.duplicateRoleName = value.toUpperCase()
             if(!value){
-                roleNameError = 'should have at least one alphabet or digit after the underscore.'
+                roleNameError = 'Enter at least one alphabet or digit after the underscore.'
             } else {
                 roleNameError = ''
             }
@@ -132,7 +132,7 @@ class RoleManagement extends React.Component {
                 })
             }
             if (isDuplicate) {
-                return message.warn('Combination of Role Name & OIM Target must be unique');
+                return message.warn('The role is already added to the list');
             } else {
                 rolesObject.oimTarget.forEach(item => {
                     body.push({
@@ -222,7 +222,7 @@ class RoleManagement extends React.Component {
             },
             {
                 dataField:'oimTarget',
-                text:'Oim Target',
+                text:'OIM Target',
                 sort: true
             },
             {

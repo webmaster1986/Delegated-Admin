@@ -72,7 +72,7 @@ export const showNotification = (res, key) => {
 }
 
 export const setErrorMsg = (data) => {
-    let errMessage = "something is wrong! please try again"
+    let errMessage = "An error has occurred. Please try again."
     if(data && data.errorData && data.errorData.response && data.errorData.response.data && data.errorData.response.data.message) {
         errMessage = data.errorData.response.data.message
     }
