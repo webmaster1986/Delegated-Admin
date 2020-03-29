@@ -241,7 +241,7 @@ class RoleManagement extends React.Component {
                     let buttonName = '';
                     let className = '';
 
-                    if (row.roleName === `${appCode}_OWNER`) {
+                    if ((row.roleName || "").toLowerCase().includes("_owner")) {
                         buttonName = ''
                     } else if (row.status === 'Active') {
                         buttonName = 'Disable'
