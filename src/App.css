@@ -373,3 +373,7 @@ code {
   justify-content: space-between;
   align-items: center;
 }
+
+.table-bordered td {
+  word-break: break-all;
+}

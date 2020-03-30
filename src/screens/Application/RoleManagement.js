@@ -9,6 +9,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
 import {setErrorMsg, isAlphaNum} from "../../constants/constants";
+import Loader from "../../components/Loader";
 
 
 class RoleManagement extends React.Component {
@@ -296,6 +297,7 @@ class RoleManagement extends React.Component {
         return (
             <>
                 <div className={'container-design'}>
+                    { statusButtonDisabled ? <Loader/> : null }
                     <Row>
                         <Col md={12}>
                             <h4 className="text-left">
