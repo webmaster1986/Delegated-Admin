@@ -377,3 +377,7 @@ code {
 .table-bordered td {
   word-break: break-all;
 }
+
+.owner-col-bg {
+  background: #a8a8f3 !important;
+}

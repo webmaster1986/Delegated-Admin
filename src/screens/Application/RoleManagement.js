@@ -188,10 +188,7 @@ class RoleManagement extends React.Component {
 
         } else {
             const { rolesList } = this.state
-            const index = (rolesList || []).findIndex(role => role.roleName === roleName)
-            if(index > -1) {
-                rolesList[index] = {...rolesList[index], ...data.role}
-            }
+            rolesList[record.id] = {...rolesList[record.id], ...data.role}
             this.setState({
                 rolesList,
                 isLoading: false,
@@ -209,6 +206,15 @@ class RoleManagement extends React.Component {
                 "oimTarget": data || []
             }
         });
+    }
+
+    rowStyleFormat = (row) => {
+        let className = ''
+
+        if ((row.roleName || "").toLowerCase().includes("_owner")) {
+            className = 'owner-col-bg'
+        }
+        return className
     }
 
     render() {
@@ -236,9 +242,7 @@ class RoleManagement extends React.Component {
                 text: 'Action',
                 headerStyle: {width: 100},
                 formatter: (cell, row) => {
-                    // const buttonName = row.roleName === 'APPCODE_OWNER' ? '' :
-                    //   row.status === 'Active' ? 'Disable' : row.status === 'Disabled' ? 'Activate' :
-                    //     row.status === 'Failed' ? 'Retry' : ''
+
                     let buttonName = '';
                     let className = '';
 
@@ -356,6 +360,7 @@ class RoleManagement extends React.Component {
                                 expandRow={expandRow}
                                 pagination={ paginationFactory(options) }
                                 defaultSorted={ [{dataField: 'roleName', order: 'asc'}] }
+                                rowClasses={this.rowStyleFormat}
                             />
                             <Row>
                                 <Col sm={12} md={12}>

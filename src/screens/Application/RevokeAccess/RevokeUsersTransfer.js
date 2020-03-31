@@ -237,6 +237,7 @@ class RevokeUsersTransfer extends React.Component {
       {
         dataField: 'userLogin',
         text: 'Login',
+        sort: true,
         formatter: (cell, row) => {
           return (
               <a className="text-info" onClick={(e) => this.props.toggleUserModal(e, row)}>{row.userLogin || row.login}</a>
@@ -270,6 +271,7 @@ class RevokeUsersTransfer extends React.Component {
       {
         dataField: 'roleName',
         text: 'Role',
+        sort: true,
         formatter: (cell, row) => {
           return (
               <a className="text-info" onClick={(e) => this.props.toggleModal(e, row)} >{cell}</a>
@@ -377,56 +379,6 @@ class RevokeUsersTransfer extends React.Component {
     const {revokeBy} = this.props
     let userRoles = [...reviewList]
     this.setState({ isSave: true })
-    // if(revokeBy === "roles"){
-    //
-    //   const roles = []
-    //   reviewList.forEach(rl => {
-    //
-    //     rl.users.forEach(u => {
-    //       const oimTargets = (u.oimTargets || []).filter(x => !x.isRemoved)
-    //       const object = {
-    //         userLogin: u.userLogin,
-    //         roles: [{
-    //           roleName: rl.roleName,
-    //           oimTargets: oimTargets.map(x => x.name)
-    //         }]
-    //       }
-    //       roles.push(object)
-    //     })
-    //   })
-    //   console.log({roles})
-    //
-    //
-    //   // const totalUsers = []
-    //   // reviewList.forEach((role) => {
-    //   //   role.users.forEach(u => {
-    //   //     const isExists = totalUsers.find(user => user.login === u.login)
-    //   //     const targetList = (u.oimTargets || []).filter(x => !x.isRemoved)
-    //   //     if(!isExists){
-    //   //       totalUsers.push({...u, oimTargets: (targetList || []).map(x => x.name)})
-    //   //     }
-    //   //   })
-    //   // })
-    //   // reviewList.forEach((role) => {
-    //   //   role.users.forEach(u => {
-    //   //     const findIndex = totalUsers.findIndex(user => user.login === u.login)
-    //   //     if(findIndex !== -1){
-    //   //       const targetList = (role.oimTargets || []).filter(x => !x.isRemoved)
-    //   //       const newRole = {
-    //   //         roleName: role.roleName,
-    //   //         roleDescription: role.roleDescription,
-    //   //         oimTargets: (targetList || []).map(x => x.name)
-    //   //       }
-    //   //       const roles = totalUsers[findIndex] && totalUsers[findIndex].roles ? totalUsers[findIndex].roles.push(newRole) : [newRole]
-    //   //       totalUsers[findIndex] = {
-    //   //         ...totalUsers[findIndex],
-    //   //         roles: typeof roles === "number" ? totalUsers[findIndex].roles : roles
-    //   //       }
-    //   //     }
-    //   //   })
-    //   // })
-    //   // userRoles = totalUsers
-    // }
 
     const payload = []
     if(revokeBy === "roles"){

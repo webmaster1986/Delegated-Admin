@@ -13,6 +13,7 @@ const Review = (props) => {
     {
       text: 'User Login',
       dataField: 'userLogin',
+      sort: true,
       formatter: (cell, row) => {
         return (
           <div className="link-text"><u onClick={(e) => props.toggleUserModal(e, row)}>{cell}</u></div>
@@ -38,6 +39,7 @@ const Review = (props) => {
     {
       text: 'Role Name',
       dataField: 'roleName',
+      sort: true,
       formatter: (cell, row) => {
         return (
           <div className="link-text"><u onClick={(e) => props.toggleModal(e, row)}>{cell}</u></div>
@@ -81,6 +83,7 @@ const Review = (props) => {
         {
           text: 'Login',
           dataField: 'userLogin',
+          sort: true,
           formatter: (cell, row) => {
             return (
               <div className="link-text"><u onClick={(e) => props.toggleUserModal(e, row)}>{cell}</u></div>
@@ -111,6 +114,7 @@ const Review = (props) => {
         {
           text: 'Role Name',
           dataField: 'roleName',
+          sort: true,
           formatter: (cell, row) => {
             return (
                 <div className="link-text"><u onClick={(e) => props.toggleModal(e, row)}>{cell}</u></div>
