@@ -60,7 +60,6 @@ class UserModal extends React.Component {
         title="User Info"
         visible={true}
         width={"50%"}
-        // onOk={this.props.toggleModal}
         onCancel={this.props.toggleModal}
         footer={
           <div>
@@ -81,7 +80,7 @@ class UserModal extends React.Component {
                   )}
                 </Row>
                 <br/>
-                <h6>Assigned Roles</h6>
+                <h6>Assigned Roles ({(roles || []).length} roles)</h6>
                 <BootstrapTable
                   bootstrap4
                   striped

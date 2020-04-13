@@ -15,6 +15,8 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { ROLES } from "../../constants/constants"
 
+const selectStyles = { menu: styles => ({ ...styles, zIndex: 999 }) }
+
 class AppOwners extends Component {
   _apiService = new ApiService();
 
@@ -115,6 +117,8 @@ class AppOwners extends Component {
               components={{Option: (data) => this.CustomOption(data, row.appCode)}}
               onChange={this.handleChange}
               options={this.state.options || []}
+              menuPortalTarget={document.querySelector("body")}
+              styles={selectStyles}
             />
           </div>
         )
@@ -175,7 +179,9 @@ class AppOwners extends Component {
                 </InputGroup>
               </Col>
             </Row>
-            <br/>
+
+            <div className="mt-1">Total <b>{apps.length}</b> applications</div>
+
             {isLoading ? (
               <div className={"text-center"}>
                 {" "}

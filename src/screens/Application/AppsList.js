@@ -135,7 +135,9 @@ class AppsList extends Component {
                             <Button variant="outline-secondary" onClick={() => this.onSearch({ target: { value: '' } })}>Clear</Button>
                         </InputGroup.Append>
                     </InputGroup>
-                    <br/>
+
+                    <div className="mt-1">Total <b>{apps.length}</b> applications</div>
+
                     {
                         isLoading ? <div className={'text-center'}> <Spin className='mt-50 custom-loading'/> </div> :
                             <BootstrapTable

@@ -254,7 +254,39 @@ nav ul {
         background-color: #CC0000 !important;
         color: #ffffff !important;
     }
+    .dev-header .dropdown:hover .dropdown-menu, .dev-header .dropdown-item:focus, .dev-header .dropdown-item:hover, .dev-header .dropdown-item .nav-item, .dev-header .navbar-nav .dropdown-menu, .dev-header .dropdown-item {
+        background-color: #9ACD32 !important;
+        color: #ffffff !important;
+    }
+    .tst-header .dropdown:hover .dropdown-menu, .tst-header .dropdown-item:focus, .tst-header .dropdown-item:hover, .tst-header .dropdown-item .nav-item, .tst-header .navbar-nav .dropdown-menu, .tst-header .dropdown-item {
+        background-color: #6495ED !important;
+        color: #ffffff !important;
+    }
+    .stg-header .dropdown:hover .dropdown-menu, .stg-header .dropdown-item:focus, .stg-header .dropdown-item:hover, .stg-header .dropdown-item .nav-item, .stg-header .navbar-nav .dropdown-menu, .stg-header .dropdown-item {
+        background-color: #946fdd !important;
+        color: #ffffff !important;
+    }
+    .prd-header .dropdown:hover .dropdown-menu, .prd-header .dropdown-item:focus, .prd-header .dropdown-item:hover, .prd-header .dropdown-item .nav-item, .prd-header .navbar-nav .dropdown-menu, .prd-header .dropdown-item {
+        background-color: #CC0000 !important;
+        color: #ffffff !important;
+    }
     .dropdown-item.active, .dropdown-item:active, .dropdown-menu a:active {
+        background: #B70F0A;
+        color: #ffffff;
+    }
+    .dev-header .dropdown-item.active, .dev-header .dropdown-item:active, .dev-header .dropdown-menu a:active {
+        background: #8eb738;
+        color: #ffffff;
+    }
+    .tst-header .dropdown-item.active, .tst-header .dropdown-item:active, .tst-header .dropdown-menu a:active {
+        background: #5a8be3;
+        color: #ffffff;
+    }
+    .stg-header .dropdown-item.active, .stg-header .dropdown-item:active, .stg-header .dropdown-menu a:active {
+        background: #8862d2;
+        color: #ffffff;
+    }
+    .prd-header .dropdown-item.active, .prd-header .dropdown-item:active, .prd-header .dropdown-menu a:active {
         background: #B70F0A;
         color: #ffffff;
     }
@@ -265,5 +297,17 @@ nav ul {
         background: #CC0000;
         z-index: 2;
         color: #ffffff;
+    }
+    .dev-header .navbar-collapse {
+        background: #9ACD32;
+    }
+    .tst-header .navbar-collapse {
+        background: #6495ED;
+    }
+    .stg-header .navbar-collapse {
+        background: #946fdd;
+    }
+    .prd-header .navbar-collapse {
+        background: #CC0000;
     }
 }

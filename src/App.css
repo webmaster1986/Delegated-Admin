@@ -381,3 +381,13 @@ code {
 .owner-col-bg {
   background: #a8a8f3 !important;
 }
+
+.manage-button .btn:disabled {
+  background-color: gray !important;
+  border-color: grey !important;
+  cursor: not-allowed;
+}
+
+.page-item.active .page-link {
+  z-index: 1 !important;
+}

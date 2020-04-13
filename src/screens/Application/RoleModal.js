@@ -81,7 +81,7 @@ class RoleModal extends React.Component {
                   )}
                 </Row>
                 <br/>
-                <h6>Users Assigned</h6>
+                <h6>Users Assigned ({(users || []).length} users)</h6>
                 <BootstrapTable
                   bootstrap4
                   striped

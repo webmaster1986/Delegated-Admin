@@ -397,7 +397,7 @@ class RoleManagement extends React.Component {
                                                 options={oimTargetList && oimTargetList.map(oim => ({ value: oim, label: oim }))}
                                             />
                                         </Col>
-                                        <Col md={2} className={'pt-2'}>
+                                        <Col md={2} className={'pt-2 manage-button'}>
                                             <Button type="submit" onClick={this.onAddRole} disabled={!roleName || !oimTarget || isSave || roleNameError || !roleDescription || !duplicateRoleName}>
                                                 { (isSave) ? <div className="spinner-border spinner-border-sm text-dark"/> : null }
                                                 {' '}Add Role
