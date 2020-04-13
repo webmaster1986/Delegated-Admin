@@ -157,6 +157,7 @@ class RoleManagement extends React.Component {
                 })
                 return message.error(errMessage);
             } else {
+                message.success(`Role ${rolesObject.roleName} added successfully`)
                 this.setState({
                     isLoading: false,
                     list,
