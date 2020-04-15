@@ -600,7 +600,7 @@ class Index extends Component {
     onCopyUsers = (keys) => {
         const { users, usersData, userTargetKeys } = this.state
         keys.forEach(key => {
-            const obj = (users || []).find(x => x.userLogin === key)
+            const obj = (users || []).find(x => x.userLogin === key) || {}
             if(Object.keys(obj).length && !(userTargetKeys.includes(obj.id))) {
                 usersData.push(obj)
                 userTargetKeys.push(obj.id)
