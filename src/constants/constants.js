@@ -8,12 +8,8 @@ export const ROLES = {
 }
 
 export const isAlphaNum = (value) => {
-    const regex = new RegExp("^[a-zA-Z0-9s]+$")
+    const regex = new RegExp("^[a-zA-Z0-9s_]+$")
     return regex.test(value)
-}
-
-export const checkAlphaNum = (value) => {
-    return (/\d/.test(value) && /[a-zA-Z]/.test(value))
 }
 
 export const showNotification = (res, key) => {
