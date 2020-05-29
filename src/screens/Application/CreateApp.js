@@ -279,6 +279,17 @@ class CreateApp extends React.Component {
         return `${appCode}_${role}`
     }
 
+    onRoleNameBlur = () => {
+        const { rolesObject } = this.state
+        const isUnder = rolesObject.roleName.trim().endsWith('_') && rolesObject.roleName.trim() !== '_'
+        if(isUnder) {
+            rolesObject.roleName = rolesObject.roleName.substring(0, rolesObject.roleName.length - 1)
+            this.setState({
+                rolesObject
+            })
+        }
+    }
+
     render() {
         const { rolesObject, appObject, rolesList, ownerGroupList, appCodeError, oimTargetList, isLoading, selectedOption, selectedOwnerGroupOption, isSave, roleNameError, duplicateRoleName } = this.state;
         const { appName, appCode, appDescription, ownerGroup, selectedOwnerGroup } = appObject || {};
@@ -450,6 +461,7 @@ class CreateApp extends React.Component {
                                               id={"roleName"}
                                               value={roleName || ""}
                                               onChange={this.onRoleChange}
+                                              onBlur={this.onRoleNameBlur}
                                           />
                                           {roleNameError ? <span className="color-red">{roleNameError}</span> : null}
                                       </Col>
