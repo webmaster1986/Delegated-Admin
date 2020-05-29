@@ -12,6 +12,11 @@ export const isAlphaNum = (value) => {
     return regex.test(value)
 }
 
+export const isAlphaNumWithoutUnderscore = (value) => {
+    const regex = new RegExp("^[a-zA-Z0-9s]+$")
+    return regex.test(value)
+}
+
 export const showNotification = (res, key) => {
 
     let success = []

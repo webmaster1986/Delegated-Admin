@@ -7,7 +7,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Select from 'react-select';
 import { ApiService } from "../../services/ApiService";
-import {isAlphaNum, setErrorMsg} from "../../constants/constants";
+import {isAlphaNum, setErrorMsg, isAlphaNumWithoutUnderscore} from "../../constants/constants";
 
 
 class CreateApp extends React.Component {
@@ -85,8 +85,8 @@ class CreateApp extends React.Component {
         const { appObject, duplicateRoleName, rolesList } = this.state
         const { name } = event.target
         const value = ['appName', 'appCode'].includes(name) ? event.target.value.toUpperCase() : event.target.value
-
-        if(value && name === 'appCode' && !isAlphaNum(value)) return
+        const validate = name === 'appCode' ? isAlphaNumWithoutUnderscore : isAlphaNum
+        if(value && name === 'appCode' && !validate(value)) return
 
         let object = {}
         let obj = {}
