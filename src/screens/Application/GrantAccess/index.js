@@ -13,6 +13,7 @@ import RoleModal from "../RoleModal";
 import UserModal from "../UserModal";
 import {ROLES, setErrorMsg, showNotification} from "../../../constants/constants"
 import CopyUsersModal from "../CopyUsersModal"
+import CopyRolesModal from "../CopyRolesModal"
 import {TableTransfer} from "../../../components/TableTransfer"
 
 const cookies = new Cookies();
@@ -50,6 +51,7 @@ class Index extends Component {
             isInfoModal: false,
             isSave: false,
             copyUserModal: false,
+            copyRoleModal: false,
             selectBy: "",
             category: "",
             user: getLoginUser()
@@ -540,6 +542,14 @@ class Index extends Component {
         }))
     }
 
+    toggleRoleModal = (event, info) => {
+        event.stopPropagation();
+        this.setState(prevState => ({
+            info: info || {},
+            copyRoleModal: !prevState.copyRoleModal,
+        }))
+    }
+
     onRemove = (id) => {
         const {roleTargetKeys, userTargetKeys, category, usersData, rolesData} = this.state
         const users = _.cloneDeep(usersData)
@@ -597,6 +607,13 @@ class Index extends Component {
         })
     }
 
+    onCopyRoleModal = () => {
+        this.setState({
+            copyRoleModal: !this.state.copyRoleModal,
+            searchString: ""
+        })
+    }
+
     onCopyUsers = (keys) => {
         const { users, usersData, userTargetKeys } = this.state
         keys.forEach(key => {
@@ -613,9 +630,30 @@ class Index extends Component {
         })
     }
 
+    onRoleUsers = (selectedRoles) => {
+        let { allRoles, roleTargetKeys, rolesData } = this.state
+        selectedRoles.forEach(key => {
+            if(!(rolesData || []).some(x => x.roleName === key.roleName)){
+                const roles = allRoles.filter(x => x.roleName === key.roleName)
+                if(roles && roles.length) {
+                    const index = roles[0].id
+                    allRoles[index].oimTargets = key.oimTargets
+                    roleTargetKeys.push(index)
+                    rolesData.push(allRoles[index])
+                }
+            }
+        })
+        this.setState({
+            roleTargetKeys,
+            rolesData,
+            allRoles,
+            copyRoleModal: false
+        })
+    }
+
     render() {
         const { isLoading, roleTargetKeys, userTargetKeys, roles, selectedApp, applicationsList, step1, step2, users,
-            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, copyUserModal } = this.state;
+            info, isUserModal, isInfoModal, searchString, searchList, rolesData, searchedRoles, usersData, category, preview, step, selectBy, copyUserModal, copyRoleModal } = this.state;
         // const roleData = (searchedRoles && searchedRoles.length) ? searchRoleList : roles
         const data = searchString ? searchList : users
 
@@ -730,6 +768,7 @@ class Index extends Component {
         return(
             <div className={"mt-3"}>
                 { copyUserModal ? <CopyUsersModal onCloseModal={this.onCopyUserModal} usersData={usersData} toggleUserModal={this.toggleUserModal} onCopyUsers={this.onCopyUsers}/> : null }
+                { copyRoleModal ? <CopyRolesModal onCloseModal={this.onCopyRoleModal} usersData={usersData} toggleRoleModal={this.toggleRoleModal} onRoleUsers={this.onRoleUsers} toggleModal={this.toggleModal}/> : null }
                 {
                     (selectBy === "roles" && step2) || (selectBy === "user" && step1) || preview ?
                         <a className="back-btn" onClick={preview ? this.onPreviewBack : step1 ? this.onRoleBack : this.onUserBack}>
@@ -817,7 +856,7 @@ class Index extends Component {
                                                 </Col>
                                             </Row>
                                             <Row className={'mb-3'}>
-                                                <Col>
+                                                <Col md={category === "roles" ? 8 : 12}>
                                                     <Form.Label >
                                                         ROLES:
                                                     </Form.Label>
@@ -834,6 +873,12 @@ class Index extends Component {
                                                         }
                                                     />
                                                 </Col>
+                                                {
+                                                    category === "roles" ?
+                                                        <Col md={4} className="text-right" style={{marginTop: 30}}>
+                                                            <Button onClick={this.onCopyRoleModal} className="copy-button">Copy Roles from a User</Button>
+                                                        </Col> : null
+                                                }
                                             </Row>
 
                                             <div>

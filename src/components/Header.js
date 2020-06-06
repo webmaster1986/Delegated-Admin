@@ -15,11 +15,15 @@ class Header extends Component {
   _apiService = new ApiService();
 
   state = {
+    hideLogout: window.location.href.toLowerCase().includes("external=true") || sessionStorage.getItem("hideLogout"),
     loginUser: "",
     headerClass: `${this.props.environment}-header`,
   }
 
   async componentDidMount() {
+    if(window.location.href.toLowerCase().includes("external=true")) {
+      sessionStorage.setItem("hideLogout", true)
+    }
     this.setState({
       isLoading: true
     })
@@ -43,7 +47,7 @@ class Header extends Component {
   }
 
   render() {
-    const {loginUser, headerClass} = this.state
+    const {loginUser, headerClass, hideLogout} = this.state
     return (
       <div
         className={`${headerClass} header-nav`}
@@ -126,7 +130,9 @@ class Header extends Component {
               <MobileMenu headerClass={headerClass}/>
               <div className="header-nav-right">
                 <h6 className="wc-username">{loginUser ? `Welcome ${loginUser}` : ""}</h6>
-                <a className="logout" onClick={() => this.onLogout()}>Logout</a>
+                {
+                  hideLogout ? null : <a className="logout" onClick={() => this.onLogout()}>Logout</a>
+                }
               </div>
             </Navbar.Collapse>
           </Navbar>
