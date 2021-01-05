@@ -8,7 +8,7 @@
   "dependencies": {
     "antd": "^3.26.9",
     "availity-reactstrap-validation": "^2.5.2",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "cross-env": "^7.0.2",
     "immutable": "^4.0.0-rc.12",
